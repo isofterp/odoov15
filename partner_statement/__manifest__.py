@@ -16,7 +16,7 @@
         "security/ir.model.access.csv",
         "views/activity_statement.xml",
         "views/outstanding_statement.xml",
-        "views/assets.xml",
+        #"views/assets.xml",
         "views/aging_buckets.xml",
         "views/res_config_settings.xml",
         "wizard/statement_wizard.xml",

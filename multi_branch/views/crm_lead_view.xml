@@ -1,0 +1,50 @@
+<odoo>
+    <!-- Inherited CRM Lead form view -->
+    <record id="crm_lead_view_form_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.form</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form" />
+        <field name="arch" type="xml">
+            <field name="team_id" position="after">
+                <field
+                    name="branch_id"
+                    required="1"
+                    options="{'no_create_edit': True}"
+                    context="{'branch_filter': True, 'filter_company_id': company_id}"
+                />
+            </field>
+        </field>
+    </record>
+    <!-- Inherited CRM Lead tree view -->
+    <record id="crm_case_tree_view_leads_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.tree.lead.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_leads" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field
+                    name="branch_id"
+                    required="1"
+                    options="{'no_create_edit': True}"
+                    context="{'branch_filter': True, 'filter_company_id': company_id}"
+                />
+            </field>
+        </field>
+    </record>
+    <!-- Inherited Opportunity tree view -->
+    <record id="crm_case_tree_view_oppor_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.tree.opportunity</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field
+                    name="branch_id"
+                    required="1"
+                    options="{'no_create_edit': True}"
+                    context="{'branch_filter': True, 'filter_company_id': company_id}"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>

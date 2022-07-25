@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherited Stock Warehouse Form View from base stock module -->
+    <record id="view_warehouse_branch_inherit" model="ir.ui.view">
+        <field name="name">stock.warehouse.branch.inherit</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse" />
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field
+                    name="branch_id"
+                    required="1"
+                    options="{'no_create_edit': True}"
+                    context="{'branch_filter': True, 'filter_company_id': company_id}"
+                />
+            </field>
+        </field>
+    </record>
+    <!-- Inherited Stock Warehouse Tree View from base stock module -->
+    <record id="view_warehouse_tree_branch_inherit" model="ir.ui.view">
+        <field name="name">stock.warehouse.branch.tree.inherit</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse_tree" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field
+                    name="branch_id"
+                    required="1"
+                    options="{'no_create_edit': True}"
+                    context="{'branch_filter': True, 'filter_company_id': company_id}"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>

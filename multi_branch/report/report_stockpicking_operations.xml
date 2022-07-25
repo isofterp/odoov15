@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherited Picking Operations Report to add branch -->
+    <template
+        id="report_picking_inherit_multi_branch"
+        inherit_id="stock.report_picking"
+    >
+        <xpath expr="//div[hasclass('row','mt48','mb32')]/div[last()]" position="after">
+            <div class="col-auto" name="div_branch_id">
+                <strong>Branch:</strong>
+                <p t-field="o.branch_id" />
+            </div>
+        </xpath>
+    </template>
+    <!-- Inherited Delivery Slip Report to add branch -->
+    <template
+        id="report_delivery_document_multi_branch"
+        inherit_id="stock.report_delivery_document"
+    >
+        <xpath expr="//div[hasclass('row','mt32','mb32')]/div[last()]" position="after">
+            <div t-if="o.branch_id" class="col-auto">
+                <strong>Branch:</strong>
+                <p t-field="o.branch_id" />
+            </div>
+        </xpath>
+    </template>
+</odoo>

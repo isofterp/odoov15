@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <template id="tank_usage_report">
+        <t t-foreach="docs" t-as="o">
+        <t t-call="web.external_layout">
+<!--            <t t-set="doc" t-value="doc"/>-->
+
+            <div class="page">
+                <div class="oe_structure"/>
+                <h3 class="mt10">
+                    <span>RENTAL AGREEMENT #</span>
+                    <span t-field="doc.tank_id.name"/>
+
+                </h3>
+                <h3>
+                       <p><span t-esc="d"/></p>
+                </h3>
+            </div>
+        </t>
+        </t>
+    </template>
+
+    <template id="report_tank_usage">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="d" t-value="site"/>
+                <t t-call="isofterp_mandlachem.tank_usage_report" />
+            </t>
+        </t>
+    </template>
+</odoo>

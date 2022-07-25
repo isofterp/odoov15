@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_site_line,access_site_line,model_site_line,,1,1,1,1
+access_site_tank,access_site_tank,model_site_tank,,1,1,1,1
+access_tank_reading,access_tank_reading,model_tank_reading,,1,1,1,1
+access_site_site,access_site_site,model_site_site,,1,1,1,1
+access_tank_reading_wizard,access_tank_reading_wizard,model_tank_reading_wizard,,1,1,1,1
+

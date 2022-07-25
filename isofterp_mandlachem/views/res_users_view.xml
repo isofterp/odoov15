@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherited base Res Users Form View -->
+    <record id="view_users_form_branch_inherit" model="ir.ui.view">
+        <field name="name">res.users.form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[2]" position="after">
+                <page name="multi_sites" string="Multi Sites">
+                    <group string="Multi Sites">
+                        <field
+                            string="Allowed Sites"
+                            name="site_ids"
+                            widget="many2many_tags"
+                            options="{'no_create': True}"
+
+                        />
+<!--                        <field-->
+<!--                            name="branch_id"-->
+<!--                            string="Current Branch"-->
+<!--                            required="1"-->
+<!--                            options="{'no_create_edit': True}"-->
+<!--                        />-->
+<!--                        <field-->
+<!--                            string="Branches count"-->
+<!--                            name="branches_count"-->
+<!--                            invisible="1"-->
+<!--                        />-->
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

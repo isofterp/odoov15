@@ -1,0 +1,44 @@
+<odoo>
+    <record model="ir.ui.view" id="purchase_order_form_branch_inherit">
+        <field name="name">purchase.order.form.branch.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form" />
+        <field name="arch" type="xml">
+            <field name="date_order" position="after">
+                <field
+                    name="branch_id"
+                    required="1"
+                    options="{'no_create_edit': True}"
+                    attrs="{'readonly':[('state','not in',['draft'])]}"
+                    context="{'branch_filter': True, 'filter_company_id': company_id}"
+                />
+            </field>
+        </field>
+    </record>
+    <record id="view_purchase_order_filter_branch_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.list.select.branch.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.view_purchase_order_filter" />
+        <field name="arch" type="xml">
+            <search string="Search Purchase Order">
+                <field name="branch_id" />
+                <filter
+                    string="Branch"
+                    context="{'group_by':'branch_id'}"
+                    name="branch_id"
+                />
+            </search>
+        </field>
+    </record>
+    <!-- Inherited Purchase Report Piviot View -->
+    <record model="ir.ui.view" id="view_purchase_order_pivot_branch_inherit">
+        <field name="name">product.month.pivot.branch</field>
+        <field name="model">purchase.report</field>
+        <field name="inherit_id" ref="purchase.view_purchase_order_pivot" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="branch_id" type="row" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- module category for branch -->
+    <record model="ir.module.category" id="module_category_branch">
+        <field name="name">Branch</field>
+        <field name="description">Helps Manager to create the branch.</field>
+        <field name="sequence">9</field>
+    </record>
+    <!-- Branch Manager Group -->
+    <record id="group_branch_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="multi_branch.module_category_branch" />
+        <field
+            name="users"
+            eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"
+        />
+    </record>
+     <record id="group_branch_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="category_id" ref="multi_branch.module_category_branch"/>
+    </record>
+
+
+
+    <!-- Branch Manager Record rule for sale-->
+<!--    <record id="rule_sale_all_documents" model="ir.rule">-->
+<!--        <field name="name">Branch Sale All Documents</field>-->
+<!--        <field name="model_id" ref="model_sale_order" />-->
+<!--        <field-->
+<!--            name="domain_force"-->
+<!--        >['|', ('branch_id', '=', False), ('branch_id', 'in', [branch.id for branch in user.branch_ids])]</field>-->
+<!--        <field-->
+<!--            name="groups"-->
+<!--            eval="[(4,ref('sales_team.group_sale_salesman_all_leads')),(4,ref('sales_team.group_sale_manager'))]"-->
+<!--        />-->
+<!--    </record>-->
+<!--    &lt;!&ndash; Branch Manager Record rule for sale order line&ndash;&gt;-->
+<!--    <record id="rule_sale_order_line_all_documents" model="ir.rule">-->
+<!--        <field name="name">Branch Sale Order Line All Documents</field>-->
+<!--        <field name="model_id" ref="model_sale_order_line" />-->
+<!--        <field-->
+<!--            name="domain_force"-->
+<!--        >['|', ('branch_id', '=', False), ('branch_id', 'in', [branch.id for branch in user.branch_ids])]</field>-->
+<!--        <field-->
+<!--            name="groups"-->
+<!--            eval="[(4,ref('sales_team.group_sale_salesman_all_leads')),(4,ref('sales_team.group_sale_manager'))]"-->
+<!--        />-->
+<!--    </record>-->
+<!--    &lt;!&ndash; record rule for branch manager purchase&ndash;&gt;-->
+<!--    <record id="rule_branch_manager_purchase" model="ir.rule">-->
+<!--        <field name="name">Branch Manager Purchase</field>-->
+<!--        <field name="model_id" ref="model_purchase_order" />-->
+<!--        <field-->
+<!--            name="domain_force"-->
+<!--        >['|', ('branch_id', '=', False), ('branch_id', 'in', [branch.id for branch in user.branch_ids])]</field>-->
+<!--        <field name="groups" eval="[(4,ref('purchase.group_purchase_manager'))]" />-->
+<!--    </record>-->
+<!--    &lt;!&ndash; record rule for user purchase&ndash;&gt;-->
+<!--    <record id="rule_branch_user_purchase" model="ir.rule">-->
+<!--        <field name="name">Branch user Purchase</field>-->
+<!--        <field name="model_id" ref="model_purchase_order" />-->
+<!--        <field-->
+<!--            name="domain_force"-->
+<!--        >['|', ('branch_id', '=', False), ('branch_id', 'in', [branch.id for branch in user.branch_ids]),'|',('user_id','=',user.id),('user_id','=',False)]</field>-->
+<!--        <field name="groups" eval="[(4,ref('purchase.group_purchase_user'))]" />-->
+<!--    </record>-->
+<!--    &lt;!&ndash; record rule for branch manager Warehouse&ndash;&gt;-->
+<!--    <record id="rule_branch_manager_warehouse" model="ir.rule">-->
+<!--        <field name="name">Branch Manager Warehouse</field>-->
+<!--        <field name="model_id" ref="model_stock_warehouse" />-->
+<!--        <field-->
+<!--            name="domain_force"-->
+<!--        >['|', ('branch_id', '=', False), ('branch_id', 'in', [branch.id for branch in user.branch_ids])]</field>-->
+<!--        <field name="groups" eval="[(4,ref('stock.group_stock_user'))]" />-->
+<!--    </record>-->
+<!--    &lt;!&ndash; record rule for user Warehouse.&ndash;&gt;-->
+<!--    <record id="rule_branch_user_warehouse" model="ir.rule">-->
+<!--        <field name="name">Branch user Warehouse</field>-->
+<!--        <field name="model_id" ref="model_stock_warehouse" />-->
+<!--        <field-->
+<!--            name="domain_force"-->
+<!--        >['|', ('branch_id', '=', False), ('branch_id', 'in', [branch.id for branch in user.branch_ids])]</field>-->
+<!--        <field name="groups" eval="[(4,ref('stock.group_stock_user'))]" />-->
+<!--    </record>-->
+<!--    &lt;!&ndash; record rule for branch manager Picking Type&ndash;&gt;-->
+<!--    <record id="rule_branch_manager_picking_type" model="ir.rule">-->
+<!--        <field name="name">Branch Manager Picking Type</field>-->
+<!--        <field name="model_id" ref="model_stock_picking_type" />-->
+<!--        <field-->
+<!--            name="domain_force"-->
+<!--        >['|', ('branch_id', '=', False), ('branch_id', 'in', [branch.id for branch in user.branch_ids])]</field>-->
+<!--        <field name="groups" eval="[(4,ref('stock.group_stock_manager'))]" />-->
+<!--    </record>-->
+<!--    &lt;!&ndash; record rule for user Picking type&ndash;&gt;-->
+<!--    <record id="rule_branch_user_picking_type" model="ir.rule">-->
+<!--        <field name="name">Branch user Picking Type</field>-->
+<!--        <field name="model_id" ref="model_stock_picking_type" />-->
+<!--        <field-->
+<!--            name="domain_force"-->
+<!--        >['|', ('branch_id', '=', False), ('branch_id', 'in', [branch.id for branch in user.branch_ids])]</field>-->
+<!--        <field name="groups" eval="[(4,ref('stock.group_stock_user'))]" />-->
+<!--    </record>-->
+<!--    &lt;!&ndash; record rule for user Picking&ndash;&gt;-->
+<!--    <record id="rule_branch_user_picking" model="ir.rule">-->
+<!--        <field name="name">Branch user Stock Picking </field>-->
+<!--        <field name="model_id" ref="model_stock_picking" />-->
+<!--        <field-->
+<!--            name="domain_force"-->
+<!--        >['|',('user_id','=',user.id),('user_id','=',False)]</field>-->
+<!--        <field name="groups" eval="[(4,ref('stock.group_stock_user'))]" />-->
+<!--    </record>-->
+<!--    &lt;!&ndash; record rule for manager Picking&ndash;&gt;-->
+<!--    <record id="rule_branch_manager_picking" model="ir.rule">-->
+<!--        <field name="name">Branch manager Stock Picking </field>-->
+<!--        <field name="model_id" ref="model_stock_picking" />-->
+<!--        <field-->
+<!--            name="domain_force"-->
+<!--        >['|', ('branch_id', '=', False), ('branch_id', 'in', [branch.id for branch in user.branch_ids])]</field>-->
+<!--        <field name="groups" eval="[(4,ref('stock.group_stock_manager'))]" />-->
+<!--    </record>-->
+<!--    &lt;!&ndash;	 record rule for branch manager Stock Location&ndash;&gt;-->
+<!--    <record id="rule_branch_manager_stock_location" model="ir.rule">-->
+<!--        <field name="name">Branch Manager Stock Location</field>-->
+<!--        <field name="model_id" ref="model_stock_location" />-->
+<!--        <field-->
+<!--            name="domain_force"-->
+<!--        >['|', ('branch_id', '=', False), ('branch_id', 'in', [branch.id for branch in user.branch_ids])]</field>-->
+<!--        <field name="groups" eval="[(4,ref('stock.group_stock_manager'))]" />-->
+<!--    </record>-->
+<!--    &lt;!&ndash; record rule for user Stock Location&ndash;&gt;-->
+<!--    <record id="rule_branch_user_stock_location" model="ir.rule">-->
+<!--        <field name="name">Branch user Stock Location</field>-->
+<!--        <field name="model_id" ref="model_stock_location" />-->
+<!--        <field-->
+<!--            name="domain_force"-->
+<!--        >['|',('branch_id', 'in', [branch.id for branch in user.branch_ids]), ('branch_id','=',False)]</field>-->
+<!--        <field name="groups" eval="[(4,ref('stock.group_stock_user'))]" />-->
+<!--    </record>-->
+<!--    &lt;!&ndash; record rule for branch manager Account Move &ndash;&gt;-->
+<!--    <record id="rule_branch_manager_account_move" model="ir.rule">-->
+<!--        <field name="name">Branch Manager Account Move</field>-->
+<!--        <field name="model_id" ref="model_account_move" />-->
+<!--        <field-->
+<!--            name="domain_force"-->
+<!--        >['|', ('branch_id', '=', False), ('branch_id', 'in', [branch.id for branch in user.branch_ids])]</field>-->
+<!--        <field-->
+<!--            name="groups"-->
+<!--            eval="[(4,ref('account.group_account_manager')),(4,ref('sales_team.group_sale_salesman_all_leads')),(4,ref('sales_team.group_sale_manager'))]"-->
+<!--        />-->
+<!--    </record>-->
+<!--    &lt;!&ndash; record rule for user Account Move &ndash;&gt;-->
+<!--    <record id="rule_branch_user_account_move" model="ir.rule">-->
+<!--        <field name="name">Branch user Account Move</field>-->
+<!--        <field name="model_id" ref="model_account_move" />-->
+<!--        <field-->
+<!--            name="domain_force"-->
+<!--        >['|', ('branch_id', '=', False), ('branch_id', 'in', [branch.id for branch in user.branch_ids])]</field>-->
+<!--        <field-->
+<!--            name="groups"-->
+<!--            eval="[(4,ref('account.group_account_invoice')),(4,ref('sales_team.group_sale_salesman_all_leads')),(4,ref('sales_team.group_sale_manager'))]"-->
+<!--        />-->
+<!--    </record>-->
+
+</odoo>

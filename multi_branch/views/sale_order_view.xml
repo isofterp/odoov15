@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherited base Res Users Form View -->
+<!--    <record id="view_order_form_branch_inherit" model="ir.ui.view">-->
+<!--        <field name="name">sale.order.form.branch.inherit</field>-->
+<!--        <field name="model">sale.order</field>-->
+<!--        <field name="inherit_id" ref="sale.view_order_form" />-->
+<!--        <field name="arch" type="xml">-->
+<!--            <field name="team_id" position="after">-->
+<!--                <field-->
+<!--                    name="branch_id"-->
+<!--                    required="1"-->
+<!--                    options="{'no_create_edit': True}"-->
+<!--                    context="{'branch_filter': True, 'filter_company_id': company_id}"-->
+<!--                />-->
+<!--            </field>-->
+<!--        </field>-->
+<!--    </record>-->
+    <record id="view_sales_order_filter_branch_inherit" model="ir.ui.view">
+        <field name="name">sale.order.list.select.branch.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter" />
+        <field name="arch" type="xml">
+            <search string="Search Sales Order">
+                <field name="branch_id" />
+                <filter
+                    string="Branch"
+                    context="{'group_by':'branch_id'}"
+                    name="branch_id"
+                />
+            </search>
+        </field>
+    </record>
+    <record id="view_order_product_pivot_branch_inherit" model="ir.ui.view">
+        <field name="name">sale.report.pivot.branch.inherit</field>
+        <field name="model">sale.report</field>
+        <field name="inherit_id" ref="sale.view_order_product_pivot" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date']" position="after">
+                <field name="branch_id" type="row" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

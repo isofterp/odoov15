@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherited Payment Receipt View -->
+    <template
+        id="report_payment_receipt_document_branch_inherit"
+        inherit_id="account.report_payment_receipt_document"
+    >
+        <xpath expr="//div[hasclass('row')]" position="inside">
+            <div class="col-6" t-if="o.branch_id">
+                <strong>Branch Name: </strong>
+                <span t-esc="o.branch_id.name" />
+            </div>
+        </xpath>
+    </template>
+</odoo>

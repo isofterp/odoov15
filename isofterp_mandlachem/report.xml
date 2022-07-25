@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_usage"
+                string="Usage Report"
+                model="tank.reading"
+                report_type="qweb-pdf"
+                file="isofterp_mandlachem.report_tank_usage"
+                name="isofterp_mandlachem.report_tank_usage"
+                print_report_name="Usage Report"
+        />
+    </data>
+</odoo>

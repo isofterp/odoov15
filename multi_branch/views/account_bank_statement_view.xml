@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_bank_statement_form_branch_inherit" model="ir.ui.view">
+        <field name="name">account.bank.statement.form.branch.inherit</field>
+        <field name="model">account.bank.statement</field>
+        <field name="inherit_id" ref="account.view_bank_statement_form" />
+        <field name="arch" type="xml">
+            <field name="journal_id" position="after">
+                <field
+                    name="branch_id"
+                    required="1"
+                    options="{'no_create_edit': True}"
+                    context="{'branch_filter': True, 'filter_company_id': company_id}"
+                />
+            </field>
+            <xpath expr="//field[@name='line_ids']/tree" position="inside">
+                <field
+                    name='company_id'
+                    options="{'no_create': True}"
+                    groups="base.group_multi_company"
+                    optional="hidden"
+                />
+                <field
+                    name="branch_id"
+                    string="Branch"
+                    required="1"
+                    options="{'no_create_edit': True}"
+                    context="{'branch_filter': True, 'filter_company_id': company_id}"
+                />
+            </xpath>
+        </field>
+    </record>
+    <record id="view_account_bank_journal_form_branch_inherit" model="ir.ui.view">
+        <field name="name">account.bank.journal.form.branch.inherit</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field
+                    name="branch_id"
+                    required="1"
+                    options="{'no_create_edit': True}"
+                    context="{'branch_filter': True, 'filter_company_id': company_id}"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="tank_reading_form" model="ir.ui.view">
+            <field name="name">tank_reading_form</field>
+            <field name="model">tank.reading.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group col="4">
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                        <field name="site_ids"  widget="many2many_tags" placeholder='Enter a Site or Blank for all Sites'/>
+                    </group>
+                    <footer>
+                        <button name="run_report" string="Run Report" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_tank_reading_report" model="ir.actions.act_window">
+            <field name="name">Tank Reading Report</field>
+            <field name="res_model">tank.reading.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_tank_reading_report"
+                  parent="menu_site_tank"
+                  action="action_tank_reading_report"
+                  sequence="50"
+        />
+    </data>
+</odoo>

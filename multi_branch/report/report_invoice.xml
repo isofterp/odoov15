@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherited Invoices Report Template -->
+    <template
+        id="report_invoice_document_inherit_multi_branch"
+        inherit_id="account.report_invoice_document"
+    >
+        <xpath expr="//div[@id='informations']/div[last()]" position="after">
+            <div class="col-auto mw-100 mb-2" t-if="o.branch_id" name="branch_name">
+                <strong>Branch:</strong>
+                <p class="m-0" t-field="o.branch_id" />
+            </div>
+        </xpath>
+    </template>
+</odoo>

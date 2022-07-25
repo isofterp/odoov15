@@ -85,7 +85,7 @@
         <record id="action_site_site" model="ir.actions.act_window">
             <field name="name">Sites</field>
             <field name="res_model">site.site</field>
-            <field name="view_mode">form</field>
+            <field name="view_mode">tree, form</field>
         </record>
 
         <record id="action_site_line" model="ir.actions.act_window">

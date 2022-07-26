@@ -222,10 +222,10 @@
             <field name="name">Capture Tank Readings</field>
             <field name="res_model">site.tank</field>
             <field name="view_mode">tree,form,graph</field>
-            <field name="view_id" ref="tank_reading_capture_tree"/>
-<!--            <field name="view_ids" eval="[(5, 0, 0),-->
-<!--        (0, 0, {'view_mode': 'tree', 'view_id': ref('tank_reading_capture_tree')}),-->
-<!--        (0, 0, {'view_mode': 'form', 'view_id': ref('tank_capture_reading_view_form')})]"/>-->
+<!--            <field name="view_id" ref="tank_reading_capture_tree"/>-->
+            <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('tank_reading_capture_tree')}),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('tank_capture_reading_view_form')})]"/>
         </record>
 
         <!--        <record id="action_tank_capture_reading" model="ir.actions.act_window">-->

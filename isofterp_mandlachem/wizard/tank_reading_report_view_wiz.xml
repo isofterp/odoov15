@@ -28,7 +28,7 @@
         </record>
 
         <menuitem id="menu_tank_reading_report"
-                  parent="menu_site_tank"
+                  parent="menu_reports"
                   action="action_tank_reading_report"
                   sequence="50"
         />

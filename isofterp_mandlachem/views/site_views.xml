@@ -50,6 +50,24 @@
             </field>
         </record>
 
+          <record id="site_tree_view" model="ir.ui.view">
+                    <field name="name">site.tree</field>
+                    <field name="model">site.site</field>
+                    <field name="arch" type="xml">
+                        <tree string="Site" >
+                            <field name="name"/>
+                            <field name="address"/>
+                            <field name="contact_ids" widget="many2many_tags"/>
+                            <field name="contact_number" />
+                            <field name="tank_ids"/>
+                            <field name="line_ids"/>
+                            <field name="technician_ids" widget="many2many_tags"/>
+                            <field name="notes"/>
+
+                        </tree>
+                    </field>
+                </record>
+
 
                 <record id="line_form_view" model="ir.ui.view">
                     <field name="name">line.form</field>
@@ -58,7 +76,7 @@
                         <form string="Line">
 
                             <group col="4">
-                                <field name="name" string="here"/>
+                                <field name="name" />
                                 <field name="site_id" readonly="0"/>
                                 <field name="tank_ids" widget="many2many_tags" domain="[('site_id','=',site_id)]"/>
                                 <field name="employee_ids" widget="many2many_tags"/>
@@ -116,6 +134,12 @@
                   name="Tanks"
                   parent="menu_site"
                   sequence="20"
+        />
+
+         <menuitem id="menu_reports"
+                  name="Reports"
+                  parent="menu_site"
+                  sequence="25"
         />
 
 

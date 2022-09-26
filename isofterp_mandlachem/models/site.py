@@ -31,7 +31,7 @@ class SiteSite(models.Model):
     notes = fields.Char('Notes')
     technician_ids = fields.One2many('hr.employee','site_id', string='Technician')
     line_ids = fields.One2many('site.line', 'site_id', string='Lines')
-    tank_ids = fields.One2many('site.tank', 'site_id', string='tank')
+    tank_ids = fields.One2many('site.tank', 'site_id', string='Tanks')
 
 class SiteLine(models.Model):
     _name = 'site.line'

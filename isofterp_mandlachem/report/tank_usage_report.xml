@@ -1,17 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+    <template id="report_tank_usage">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
 
-    <template id="tank_usage_report">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <div class="text-center">
+                        <h2>Tank Usage Report</h2>
+                    </div>
+                    <div>
+                        <table>
+                            <tr>
+                                <td>Date From:</td>
+                                <td>
+                                    <t t-esc="form['start_date']"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Date To:</td>
+                                <td>
+                                    <t t-esc="form['end_date']"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <table>
+                            <tr>
+                                <td>Site:</td>
+                                <td>
+                                    <t t-esc="data[0]['site']"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Line</th>
+                                    <th>Tank</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="data" t-as="site">
+                                    <tr>
+                                        <td><span t-esc="site['line']"/></td>
+                                        <td><span t-esc="site['tank']"/></td>
+                                        <td><span t-esc="site['qty']"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </t>
+
+    </template>
+    <!--<template id="tank_usage_report">
         <t t-foreach="docs" t-as="o">
-        <t t-call="web.external_layout">
-<!--            <t t-set="doc" t-value="doc"/>-->
+            <t t-call="web.external_layout">
+&lt;!&ndash;            <t t-set="doc" t-value="doc"/>&ndash;&gt;
 
             <div class="page">
                 <div class="oe_structure"/>
                 <h3 class="mt10">
                     <span>RENTAL AGREEMENT #</span>
-                    <span t-field="doc.tank_id.name"/>
+                    <span t-field="doc.name"/>
 
                 </h3>
                 <h3>
@@ -20,14 +79,14 @@
             </div>
         </t>
         </t>
-    </template>
+    </template>-->
 
-    <template id="report_tank_usage">
+    <!--<template id="report_tank_usage">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-set="d" t-value="site"/>
                 <t t-call="isofterp_mandlachem.tank_usage_report" />
             </t>
         </t>
-    </template>
+    </template>-->
 </odoo>

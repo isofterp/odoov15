@@ -26,10 +26,11 @@ class SiteTank(models.Model):
                 self.last_notes = ''
         self.date_last_capture = datetime.today()
         self.date_last_reading = datetime.today()
+        self.usage = 0
         return
 
     def write(self, vals):
-        #print('in tank write', vals)
+        print('in tank write', vals)
         if vals.get('last_actual_reading'):
             last_reading = vals['last_actual_reading']
         else:
@@ -51,7 +52,7 @@ class SiteTank(models.Model):
             'line_id': self.line_id.id,
             'site_id': self.site_id.id,
             'tank_id': self.id,
-            'date': self.date_last_reading,
+            'date_last_reading': vals['date_last_reading'],
             'theoretical_usage': self.tank_balance - last_reading,
             'actual_reading': last_reading,
             'usage': usage,
@@ -159,7 +160,8 @@ class SiteTankReading(models.Model):
     site_id = fields.Many2one('site.site', string='Site')
     tank_id = fields.Many2one("site.tank", string="Tanks")
     actual_reading = fields.Float('Tank Balance')
-    date = fields.Datetime('Date')
+    date = fields.Datetime('Capture Date',  default=datetime.today())
+    date_last_reading = fields.Datetime('Reading date')
     theoretical_usage = fields.Float('Theoretical Usage')
     usage = fields.Float('Usage')
     narrative = fields.Text("Description")

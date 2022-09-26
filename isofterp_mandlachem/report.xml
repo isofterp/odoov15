@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_usage"
-                string="Usage Report"
-                model="tank.reading"
-                report_type="qweb-pdf"
-                file="isofterp_mandlachem.report_tank_usage"
-                name="isofterp_mandlachem.report_tank_usage"
-                print_report_name="Usage Report"
-        />
+        <record id="action_report_usage" model="ir.actions.report">
+            <field name="name">Tank Usage Report</field>
+            <field name="model">tank.reading.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">isofterp_mandlachem.report_tank_usage</field>
+            <field name="report_file">isofterp_mandlachem.report_tank_usage</field>
+            <field name="print_report_name">"Tank Usage Report"</field>
+            <field name="binding_model_id" ref="model_tank_reading_wizard"/>
+            <field name="binding_type">report</field>
+
+        </record>
     </data>
 </odoo>

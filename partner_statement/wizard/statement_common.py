@@ -4,6 +4,8 @@
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models
+import base64
+import logging
 
 
 class StatementCommon(models.AbstractModel):
@@ -76,3 +78,33 @@ class StatementCommon(models.AbstractModel):
         self.ensure_one()
         report_type = "xlsx"
         return self._export(report_type)
+
+    def send_email_with_attachment(self):
+        data = self._prepare_statement()
+
+        pdf = self.env.ref("partner_statement.action_print_outstanding_statement")._render_qweb_pdf(
+            self.id, data=data)
+
+        data_record = base64.b64encode(pdf[0])
+
+        ir_values = {
+            'name': "Customer Statement.pdf",
+            'type': 'binary',
+            'datas': data_record,
+            'store_fname': data_record,
+            'mimetype': 'application/x-pdf',
+        }
+
+        data_id = self.env['ir.attachment'].create(ir_values)
+        template = self.env['mail.template'].search([('name', '=', 'Customer Statement email')])
+        if template:
+            logging.warning("Template is %s", template.name)
+        else:
+            logging.warning("Could not find the template")
+
+        template.attachment_ids = [(6, 0, [data_id.id])]
+        partner = self.env['res.partner'].search([('id', '=',data.get('partner_ids')[0])])
+        email_values = {'email_to': partner.email,}
+        template.with_context(email_values).send_mail(partner.id, email_values=email_values, force_send=False)
+        template.attachment_ids = [(3, data_id.id)]
+        return True

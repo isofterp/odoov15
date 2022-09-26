@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+         <record id="meter_reading_error_tree_view" model="ir.ui.view">
+            <field name="name">meter.reading.error.tree.view</field>
+            <field name="model">meter.reading.error</field>
+            <field name="arch" type="xml">
+                <tree string="Meter Reading Import Errors File">
+                        <field name="name"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_meter_reading_error" model="ir.actions.act_window" >
+            <field name="name">Meter Reading Errors</field>
+            <field name="res_model">meter.reading.error</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="meter_reading_error_tree_view"/>
+
+        </record>
+
+        <menuitem id="menu__meter_reading_error"
+              parent="sale_subscription.menu_sale_subscription_config"
+              action="action_meter_reading_error"
+              sequence="5"
+          />
+
+    </data>
+</odoo>

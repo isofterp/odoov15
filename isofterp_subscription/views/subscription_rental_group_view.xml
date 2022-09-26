@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="subscription_rental_group_tree_view" model="ir.ui.view">
+            <field name="name">subscription.rental.group.tree.view</field>
+            <field name="model">subscription.rental.group</field>
+            <field name="arch" type="xml">
+                <tree string="Groups">
+                    <field name="name"/>
+                    <field name="group_type"/>
+                    <field name="group_code"/>
+                    <field name="billable"/>
+                </tree>
+            </field>
+        </record>
+
+         <record id="action_rental_group" model="ir.actions.act_window" >
+            <field name="name">Subscription Groups</field>
+            <field name="res_model">subscription.rental.group</field>
+            <field name="view_mode">tree,form</field>
+       </record>
+
+        <menuitem id="menu_rental_group"
+                  parent="sale_subscription.menu_sale_subscription_config"
+                  action="action_rental_group"
+                  sequence="5"
+          />
+
+    </data>
+</odoo>

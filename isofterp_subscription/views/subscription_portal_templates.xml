@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_layout" name="Portal layout: contracts menu entry" inherit_id="portal.portal_breadcrumbs"
+              priority="35">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'contract' or contract"
+                t-attf-class="breadcrumb-item #{'active' if not contract else ''}">
+                <t>Timesheets</t>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_contract" name="Portal My Home : contracts entries" inherit_id="portal.portal_my_home"
+              priority="45">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="contract_count" t-call="portal.portal_docs_entry">
+                <t t-set="title">Contracts</t>
+                <t t-set="url" t-value="'/my/contracts'"/>
+                <t t-set="count" t-value="contract_count"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_contracts_tmpl" name="My Contracts">
+        <form id="submit_reading" method="post" action="/my/contracts/submit" enctype="multipart / form-data">
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Contracts</t>
+                </t>
+                <t t-if="not grouped_contracts">
+                    <div class="alert alert-warning mt8" role="alert">
+                        There are no contracts.
+                    </div>
+                </t>
+                <t t-if="grouped_contracts">
+                    <t t-call="portal.portal_table">
+                        <t t-foreach="grouped_contracts" t-as="my_contracts">
+                            <thead>
+                                <tr t-attf-class="{{'thead-light'}}">
+                                    <th>
+                                        <em class="font-weight-normal text-muted">My Contracts:</em>
+                                        <span t-field="my_contracts[0].partner_id.name"/>
+                                    </th>
+                                    <th>Machine </th>
+                                    <th>Black</th>
+                                    <th>Colour</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="my_contracts" t-as="contract">
+                                    <t t-foreach="contract.x_machine_ids" t-as="machine">
+                                        <t t-if="machine.x_main_product">
+                                            <input type="hidden" name="contract" t-att-value="contract.name"/>
+                                            <input type="hidden" name="serial" t-att-value="machine.name"/>
+                                            <tr>
+                                                <td>
+                                                    <span t-esc="machine.name"/>
+                                                </td>
+                                                <td>
+                                                    <span t-esc="machine.product_id.name"/>
+                                                </td>
+
+                                                <td>
+                                                    <input name="black" type="text" class="form-control o_website_form_input"></input>
+                                                </td>
+                                                <td>
+                                                    <input name="colour" type="text" class="form-control o_website_form_input"></input>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </t>
+                            </tbody>
+                        </t>
+                    </t>
+                </t>
+                <div class="row justify-content-center text-center d-print-none pt-1 pb-4">
+                    <div class="col-sm-auto mt8">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <span id="o_website_form_result"></span>
+                    </div>
+                </div>
+            </t>
+        </form>
+    </template>
+
+     <template id="portal_meterreading_response_tmpl" name="Response">
+         <t t-call="portal.portal_table">
+            <thead>
+                <tr t-attf-class="{{'thead-light'}}">
+                    <th>
+                        <em class="font-weight-normal text-muted">Meter Reading Confirmation for Contract Number </em><span t-esc="subscription"/>
+                    </th>
+
+                </tr>
+                <tr>
+                    <t t-if="message_1">
+                        <td><span t-esc="message_1"/></td>
+                    </t>
+                    <t t-if="err_message_1">
+                        <td><font color="red"><span t-esc="err_message_1"/></font></td>
+                    </t>
+                </tr>
+                  <tr>
+                   <t t-if="message_2">
+                        <td><span t-esc="message_2"/></td>
+                    </t>
+                    <t t-if="err_message_2">
+                        <td><font color="red"><span t-esc="err_message_2"/></font></td>
+                    </t>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <td>If you wish to change these readings, press the Back button on your Browser</td>
+                </tr>
+
+            </thead>
+         </t>
+
+     </template>
+
+</odoo>

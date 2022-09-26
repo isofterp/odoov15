@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_subscription_machine_charge,access_subscription_machine_charge,model_subscription_machine_charge,,1,1,1,1
+access_meter_reading_error,access_meter_reading_error,model_meter_reading_error,,1,1,1,1
+
+access_subscription_rental_factor,access_subscription_rental_factor,model_subscription_rental_factor,,1,1,1,1
+
+access_subscription_line_combined,access_subscription_line_combined,model_subscription_line_combined,,1,1,1,1
+
+
+access_subscription_rental_group,access_subscription_rental_group,model_subscription_rental_group,,1,1,1,1
+access_subscription_charges_type,access_subscription_charges_type,model_subscription_charges_type,base.group_user,1,1,1,1
+access_subscription_rental_factor,access_subscription_rental_factor,model_subscription_rental_factor,base.group_user,1,1,1,1
+access_meter_reading_import,access_meter_reading_import,model_meter_reading_import,base.group_user,1,1,1,1
+access_addhoc_increase_wizard,access_addhoc_increase_wizard,model_addhoc_increase_wizard,base.group_user,1,1,1,1
+access_meter_click_combined,access_meter_click_combined,model_meter_click_combined,base.group_user,1,1,1,1
+

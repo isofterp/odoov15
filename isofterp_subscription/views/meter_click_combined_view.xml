@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="meter_click_combined_tree" model="ir.ui.view">
+            <field name="name">meter.click.combined.tree</field>
+            <field name="model">meter.click.combined</field>
+            <field name="arch" type="xml">
+                <tree string="Meter Clicks" delete="false" create="false" editable="bottom">
+                    <field name="code" readonly="1" string="Code"/>
+                    <field name="partner" readonly="1" string="Partner"/>
+                    <field name="serial" readonly="1" string="Serial Number"/>
+                    <field name="product" readonly="1" string="Model"/>
+                    <field name="salesperson" string="Owner"/>
+                    <field name="last_reading" readonly="1" string="Lasr Reading"/>
+                    <field name="prevous_reading" readonly="1" string="Previous"/>
+                    <field name="to_bill" readonly="1" string="Copies to Bill"/>
+                    <field name="price" readonly="1" string="CPC"/>
+                    <field name="billamt" readonly="1" string="Min Billing"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="action_meter_click_combined" model="ir.actions.act_window">
+            <field name="name">Meter Clicks Audit Report</field>
+            <field name="res_model">meter.click.combined</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="meter_click_combined_tree"/>
+        </record>
+
+        <menuitem id="menu_action_meter_click_combined"
+                  parent="sale_subscription.menu_sale_subscription"
+                  action="action_meter_click_combined"
+                  sequence="99"
+        />
+
+
+    </data>
+</odoo>

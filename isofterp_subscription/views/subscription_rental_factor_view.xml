@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="subscription_rental_factor_form_view" model="ir.ui.view">
+            <field name="name">subscription.rental.factor.form.view</field>
+            <field name="model">subscription.rental.factor</field>
+            <field name="arch" type="xml">
+                <form string="Rental Factor">
+                     <group col="4">
+                        <field name="name"/>
+                        <field name="rate"/>
+                        <field name="months"/>
+                        <field name="escalation"/>
+                     </group>
+                </form>
+            </field>
+        </record>
+
+          <record id="subscription_rental_factor_tree_view" model="ir.ui.view">
+            <field name="name">subscription.rental.factor.tree.view</field>
+            <field name="model">subscription.rental.factor</field>
+            <field name="arch" type="xml">
+                <tree string="Rental Factor">
+                    <field name="name"/>
+                    <field name="rate"/>
+                    <field name="months"/>
+                    <field name="escalation"/>
+                </tree>
+            </field>
+        </record>
+
+         <record id="action_rental_factor" model="ir.actions.act_window" >
+            <field name="name">Subscription Factor</field>
+            <field name="res_model">subscription.rental.factor</field>
+            <field name="view_mode">tree,form</field>
+
+       </record>
+
+        <menuitem id="menu_rental_factor_group"
+              parent="sale_subscription.menu_sale_subscription_config"
+              action="action_rental_factor"
+              sequence="5"
+          />
+
+    </data>
+</odoo>

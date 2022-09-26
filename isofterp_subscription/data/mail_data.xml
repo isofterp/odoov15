@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record id="isofterp_subscription.subscription_meterreading" model="mail.template">
+            <field name="name">Contracts: Machine Meterreading</field>
+            <field name="model_id" ref="isofterp_subscription.model_sale_subscription"/>
+            <field name="subject">Request for Meterreading - ${object.partner_id.name}</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted or '') | safe}
+            </field>
+            <field name="email_to">
+               <!--   ${('' if object.partner_id.email and object.partner_id.email) | safe}-->
+              ${('' if object.x_machine_ids.partner_id.email and object.x_machine_ids.partner_id.email) | safe}
+            </field>
+            <field name="partner_to">
+                ${object.partner_id.id}
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set colors = {'needsAction': 'grey', 'accepted': 'green', 'tentative': '#FFFF00', 'declined':
+                    'red'}
+                    <p>
+                        Hello ${object.partner_id.name},
+                        <br/>
+                        <br/>
+                        Kindly furnish us with the latest meter reading for your device by clicking on the button below
+                        to submit the meter reading:
+                    </p>
+                    <div style="text-align: center; margin: 16px 0px 16px 0px;">
+                        <a href="/my/contracts/?db=${'dbname' in ctx and ctx['dbname'] or ''}&amp;token=${object.access_token}&amp;action=${'action_id' in ctx and ctx['action_id'] or ''}&amp;id=${object.name}"
+                           style="padding: 5px 10px; color: #FFFFFF; text-decoration: none; background-color: #875A7B; border: 1px solid #875A7B; border-radius: 3px">
+                            Accept
+                        </a>
+                    </div>
+                    <table border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="20px;"/>
+                            <td style="padding-top: 5px;">
+                                <p>
+                                    <strong>Details of Machine</strong>
+                                </p>
+
+                                <ul>
+                                    % if object.x_machine_ids:
+                                    <li>Contract Number: ${object.name}</li>
+                                    % endif
+                                    % for serial in object.x_machine_ids:
+                                        % if serial.x_main_product:
+                                        <li>Serial: ${serial.name} ${serial.product_id.name}</li>
+                                        % endif
+                                    % endfor
+                                </ul>
+
+                            </td>
+                        </tr>
+                    </table>
+                    <br/>
+                    Thank you,
+                    <br/>
+                    % if object.user_id and object.user_id.signature:
+                    ${object.user_id.signature | safe}
+                    % endif
+                </div>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="user_signature" eval="False"/>
+        </record>
+    </data>
+</odoo>

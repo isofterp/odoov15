@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <record id="template_view_Default_Worksheet_inherit" model="ir.ui.view">
+        <field name="name">template.view.Default.Worksheet.inherit</field>
+        <field name="model">x_project_worksheet_template_1</field>
+         <field name="inherit_id" ref="industry_fsm_report.form_view_custom_x_project_worksheet_template_1"/>
+        <field name="arch" type="xml">
+             <field name="x_comments" postion="replace">
+                 <field name="x_comments" string="My string comments"/>
+             </field>
+
+        </field>
+    </record>
+    </data>
+</odoo>

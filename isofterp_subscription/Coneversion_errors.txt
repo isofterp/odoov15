@@ -1,0 +1,33 @@
+2020-11-18 15:45:59.541376 Starting to create contracts
+Finised _create_cust_and_contracts
+Starting _create_lots
+Starting _create_lots
+Starting _create_linvoice_lines
+Starting _create_linvoice_lines
+Finished _create_linvoice_lines
+Starting to load Admin fees
+Finished loading Admin Fees
+Starting to set billing frequency
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data
+Starting _create_analytic_data

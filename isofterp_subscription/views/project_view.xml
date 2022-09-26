@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--
+        <record id="project_task_form_fsm_inherit" model="ir.ui.view">
+            <field name="name">project.task.form.fsm.inherit</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="helpdesk_fsm.project_task_view_form"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="x_serial_number_id"
+                           options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,}"/>
+                    <field name="x_serial_number_name"/>
+                    <field name="x_serial_number_dlv"/>
+                    <field name="x_rental_group"/>
+                    <field name="x_black_copies" attrs="{'invisible': [('x_serial_number_id', '=', False)]}"/>
+                    <field name="x_color_copies" attrs="{'invisible': [('x_serial_number_id', '=', False)]}"/>
+                </field>
+            </field>
+        </record>
+        -->
+
+        <record id="view_task_form2_inherit" model="ir.ui.view">
+            <field name="name">project.task.form.inherit</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="before">
+                    <field name="x_serial_number_id"
+                           options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,}"/>
+                    <field name="x_serial_number_name"/>
+                    <field name="x_serial_number_dlv"/>
+                    <label for="x_serial_number_street" invisible="1"/>
+                    <div>
+                        <field name="x_serial_number_street" readonly="1"/>
+                    </div>
+                    <label for="x_serial_number_street2" invisible="1"/>
+                    <div>
+                        <field name="x_serial_number_street2" readonly="1"/>
+                    </div>
+                    <label for="x_serial_number_phone" string="Phone"/>
+                    <div>
+                        <field name="x_serial_number_phone" readonly="1"/>
+                    </div>
+                    <label for="x_serial_number_mobile" string="Mobile"/>
+                    <div>
+                        <field name="x_serial_number_mobile" readonly="1"/>
+                    </div>
+                    <label for="x_serial_number_email" string="Email"/>
+                    <div>
+                        <field name="x_serial_number_email" readonly="1"/>
+                    </div>
+                    <field name="x_rental_group"/>
+                    <field name="x_problem_type"
+                           options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,}"/>
+                    <!--
+                    <field name="x_black_copies" attrs="{'invisible': [('x_serial_number_id', '=', False)]}"/>
+                    <field name="x_color_copies" attrs="{'invisible': [('x_serial_number_id', '=', False)]}"/>
+                    -->
+                </field>
+                <xpath expr="//field[@name='partner_id']" position="replace"/>
+                <xpath expr="//field[@name='partner_email']" position="replace"/>
+                <xpath expr="//field[@name='partner_phone']" position="replace"/>
+                <xpath expr="//page[@name='extra_info']" position="after">
+                    <page string="Main Customer" name="main_partner">
+                        <group>
+                            <field name="partner_id" />
+                            <field name="partner_email" />
+                            <field name="partner_phone" />
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="project_task_view_search_fsm_inherit" model="ir.ui.view">
+            <field name="name">project.task.search.fsm.inherit</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="industry_fsm.project_task_view_search_fsm"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="id" string="Task Number"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="project_task_problem_type_view_list" model="ir.ui.view">
+            <field name="name">project.task.problem.type.tree.fsm</field>
+            <field name="model">project.task</field>
+            <field name="arch" type="xml">
+                <tree string="Problem Type" multi_edit="1">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="project_problem_type_action" model="ir.actions.act_window">
+            <field name="name">Problem Types</field>
+            <field name="res_model">fsm.problem.type</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="project.view_project"/>
+            <field name="search_view_id" ref="isofterp_subscription.project_task_problem_type_view_list"/>
+            <field name="target">main</field>
+        </record>
+
+        <menuitem id="menu_project_problem_type_act"
+                  name="Problem Type"
+                  sequence="50"
+                  action="isofterp_subscription.project_problem_type_action"
+                  parent="industry_fsm.fsm_menu_settings"
+                  groups="industry_fsm.group_fsm_manager"/>
+    </data>
+</odoo>

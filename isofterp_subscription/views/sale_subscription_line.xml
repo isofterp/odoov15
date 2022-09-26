@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="sale_subscription_line_tree" model="ir.ui.view">
+            <field name="name">sale.subscription.line.tree</field>
+            <field name="model">sale.subscription.line</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="x_copies_show" invisible="1"/>
+                    <field name="product_id" domain="[('recurring_invoice', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                           context="{'default_recurring_invoice': True}"/>
+                    <field name="name" />
+                    <field name="x_serial_number_id" />
+                    <field name="x_product_id"/>
+                    <field name="x_start_date1"/>
+                    <field name="x_end_date1"/>
+                    <field name="x_start_date1_billable"/>
+                    <field name="x_copies_previous" attrs="{'invisible': [('x_copies_show', '=', False)]}"/>
+                    <field name="x_copies_last" attrs="{'invisible': [('x_copies_show', '=', False)]}"/>
+                    <field name="quantity" />
+                    <field name="product_uom_category_id" invisible="1"/>
+                    <field name="price_unit"/>
+                    <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="show"/>
+                    <field name="price_subtotal" />
+                </tree>
+            </field>
+
+        </record>
+
+        <record id="sale_subscription_line_form" model="ir.ui.view">
+            <field name="name">sale.subscription.line.form</field>
+            <field name="model">sale.subscription.line</field>
+            <field name="arch" type="xml">
+                <form>
+                    <field name="uom_id"  invisible="1" default="1"/>
+                    <field name="product_uom_category_id" invisible="1"/>
+                    <field name="analytic_account_id"/>
+                    <field name="x_copies_show" invisible="1" />
+                    <group col="4">
+                        <field name="x_serial_number_id"  options="{ 'no_create': True}" domain="[('id','in',context.get('default_machines'))]"/>
+                        <field name="x_product_id" />
+                        <field name="product_id"   string="Charge" domain="[('categ_id.name','in',['charge','copies','rental','service'])]" />
+                        <field name="name"/>
+                        <field name="x_copies_show"  />
+                    </group>
+                    <group >
+                       <field name="quantity" />
+                        <field name="price_unit"  />
+                    </group>
+                    <group col="6" string="Start and End Dates">
+                        <field name="x_start_date1"/>
+                        <field name="x_end_date1"/>
+                        <field name="x_start_date1_billable"/>
+                    </group>
+                    <group col='4' string="Copy Information" attrs="{'invisible': [('x_copies_show', '=', False)]}">
+                        <field name="x_copies_free"/>
+                        <field name="x_copies_minimum"/>
+                        <field name="x_copies_previous"/>
+                        <field name="x_copies_last" on_change="onchange_new_quantity(x_copies_previous,x_copies_last)"/>
+                        <field name="x_average_months" />
+                        <field name="x_average_quantity"/>
+                    </group>
+                    <group>
+                        <field name="x_billing_frequency"/>
+                        <field name="x_billing_hold"/>
+                    </group>
+                    <group string="Volumes and Prices" col="4"  attrs="{'invisible': [('x_copies_show', '=', False)]}">
+                        <field name="x_copies_vol_1"/>
+                        <field name="x_copies_price_1"/>
+                        <field name="x_copies_vol_2"/>
+                        <field name="x_copies_price_2"/>
+                        <field name="x_copies_vol_3"/>
+                        <field name="x_copies_price_3"/>
+                    </group>
+
+                </form>
+            </field>
+        </record>
+
+        <record id="sale_subscription_line_combined_tree" model="ir.ui.view">
+            <field name="name">sale.subscription.line.combined.tree</field>
+            <field name="model">subscription.line.combined</field>
+            <field name="arch" type="xml">
+                <tree >
+                    <field name="contract" />
+                    <field name="acc"/>
+
+                    <field name="serial"/>
+                    <field name="product"/>
+                    <field name="main"/>
+                    <field name="type"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="bill"/>
+                    <field name="reading"/>
+                    <field name="price"/>
+                    <field name="esc_date" />
+                    <field name="esc_percent" />
+                    <field name="esc_price" />
+                    <field name="bank"/>
+                </tree>
+            </field>
+
+        </record>
+
+        <record id="sale_subscription_line_combined_search" model="ir.ui.view">
+            <field name="name">Combined Search</field>
+            <field name="model">subscription.line.combined</field>
+            <field name="arch" type="xml">
+            <search>
+                <field name="contract"/>
+                <field name="acc"/>
+                <field name="serial"/>
+                <filter name="Billable" string="Billable" domain="[('bill','=',True)]"/>
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Customer" name="type" context="{'group_by':'acc'}"/>
+                    <filter string="Conract" name="categ_id" context="{'group_by':'contract'}"/>
+                </group>
+            </search>
+            </field>
+        </record>
+
+        <record id="action_sub_line_combined" model="ir.actions.act_window">
+            <field name="name">Subscription Combined Detailed</field>
+            <field name="res_model">subscription.line.combined</field>
+            <field name="view_id" ref="sale_subscription_line_combined_tree"/>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem id="menu_sub_line_combined"
+          parent="sale_subscription.menu_sale_subscription"
+          action="action_sub_line_combined"
+          sequence="1"
+        />
+
+    </data>
+</odoo>

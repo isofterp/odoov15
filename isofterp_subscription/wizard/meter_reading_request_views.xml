@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="add_hoc_increase_form" model="ir.ui.view">
+            <field name="name">meter.reading.request.form</field>
+            <field name="model">meter.reading.request.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <p>
+                        This Wizard will send bulk emails to customers requesting meter readings
+                    </p>
+                     <footer>
+                        <button name="run_meter_reading_bulk_request" string="Request Meter Readings" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+         <record id="action_meter_reading_request" model="ir.actions.act_window" >
+            <field name="name">Meter Reading Requests</field>
+            <field name="res_model">meter.reading.request.wizard</field>
+            <field name="view_mode">form</field>
+             <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_meter_reading_request"
+              parent="sale_subscription.menu_sale_subscription_config"
+              action="action_meter_reading_request"
+              sequence="5"
+          />
+
+    </data>
+</odoo>

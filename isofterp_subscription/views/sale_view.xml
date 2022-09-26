@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record model="ir.actions.server" id="action_create_contract">
+            <field name="name">Create Contract</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="binding_model_id" ref="sale.model_sale_order" />
+            <field name="state">code</field>
+            <field name="code">
+                model.action_create_contract_from_quote()
+            </field>
+        </record>
+
+
+      <record model="ir.actions.server" id="action_create_xls_spreadsheet">
+            <field name="name">Spreadsheet</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="binding_model_id" ref="sale.model_sale_order" />
+            <field name="state">code</field>
+            <field name="code">
+                action = {'type': 'ir.actions.act_url', 'url': '/web/content/{}?download=true'.format(model.action_spreadsheet(), ), 'target': 'self', }
+            </field>
+        </record>
+
+
+        <record id="view_order_form_inherit" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit</field>
+            <field name="model">sale.order</field>
+            <!--<field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="inherit_id" ref="sale.view_order_form"/>-->
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="replace"/>
+                <field name="partner_id" position="replace">
+                    <field name="x_is_contract_quote"/>
+                    <field name="origin" attrs="{'invisible': [('x_is_contract_quote', '=', False)]}"/>
+                    <field name="x_lot_id" attrs="{'invisible': [('x_is_contract_quote', '=', True)]}"/>
+                    <field name="partner_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+                </field>
+                <field name="payment_term_id" position="after">
+                    <field name="x_sale_subscription_id" string="Subscription"
+                           context="{'form_view_ref': 'contract.account_analytic_account_sale_form'}"
+                           attrs="{'readonly': [('x_is_contract_quote', '=', True)]}"/>
+                    <field name="user_id" required="1"/>
+                </field>
+                <xpath expr="//page[2]" position="after">
+                    <page string="Finanical Calculations" attrs="{'invisible': [('x_is_contract_quote', '=', False)]}">
+                        <group string="Cash Deal" col="4">
+                            <field name="x_cash1"/>
+                            <field name="x_cash2"/>
+                            <field name="x_cash3"/>
+                            <field name="x_cash4"/>
+                            <field name="x_cash5"/>
+                        </group>
+                        <group string="Rental Deal" col="2">
+                            <field name="x_rental_factor" widget='selection'/>
+
+                        </group>
+                        <button string="Calculate Deals" type="object" name="calculate_deal" class="oe_highlight"/>
+
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

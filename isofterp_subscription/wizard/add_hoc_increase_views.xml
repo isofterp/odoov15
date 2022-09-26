@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="add_hoc_increase_form" model="ir.ui.view">
+            <field name="name">add.hoc.increase.form</field>
+            <field name="model">addhoc.increase.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group col="4">
+                        <field name="amt_start" />
+                        <field name="amt_end"/>
+                    </group>
+                    <group col="2">
+                        <field name="copy_chrg_1" widget="radio" options="{'horizontal': true}"/>
+                        <field name="copy_chrg_2" widget="radio" options="{'horizontal': true}"/>
+                        <field name="copy_chrg_3" widget="radio" options="{'horizontal': true}"/>
+                    </group>
+                    <group>
+                        <field name="service_chrg" widget="radio" options="{'horizontal': true}"/>
+                        <field name="chrg_type" widget="radio" options="{'horizontal': true}"/>
+                        <field name="amount"/>
+                    </group>
+                     <footer>
+                        <button name="run_increase_update" string="Run Increases" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+         <record id="action_add_hoc_increase" model="ir.actions.act_window" >
+            <field name="name">Add Hoc Increases</field>
+            <field name="res_model">addhoc.increase.wizard</field>
+            <field name="view_mode">form</field>
+             <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_add_hoc_increase"
+              parent="sale_subscription.menu_sale_subscription_config"
+              action="action_add_hoc_increase"
+              sequence="5"
+          />
+
+    </data>
+</odoo>

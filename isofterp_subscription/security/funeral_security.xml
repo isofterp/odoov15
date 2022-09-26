@@ -1,0 +1,69 @@
+<openerp>
+    <data>
+        
+    
+    <record model="ir.rule" id="isofterp_funeral.deceased_multi_company_rule">
+        <field name="name">Deceased multi-company</field>
+        <field name="model_id" ref="isofterp_funeral.model_deceased" />
+        <field name="global" eval="True" />
+        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+    </record>
+    <record model="ir.rule" id="isofterp_funeral.check_list_multi_company_rule">
+        <field name="name">Process Check List multi-company</field>
+        <field name="model_id" ref="isofterp_funeral.model_process_check" />
+        <field name="global" eval="True" />
+        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+    </record>
+
+    <record model="ir.rule" id="employee_multi_company_rule">
+        <field name="name">Employee multi-company</field>
+        <field name="model_id" ref="hr.model_hr_employee" />
+        <field name="global" eval="True" />
+        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+    </record>
+
+    <record model="ir.rule" id="employee_holiday_multi_company_rule">
+        <field name="name">Employee Holiday multi-company</field>
+        <field name="model_id" ref="hr_holidays.model_hr_holidays" />
+        <field name="global" eval="True" />
+        <field name="domain_force">['|',('employee_id.company_id','=',False),('employee_id.company_id','child_of',[user.company_id.id])]</field>
+    </record>
+
+    <record model="ir.rule" id="fleet_multi_company_rule">
+        <field name="name">Fleet multi-company</field>
+        <field name="model_id" ref="fleet.model_fleet_vehicle" />
+        <field name="global" eval="True" />
+        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+    </record>
+
+    <record model="ir.rule" id="fleet_fuel_multi_company_rule">
+        <field name="name">Fleet Fuel multi-company</field>
+        <field name="model_id" ref="fleet.model_fleet_vehicle_log_fuel" />
+        <field name="global" eval="True" />
+        <field name="domain_force">['|',('cost_id.vehicle_id.company_id','=',False),('cost_id.vehicle_id.company_id','child_of',[user.company_id.id])]</field>
+    </record>
+    <record model="ir.rule" id="fleet_service_multi_company_rule">
+        <field name="name">Fleet service multi-company</field>
+        <field name="model_id" ref="fleet.model_fleet_vehicle_log_services" />
+        <field name="global" eval="True" />
+        <field name="domain_force">['|',('cost_id.vehicle_id.company_id','=',False),('cost_id.vehicle_id.company_id','child_of',[user.company_id.id])]</field>
+    </record>
+    <record model="ir.rule" id="fleet_odo_multi_company_rule">
+        <field name="name">Fleet odo multi-company</field>
+        <field name="model_id" ref="fleet.model_fleet_vehicle_odometer" />
+        <field name="global" eval="True" />
+        <field name="domain_force">['|',('vehicle_id.company_id','=',False),('vehicle_id.company_id','child_of',[user.company_id.id])]</field>
+    </record>
+    <record model="ir.rule" id="fleet_costs_multi_company_rule">
+        <field name="name">Fleet costs multi-company</field>
+        <field name="model_id" ref="fleet.model_fleet_vehicle_cost" />
+        <field name="global" eval="True" />
+        <field name="domain_force">['|',('vehicle_id.company_id','=',False),('vehicle_id.company_id','child_of',[user.company_id.id])]</field>
+    </record>
+
+
+
+
+
+  </data>
+</openerp>

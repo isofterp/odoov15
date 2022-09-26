@@ -1,0 +1,86 @@
+<odoo>
+    <!--Analytic Account Groups  -->
+    <record id='analytic_account_group_contracts' model="account.analytic.group"  >
+        <field name="name">Contracts</field>
+        <field name="description">All Subscrions</field>
+    </record>
+
+    <!-- Product Catergories -->
+    <record model="product.category"  id="product_category_copies">
+        <field name="name">copies</field>
+        <field name="parent_id">2</field>
+    </record>
+     <record model="product.category"  id="product_category_charge">
+        <field name="name">charge</field>
+        <field name="parent_id">2</field>
+    </record>
+    <record model="product.category"  id="product_category_component">
+        <field name="name">component</field>
+        <field name="parent_id">2</field>
+    </record>
+    <record model="product.category"  id="main_product">
+        <field name="name">main product</field>
+        <field name="parent_id">2</field>
+    </record>
+    <record model="product.category"  id="product_category_rental">
+        <field name="name">rental</field>
+        <field name="parent_id">2</field>
+    </record>
+    <record model="product.category"  id="product_category_service">
+        <field name="name">service</field>
+        <field name="parent_id">2</field>
+    </record>
+    <record model="product.category"  id="product_category_finance_deal">
+        <field name="name">finance deal</field>
+        <field name="parent_id">2</field>
+    </record>
+
+    <!-- Subscription Products  -->
+
+    <record id="product_product_1" model="product.product">
+        <field name="name">Black copies</field>
+        <field name="categ_id" ref="product_category_copies"/>
+        <field name="recurring_invoice">True</field>
+        <field name="type">service</field>
+    </record>
+    <record id="product_product_2" model="product.product">
+        <field name="name">Colour copies</field>
+        <field name="categ_id" ref="product_category_copies"/>
+        <field name="recurring_invoice">True</field>
+        <field name="type">service</field>
+    </record>
+     <record id="product_product_3" model="product.product">
+        <field name="name">Rental</field>
+        <field name="categ_id" ref="product_category_rental"/>
+        <field name="recurring_invoice">True</field>
+        <field name="type">service</field>
+    </record>
+     <record id="product_product_4" model="product.product">
+        <field name="name">Service charge</field>
+        <field name="categ_id" ref="product_category_service"/>
+        <field name="recurring_invoice">True</field>
+        <field name="type">service</field>
+    </record>
+    <record id="product_product_5" model="product.product">
+        <field name="name">Admin fee</field>
+        <field name="categ_id" ref="product_category_charge"/>
+        <field name="recurring_invoice">True</field>
+        <field name="type">service</field>
+    </record>
+    <record id="product_product_6" model="product.product">
+        <field name="name">Cash Deal</field>
+        <field name="categ_id" ref="product_category_finance_deal"/>
+        <field name="recurring_invoice">True</field>
+        <field name="type">service</field>
+    </record>
+    <record id="product_product_7" model="product.product">
+        <field name="name">Finance Deal</field>
+        <field name="categ_id" ref="product_category_finance_deal"/>
+        <field name="recurring_invoice">True</field>
+        <field name="type">service</field>
+    </record>
+
+
+
+
+</odoo>

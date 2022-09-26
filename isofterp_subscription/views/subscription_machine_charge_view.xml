@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="subscription_machine_charge_form_view" model="ir.ui.view">
+            <field name="name">subscription.machine.charge.form.view</field>
+            <field name="model">subscription.machine.charge</field>
+            <field name="arch" type="xml">
+                <form string="Machine Charges">
+                    <group>
+                        <field name="charges_type_id"/>
+                        <field name="product_id" domain="[('categ_id.name','in',['charge','copies','component'])]"/>
+                        <field name="name"  />
+                        <field name="price"/>
+                    </group>
+                    <group attrs="{'invisible': [('charges_type_id','>', 2), ]}">
+
+                        <field name="minimum_charge"/>
+                        <field name="copies_free"/>
+                        <field name="copies_vol_1" />
+                        <field name="copies_price_1"/>
+                        <field name="copies_vol_2"/>
+                        <field name="copies_price_2"/>
+                        <field name="copies_vol_3"/>
+                        <field name="copies_price_3"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

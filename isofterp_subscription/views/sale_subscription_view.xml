@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="sale_subscription_form_inherit" model="ir.ui.view">
+            <field name="name">sale.subscription.form.inherit</field>
+            <field name="model">sale.subscription</field>
+            <field name="priority" eval="0"/>
+            <field name="inherit_id" ref="sale_subscription.sale_subscription_view_form"/>
+            <field name="arch" type="xml">
+                <header>
+                    <!--<button name="action_meterreading_send" string="Request Meter Reading" class="btn-primary"
+                            type="object"/>-->
+                    <button name="cron_meter_reading_bulk_mail" string="Cron Meter Reading Test DONT PRESS"
+                            class="btn-primary"
+                            type="object"/>
+                </header>
+                <field name="close_reason_id" position="before">
+                    <field name="x_ceded_reference"/>
+                    <field name="x_sale_order_id"/>
+                    <button name="create_sales_order" string="Create a Sales Order"
+                            type="object"
+                            class="oe_link"
+                            context="{
+                                    'default_partner_id': partner_id,
+                                    'default_analytic_account_id': id,
+                                    'default_pricelist_id': pricelist_id,
+                                    'default_x_lot_id': x_machine_ids,
+                                    'form_view_initial_mode': 'edit',
+                                    'force_detailed_view': 'true'}"
+                    />
+                    <button name="open_sale_orders" string="Sales Orders to Invoice =>" type="object" class="oe_link"/>
+                </field>
+                <field name="partner_id" position="attributes">
+                    <attribute name="string">Ceded Debtor</attribute>
+                </field>
+                <!--
+                <field name="team_id" position="after">
+                    <field name="x_add_hoc_increase" widget="radio" options="{'horizontal': true}"/>
+                </field>-->
+                <field name="health" position="after">
+                    <group>
+                        <field name="x_account_number" readonly="1" string=""/>
+                    </group>
+                </field>
+                <field name="partner_id" position="after">
+                    <field name="x_rental_group_id"/> <!--domain="[('group_type','=','V')]"-->
+                    <field name="x_bank_name"/>
+                </field>
+                <xpath expr="//page[@id='other_info']" position="before">
+                    <page string="Equipment on this Contract">
+                        <field name="id" invisible="1"/>
+                        <field name="x_machine_ids" domain="[('x_in_use','=', False)]">
+                        </field>
+                    </page>
+                </xpath>
+
+                <field name="recurring_invoice_line_ids" position="replace">
+                    <field name="recurring_invoice_line_ids"
+                           context="{'default_analytic_account_id':id, 'default_machines': x_machine_ids}">
+                        <tree>
+                            <field name="x_copies_show" invisible="1"/>
+                            <field name="product_id"
+                                   domain="[('recurring_invoice', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                                   context="{'default_recurring_invoice': True}"/>
+                            <field name="name"/>
+                            <field name="x_serial_number_id"/>
+                            <field name="x_product_id"/>
+                            <field name="x_start_date1"/>
+                            <field name="x_end_date1"/>
+                            <field name="x_start_date1_billable"/>
+                            <field name="x_copies_previous" attrs="{'invisible': [('x_copies_show', '=', False)]}"/>
+                            <field name="x_copies_last" attrs="{'invisible': [('x_copies_show', '=', False)]}"/>
+                            <field name="quantity"/>
+                            <field name="product_uom_category_id" invisible="1"/>
+                            <field name="price_unit"/>
+                            <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line"
+                                   optional="show"/>
+                            <field name="price_subtotal"/>
+                        </tree>
+                    </field>
+                </field>
+                <field name="recurring_total" position="replace">
+                    <field name="recurring_total" invisible="1"/>
+                </field>
+            </field>
+        </record>
+
+
+        <record id="sale_subscription_view_search_inherit" model="ir.ui.view">
+            <field name="name">sale.subscription.search.inherit</field>
+            <field name="model">sale.subscription</field>
+            <field name="inherit_id" ref="sale_subscription.sale_subscription_view_search"/>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="x_machine_ids" filter_domain="[('x_machine_ids', 'ilike', self)]"/>
+                    <field name="x_account_number" filter_domain="[('x_account_number', 'ilike', self)]"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>

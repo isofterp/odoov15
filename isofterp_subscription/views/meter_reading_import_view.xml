@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="meter_click_capture_tree" model="ir.ui.view">
+            <field name="name">meter_click_capture_tree</field>
+            <field name="model">sale.subscription.line</field>
+            <field name="arch" type="xml">
+                <tree string="Meter Clicks" delete="false" create="false" editable="bottom"
+                      decoration-danger="quantity &lt;1">
+                    <field name="analytic_account_id" readonly="1" string="Rental Contract"/>
+                    <field name="x_serial_number_id" readonly="1"/>
+                    <field name="product_id" readonly="1"/>
+                    <field name="x_copies_last"/>
+                    <field name="x_copies_previous" readonly="1"/>
+                    <field name="quantity" readonly="1" sum="Total Billable Copies"/>
+                </tree>
+
+            </field>
+        </record>
+
+        <record id="meter_reading_import_view" model="ir.ui.view">
+            <field name="name">Import Meter Reading</field>
+            <field name="model">meter.reading.import</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form string="Import Meter Readings">
+                    <group string='Import Meter Readings' col="4">
+                        <field name="input_layout"/>
+                        <field name="data_file" filename="filename"/>
+                    </group>
+                    <footer>
+                        <button name="import_readings" string="_Import" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_capture_meter_click" model="ir.actions.act_window">
+            <field name="name">Meter Clicks</field>
+            <field name="res_model">sale.subscription.line</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="meter_click_capture_tree"/>
+            <field name="domain">[('product_id.categ_id.name', '=', 'copies'), ('x_copies_price_1', '>', 0)]</field>
+        </record>
+
+        <menuitem id="menu_action_capture_meter_click"
+                  parent="sale_subscription.menu_sale_subscription"
+                  action="action_capture_meter_click"
+                  sequence="95"
+        />
+
+        <record id="action_import_readings" model="ir.actions.act_window">
+            <field name="name">Import Readings</field>
+            <field name="res_model">meter.reading.import</field>
+            <field name="view_id" ref="meter_reading_import_view"/>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+
+        <menuitem id="menu_action_import_readings"
+                  parent="sale_subscription.menu_sale_subscription"
+                  action="action_import_readings"
+                  sequence="96"
+        />
+
+
+    </data>
+</odoo>

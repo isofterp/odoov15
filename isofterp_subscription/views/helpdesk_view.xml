@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <record id="helpdesk_ticket_view_form_inherit" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.inherit</field>
+        <field name="model">helpdesk.ticket</field>
+         <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="x_invoice_warn"/>
+                <field name="x_customer_rank"/>
+            </field>
+
+        </field>
+    </record>
+    <record id="helpdesk_tickets_view_tree_inherit" model="ir.ui.view">
+        <field name="name">helpdesk.tickets.view.tree.inherit</field>
+        <field name="model">helpdesk.ticket</field>
+         <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="before">
+                <field name="x_customer_rank"/>
+            </field>
+
+        </field>
+    </record>
+
+
+    </data>
+</odoo>

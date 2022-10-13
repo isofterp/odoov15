@@ -18,9 +18,7 @@ class AccountFinancialReportLine(models.Model):
 
     filter_branch = True
 
-
-
-    def _compute_sum(self, options_list, calling_financial_report=None):
+    def _compute_sum(self, options_list, calling_financial_report):
         ''' Compute the values to be used inside the formula for the current line.
         If called, it means the current line formula contains something making its line a leaf ('sum' or 'count_rows')
         for example.
@@ -77,10 +75,10 @@ class AccountFinancialReportLine(models.Model):
             if self._context.get('branch_ids'):
                 where_clause += 'and ("account_move_line"."branch_id" in ('
                 for a in range(len(self._context.get('branch_ids'))):
-                    where_clause +='%s,'
+                    where_clause += '%s,'
                 where_clause = where_clause[:-1]
                 where_clause += '))'
-                    
+
                 for a in self._context.get('branch_ids'):
                     where_params.append(int(a))
 
@@ -108,7 +106,7 @@ class AccountFinancialReportLine(models.Model):
             'count_rows': {},
         }
 
-        parent_financial_report._cr_execute(options_list[0], ' UNION ALL '.join(queries), params)
+        self._cr.execute(' UNION ALL '.join(queries), params)
         for res in self._cr.dictfetchall():
             # Build the key.
             key = [res['period_index']]
@@ -130,8 +128,6 @@ class AccountFinancialReportLine(models.Model):
                 results['sum_if_neg_groupby'][key] += res['balance']
 
         return results
-
-
 
 
     def _compute_amls_results(self, options_list, calling_financial_report=None, sign=1, operator=None):

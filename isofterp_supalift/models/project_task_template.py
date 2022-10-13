@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from odoo import fields, models, api, _
-from openerp.exceptions import except_orm, Warning, RedirectWarning
-import uuid
-import time
-import datetime
 
 
 

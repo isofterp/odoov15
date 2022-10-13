@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ptask_lines_custom_user,ptask.custom.lines.user,project_task_sales_order.model_task_custom_lines,base.group_user,1,0,0,0
+access_ptask_lines_custom_projectuser,ptask.custom.lines.projectuser,project_task_sales_order.model_task_custom_lines,project.group_project_user,1,0,0,0
+access_ptask_linescustom_admin_user,ptask.csutom.linesuser,project_task_sales_order.model_task_custom_lines,project.group_project_manager,1,1,1,1
+access_task_saleorder_wizard_custom,access.task.saleorder.wizard.custom,project_task_sales_order.model_task_saleorder_wizard_custom,project.group_project_manager,1,1,1,0
+access_task_saleorder_wizard_custom_rights,access.task.saleorder.wizard.custom.rights,project_task_sales_order.model_task_saleorder_wizard_custom,sales_team.group_sale_salesman,1,1,1,0
+access_meter_reading_manager,access.meter.reading,isofterp_supalift.model_meter_reading,project.group_project_manager,1,1,1,1
+access_meter_reading_user,access.meter.reading,isofterp_supalift.model_meter_reading,project.group_project_user,1,0,0,0
+access_meter_reading_user_wizard,access.meter.reading.wizard.custom,project_task_sales_order.model_meter_reading_wizard_custom,project.group_project_user,1,0,0,0
+access_meter_reading_manager_wizard,access.meter.reading.wizard.custom,project_task_sales_order.model_meter_reading_wizard_custom,project.group_project_manager,1,1,1,1
+access_create_travel_user_wizard,access.task.travel.wizard.custom,project_task_sales_order.model_task_travel_wizard_custom,project.group_project_user,1,0,0,0
+access_create_travel_manager_wizard,access.task.travel.wizard.custom,project_task_sales_order.model_task_travel_wizard_custom,project.group_project_manager,1,1,1,1

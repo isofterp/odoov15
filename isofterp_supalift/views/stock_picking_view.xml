@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_picking_form_supalift_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='move_ids_without_package']/tree" position="inside">
+                <field name="x_project_id"/>
+                <field name="x_task_id" domain="[('project_id','=',x_project_id)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_picking_move_tree_supalift" model="ir.ui.view">
+        <field name="name">stock.picking.move.tree</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_picking_move_tree"/>
+        <field eval="50" name="priority"/>
+        <field name="arch" type="xml">
+            <field name="product_uom" position="after">
+                <field name="x_project_id"/>
+                <field name="x_task_id" domain="[('project_id','=',x_project_id)]"/>
+
+            </field>
+        </field>
+    </record>
+
+    <record id="view_move_line_tree_supa" model="ir.ui.view">
+        <field name="name">stock.move.line.tree.zupa</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_move_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date']" position="after">
+                <field name="picking_id"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_move_line_form_supa" model="ir.ui.view">
+        <field name="name">stock.move.line.from.supa</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_move_line_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date']" position="after">
+                <field name="picking_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

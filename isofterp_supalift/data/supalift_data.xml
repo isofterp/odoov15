@@ -1,0 +1,9 @@
+<odoo >
+
+    <!-- create a channel -->
+    <record model="mail.channel" id="channel_field_service">
+        <field name="name">Field Service</field>
+        <field name="description">Field Service Channel.</field>
+    </record>
+
+</odoo>

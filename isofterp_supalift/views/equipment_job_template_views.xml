@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="equipment_job_template_view_search" model="ir.ui.view">
+        <field name="name">equipment.job.template.search</field>
+        <field name="model">equipment.job.template</field>
+        <field name="arch" type="xml">
+            <search string="Search Equipment Job Template">
+                <field name="name"/>
+                <filter string="Archived" name="inactive" domain="[('active','=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="equipment_job_template_view_form" model="ir.ui.view">
+        <field name="name">equipment.job.template.form</field>
+        <field name="model">equipment.job.template</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Equipment Job Template">
+                <sheet>
+                    <div name="button_box" class="oe_button_box"/>
+                    <!--<widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                            attrs="{'invisible': [('active', '=', True)]}"/>-->
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="Task Template"/>
+                        </h1>
+                        <!--<group>
+                            <field name="equipment_cat_id" options="{'no_create': True}"/>
+                        </group>-->
+                    </div>
+                    <group>
+                        <group>
+                        </group>
+                        <group>
+                            <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook name="main_book">
+                        <page string="Lines" name="job_lines">
+                            <field name="task_template_line_ids" widget="section_and_note_one2many">
+                                <form string="Equipment Job Template Lines">
+                                    <field name="sequence" invisible="1"/>
+                                    <field name="product_uom_category_id" invisible="1"/>
+                                    <group>
+                                        <group>
+                                            <field name="product_id" />
+                                            <label for="product_uom_qty"/>
+                                            <div>
+                                                <field name="product_uom_qty" class="oe_inline" invisible="True"/>
+                                            </div>
+                                        </group>
+                                    </group>
+                                    <!--
+                                    <notebook colspan="4" name="description">
+                                        <page string="Description" name="order_description" attrs="{'invisible': [('display_type', '!=', False)]}">
+                                            <field name="name" />
+                                        </page>
+                                    </notebook>
+                                    -->
+                                </form>
+                                <tree string="Equipment Job Template Lines" editable="bottom">
+                                    <control>
+                                        <create name="add_product_control" string="Add a product"/>
+                                    </control>
+
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="name" widget="section_and_note_text"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="product_uom_category_id" invisible="1"/>
+                                    <field
+                                            name="product_uom_id"
+                                            groups="uom.group_uom"
+                                    invisible="1" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="sale_order_template_view_tree" model="ir.ui.view">
+        <field name="name">equipment.job.template.tree</field>
+        <field name="model">equipment.job.template</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Equipment Job Template">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="equipment_job_template_action" model="ir.actions.act_window">
+        <field name="name">Equipment Job Templates</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">equipment.job.template</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your equipment job template
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="equipment_job_template_menu" action="equipment_job_template_action" parent="maintenance.menu_maintenance_configuration"
+              sequence="1" name="Equipment Job Templates" groups="project.group_project_manager"/>
+
+</odoo>

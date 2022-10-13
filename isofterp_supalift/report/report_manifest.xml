@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_manifest">
+           <!-- <t t-foreach="docs" t-as="o">-->
+            <div class="page">
+                <div class="oe_structure"/>
+                <table class="table table-bordered table-responsive" border="1px solid" cellpadding="0" cellspacing="0" style="width:1100px; font-size: small;">
+                    <tbody>
+                            <tr>
+                                <td colspan="12" style="width: 1100px; font-size: large; text-align:center;"><strong>LOADING SCHEDULE</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="12" style="width: 1100px; font-size: small; text-align:center;"> Report Date  <t t-usertime="%d-%m-%Y %H:%M" /></td>
+                            </tr>
+                    </tbody>
+                </table>
+                <table class="table table-bordered table-responsive" border="1px solid" cellpadding="0" cellspacing="0" style="width:1100px; font-size: small;">
+                     <tbody>
+                         <tr>
+                            <td style="width:90px;">         WAYBILL NO.</td>
+                            <td style="width:165px;">         CUSTOMER</td>
+                            <td style="width:165px;">         CONSIGNEE</td>
+                            <td style="width:165px;">         DESTINATION</td>
+                            <td style="width:90px;">         NO. OF CTNS</td>
+                            <td style="width:90px;">         WEIGHT</td>
+                            <td style="width:165px;">         REMARKS</td>
+                         </tr>
+                         <t t-set="tot_crtns" t-value="0"/>
+                         <t t-set="tot_weight" t-value="0"/>
+                         <t t-foreach="docs" t-as="o">
+                              <t t-set="tot_crtns" t-value="tot_crtns + o.tot_crtns"/>
+                              <t t-set="tot_weight" t-value="tot_weight + o.tot_weight"/>
+                              <tr>
+                                <td style="width:165px;"><span t-field="o.name"/></td>
+                                <td style="width:165px;"><span t-field="o.partner_id.name"/></td>
+                                <td style="width:165px;"><span t-field="o.partner_shipping_id.name"/>   </td>
+                                <td style="width:165px;"><span t-field="o.partner_shipping_id.street2"/>    </td>
+                                <td style="width:165px;" align="center"> <t t-esc="o.tot_crtns"/>  </td>
+                                <td style="width:165px;" align="center"> <t t-esc="o.tot_weight"/>  </td>
+                                <td style="width:165px;">        </td>
+                              </tr>
+                              <t t-if="o_last">
+                                <tr>
+
+                                    <td style="width:165px;" colspan="4" align="center"> TOTALS FOR MANIFEST  </td>
+                                    <td style="width:165px;" align="center"> <t t-esc="tot_crtns"/>  </td>
+                                    <td style="width:165px;" align="center"> <t t-esc="tot_weight"/>  </td>
+
+                                    <td style="width:165px;">        </td>
+                                </tr>
+                              </t>
+                         </t>
+
+                    </tbody>
+                </table>
+            </div>
+          <!--  </t>-->
+        </template>
+
+
+
+
+
+    </data>
+</openerp>

@@ -1,0 +1,56 @@
+<odoo>
+    <record model="ir.ui.view" id="purchase_order_form_supalift_inherit">
+        <field name="name">purchase.order.form.supalift.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/tree" position="inside">
+                <field name="x_project_id" domain="[('branch_id','=',parent.branch_id)]"/>
+                <field name="x_task_id" domain="[('project_id','=',x_project_id)]"/>
+            </xpath>
+            <xpath expr="//button[@name='action_create_invoice']" position="replace">
+                <button name="%(action_create_vendor_bill)d" string="Create Bill" type="action" context="{'create_bill':True}" />
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="combined_purchase">
+        <field name="name">combined.purchase.view</field>
+        <field name="model">combined.orders</field>
+        <field name="arch" type="xml">
+            <tree string="Combined Purchase">
+                <field name="reference"/>
+                <field name="partner"/>
+                <field name="create_date"/>
+                <field name="qty"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="product" />
+                <field name="product_name" />
+                <field name="price" class="oe_inline" />
+                <field name="movetype" class="oe_inline" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="combined_purchase_search" model="ir.ui.view">
+       <field name="name">combined.purchase.view</field>
+        <field name="model">combined.orders</field>
+        <field name="arch" type="xml">
+            <search string="Combined Orders">
+<!--                <filter string="Effective Date Last Year" name="later_than_a_year_ago"  domain="[('date', '&gt;=', ((context_today()-relativedelta(years=1)).strftime('%Y-%m-%d')))]"/>-->
+                <group expand="1" string="Group By">
+                    <filter string="Vendor" name="group_partner" context="{'group_by':'partner'}"/>
+                </group>
+                <group expand="1" string="Group By">
+                    <filter string="Type" name="group_type" context="{'group_by':'movetype'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="combined_purchase_action" model="ir.actions.act_window">
+        <field name="name">Combined Orders</field>
+        <field name="res_model">combined.orders</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

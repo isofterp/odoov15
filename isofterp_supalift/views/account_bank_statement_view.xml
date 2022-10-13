@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_bank_statement_form1" model="ir.ui.view">
+            <field name="name">account.bank.statement.form1</field>
+            <field name="model">account.bank.statement</field>
+            <field name="inherit_id" ref="account.view_bank_statement_form"/>
+            <field name="arch" type="xml">
+                    <field name="payment_ref" position="after">
+                        <field name="x_task_id"/>
+                        <field name="x_task_assigned_to_id"/>
+                    </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>

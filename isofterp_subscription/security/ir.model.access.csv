@@ -14,4 +14,4 @@ access_subscription_rental_factor,access_subscription_rental_factor,model_subscr
 access_meter_reading_import,access_meter_reading_import,model_meter_reading_import,base.group_user,1,1,1,1
 access_addhoc_increase_wizard,access_addhoc_increase_wizard,model_addhoc_increase_wizard,base.group_user,1,1,1,1
 access_meter_click_combined,access_meter_click_combined,model_meter_click_combined,base.group_user,1,1,1,1
-
+access_meter_reading_request_wizard,access_meter_reading_request_wizard,model_meter_reading_request_wizard,base.group_user,1,1,1,1

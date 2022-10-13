@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_project_task_template,project.task.template,model_project_task_template,project.group_project_user,1,0,0,0
+access_project_task_template_manager,project.task.template,model_project_task_template,project.group_project_manager,1,1,1,1
+access_project_task_template_line,project.task.template.line,model_project_task_template_line,project.group_project_user,1,0,0,0
+access_project_task_template_line_manager,project.task.template.line,model_project_task_template_line,project.group_project_manager,1,1,1,1
+access_equipment_job_template,equipment.job.template,model_equipment_job_template,project.group_project_user,1,0,0,0
+access_equipment_job_template_manager,equipment.job.template,model_equipment_job_template,project.group_project_manager,1,1,1,1
+access_equipment_job_template_line,equipment.job.template.line,model_equipment_job_template_line,project.group_project_user,1,0,0,0
+access_equipment_job_template_line_manager,equipment.job.template.line,model_equipment_job_template_line,project.group_project_manager,1,1,1,1
+access_job_card_type,job.card.types,model_job_card_types,project.group_project_user,1,0,0,0
+access_job_card_type_manager,job.card.types,model_job_card_types,project.group_project_manager,1,1,1,1
+access_purchase_manual_exchange_vendor_bill,purchase.manual.exchange.vendor.bill,model_purchase_manual_exchange_vendor_bill,purchase.group_purchase_user,1,0,0,0
+access_purchase_manual_exchange_vendor_bill_manager,purchase.manual.exchange.vendor.bill,model_purchase_manual_exchange_vendor_bill,purchase.group_purchase_manager,1,1,1,1
+access_combined_orders,combined_orders,model_combined_orders,base.group_user,1,1,1,1
+access_combined_order_input_wizard,combined_order_input_wizard,model_combined_order_input_wizard,base.group_user,1,1,1,1

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_stock_warehouse_product_all,stock.warehouse.product.all,stock.model_stock_warehouse,,1,1,1,0
+access_stock_warehouse_product_manager_own,stock.warehouse.product.manager.own,stock.model_stock_warehouse,sales_team.group_sale_salesman,1,1,1,1

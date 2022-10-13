@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="view_purchase_advance_payment_inv" model="ir.ui.view">
+            <field name="name">purchase.manual.exchange.vendor.bill.form</field>
+            <field name="model">purchase.manual.exchange.vendor.bill</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="currency_id" readonly="True" invisible="True"/>
+                        <field name="po_currency_id" readonly="True" invisible="True"/>
+                        <field name="manual_currency_rate_active" attrs="{'invisible': [('currency_id','=', 'po_currency_id')]}"/>
+                        <field name="manual_currency_rate" attrs="{'invisible': [('manual_currency_rate_active','=', False)]}"/>
+                    </group>
+                    <footer>
+                        <button name="create_invoices" string="Create and View Invoice" type="object"
+                            context="{'open_invoices': True}" class="btn-primary"/>
+                        <button name="create_invoices"  string="Create Invoice" type="object"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_create_vendor_bill" model="ir.actions.act_window">
+            <field name="name">Create invoices</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.manual.exchange.vendor.bill</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+</odoo>

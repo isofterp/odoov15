@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--        <record id="hr_expense_view_form1" model="ir.ui.view">-->
+        <!--            <field name="name">hr.expense.view.form1</field>-->
+        <!--            <field name="model">hr.expense</field>-->
+        <!--            <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <field name="employee_id" position="after">-->
+        <!--                    <field name="x_task_id"/>-->
+        <!--                </field>-->
+        <!--                <field name="payment_mode" position="attributes">-->
+        <!--                    <attribute name="default">"company_account"</attribute>-->
+        <!--                </field>-->
+        <!--                <field name="product_id" position="replace">-->
+        <!--                    <field name="product_id" default="CC"/>-->
+        <!--                </field>-->
+        <record id="hr_expense_view_form1" model="ir.ui.view">
+            <field name="name">hr.expense.view.form1</field>
+            <field name="model">hr.expense</field>
+            <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+            <field name="arch" type="xml">
+                <field name="analytic_tag_ids" position="replace"/>
+                <field name="extract_remote_id" position="replace"/>
+                <field name="employee_id" position="after">
+                    <field name="x_project_id" string="Equipment Number"
+                           options="{'no_create': 1, 'no_create_edit': 1}"
+                           attrs="{'readonly' : [('x_readonly','=',True)]}"
+                           domain="[('branch_id','=',branch_id)]"
+                    />
+                    <field name="x_task_id" domain="[('project_id','=',x_project_id)]"
+                    attrs="{'readonly' : [('x_readonly','=',True)]}"/>
+                </field>
+                <field name="analytic_account_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="account_id" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </field>
+                <field name="tax_ids" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="employee_id" position="after">
+                    <field name="x_readonly"/>
+                </field>
+
+                <field name="payment_mode" position="attributes">
+                    <attribute name="default">"company_account"</attribute>
+                </field>
+                <field name="product_id" position="replace">
+                    <field name="product_id" default="CC"
+                           options="{'no_open': True, 'no_create': 1, 'no_create_edit': 1}"/>
+                </field>
+                <field name="currency_id" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </field>
+                <field name="employee_id" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </field>
+                <field name="x_readonly" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+
+            </field>
+        </record>
+
+        <record id="action_expense_view_form1" model="ir.actions.act_window">
+            <field name="name">Expense Report Readonly</field>
+            <field name="res_model">hr.expense</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="hr_expense.hr_expense_view_form"/>
+            <field name="context">{'flag_read':True}</field>
+        </record>
+
+        <record id="hr_expense_view_expenses_analysis_tree1" model="ir.ui.view">
+            <field name="name">hr.expense.tree1</field>
+            <field name="model">hr.expense</field>
+            <field name="inherit_id" ref="hr_expense.hr_expense_view_expenses_analysis_tree"/>
+            <field name="arch" type="xml">
+                <!--                 <xpath expr="//tree[@string='Expenses']" position="replace">-->
+                <!--                          <tree string="Expenses" editable="bottom" sample="1" js_class="hr_expense_tree_dashboard_upload">-->
+                <field name="reference" position="after">
+                    <field name="x_task_id"/>
+                </field>
+
+            </field>
+        </record>
+
+        <record id="view_hr_expense_sheet_form_supalift" model="ir.ui.view">
+            <field name="name">hr.expense.sheet.form.supalift</field>
+            <field name="model">hr.expense.sheet</field>
+            <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='expense_line_ids']/tree" position="inside">
+                    <field name="x_project_id"/>
+                    <field name="x_task_id"/>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

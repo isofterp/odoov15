@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_task_form2_inherit_custom_lines" model="ir.ui.view">
+            <field name="name">project.task.form.inherit</field>
+            <field name="model">project.task</field>
+            <!--            <field name="inherit_id" ref="project.view_task_form2"/>-->
+            <field name="inherit_id" ref="hr_timesheet.view_task_form2_inherited"/>
+            <field name="arch" type="xml">
+
+
+                <xpath expr="//tree[1]" position="attributes">
+                    <attribute name="create">false</attribute>
+                    <attribute name="delete">false</attribute>
+                    <attribute name="editable">none</attribute>
+                </xpath>
+                <xpath expr="//tree[1]" position="inside">
+                    <field name="product_id" string="Labour Type">
+                        <field name="employee_id"/>
+                    </field>
+                </xpath>
+
+
+                <xpath expr="//header" position="inside">
+                    <button string="Create Sales Quotation" name="%(task_so_cust_wizard_action)d" type="action"
+                            class="oe_highlight"/>
+                </xpath>
+                <xpath expr="//header" position="inside">
+                    <button string="Enter Meter Reading" name="%(task_meter_reading_wizard_action)d"
+                            type="action"
+                            class="oe_highlight"
+
+                    />
+                </xpath>
+
+                <xpath expr="//header" position="inside">
+                    <button string="Create Expense" name="create_expense"
+                            type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible' : [('stage_id','in',[7,8])]}"
+                    />
+                </xpath>
+
+                <xpath expr="//header" position="inside">
+                    <button string="Add Travel" name="%(task_travel_wizard_action)d" type="action"
+                            class="oe_highlight"/>
+                </xpath>
+
+
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="show_quotation" type="object" class="oe_stat_button"
+                            icon="fa-usd" widget="statinfo" help="Sales linked to this job">
+                        <field name="sales_count" widget="statinfo" string="Sales"/>
+                    </button>
+                </xpath>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="show_expenses" type="object" class="oe_stat_button"
+                            icon="fa-usd" widget="statinfo">
+                        <field name="expense_count" widget="statinfo" string="Expenses"/>
+                    </button>
+                </xpath>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="show_bills" type="object" class="oe_stat_button"
+                            icon="fa-usd" widget="statinfo">
+                        <field name="bills_count" widget="statinfo" string="Vendor Bills"/>
+                    </button>
+                </xpath>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="show_invoices" type="object" class="oe_stat_button"
+                            icon="fa-usd" widget="statinfo">
+                        <field name="invoice_count" widget="statinfo" string="Customer Invoices"/>
+                    </button>
+                </xpath>
+                <!--                <xpath expr="//field[@name='tag_ids']" position="after">-->
+
+                <!--                     <field name='consumable'/>-->
+                <!--               </xpath>-->
+                <field name="partner_id" position="after">
+                    <field name="pricelist_id" readonly="1"/>
+                    <field name="x_po_no"/>
+                    <field name="task_profitability"/>
+                </field>
+
+                <!-- <xpath expr="//field[@name='maintenance_team_id']" position="after">
+                      <field name='partner_custom_id'/>
+                 </xpath>-->
+                <xpath expr="//page[@name='description_page']" position="before">
+                    <page string="Quotation Product Lines">
+                        <field name="task_custom_line_ids" context="{'default_task_id':id}">
+                            <tree editable="bottom" decoration-danger="actual_profit &lt; 1">
+                                <field name="product_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                                <field name="notes"/>
+                                <field name="markup_percent"/>
+                                <field name="qty" string="Qty"/>
+                                <field name="purchase_price" optional="show"/>
+                                <field name="total_cost" optional="show" sum="Tot cost"/>
+                                <field name="unit_price" sum="Unit price" optional="show" force_save="1"/>
+                                <field name="price" sum="Quoted Total" optional="show"/>
+                                <field name="markup_amt" sum="Tot Margin" optional="show"/>
+                                <!--                                <field name="margin_percent"/>-->
+                                <field name="actual_qty" optional="show" readonly="1" force_save="1"/>
+                                <field name="actual_cost" sum="ac Cost" optional="show" readonly="1" force_save="1"/>
+                                <field name="actual_profit" sum="Act Profit" colors="red:actual_profit &lt;1"
+                                       readonly="1" force_save="1"/>
+                                <field name="is_so_line_created"/>
+                                <field name="task_custom_id" invisible="1"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="project_task_job_costing_tree" model="ir.ui.view">
+            <field name="name">job.costing.tree</field>
+            <field name="model">task.custom.lines</field>
+            <field name="arch" type="xml">
+                <tree string="Job Costing" decoration-danger="actual_profit &lt; 1">
+                    <field name="project_id"/>
+                    <field name="branch_id"/>
+                    <field name="task_custom_id" string="Job Number"/>
+                    <field name="product_id"/>
+                    <field name="notes"/>
+                    <field name="qty" string="Qty" optional="show"/>
+                    <field name="purchase_price" optional="show"/>
+                    <field name="total_cost" sum="Tot cost"/>
+                    <field name="unit_price" sum="Unit price"/>
+                    <field name="price" sum="Quoted Total"/>
+                    <field name="markup_amt" sum="Tot Margin"/>
+                    <field name="actual_qty"/>
+                    <field name="actual_cost" sum="Act Cost" optional="show"/>
+                    <field name="actual_profit" sum="Act Profit"/>
+                    <field name="x_job_type"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <record id="job_costing_tree_search_view" model="ir.ui.view">
+            <field name="name">job_costing_tree.search</field>
+            <field name="model">task.custom.lines</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="project_id"/>
+                    <field name="name"/>
+                    <separator/>
+                    <separator/>
+                    <group expand="0" string="Group By...">
+                        <filter
+                                name="project_id"
+                                string="Equipment"
+                                context="{'group_by': 'project_id'}"
+                        />
+                        <filter
+                                name="task_id"
+                                string="Job Number"
+                                context="{'group_by':'task_custom_id'}"
+                        />
+                        <filter
+                                name="branch_id"
+                                string="Branch"
+                                context="{'group_by':'branch_id'}"
+                        />
+                        <filter
+                                name="x_job_type"
+                                string="Job Type"
+                                context="{'group_by':'x_job_type'}"
+                        />
+
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_project_job_costing_tree" model="ir.actions.act_window">
+            <field name="name">Job Costing</field>
+            <field name="res_model">task.custom.lines</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="project_task_job_costing_tree"/>
+
+        </record>
+
+        <menuitem id="menu_project_report_job_costing"
+                  name="Job Costing"
+                  action="action_project_job_costing_tree"
+                  parent="project.menu_project_report"
+                  sequence="30"/>
+
+    </data>
+</odoo>

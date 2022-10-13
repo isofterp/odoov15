@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+
+    <data>
+        <report
+            id="manifest_report"
+            model="sale.order"
+            string="Manifest"
+            report_type="qweb-pdf"
+            name="isofterp_cts.report_manifest"
+            attachment_use="False"
+            file="isofterp_cts.report_manifest"
+            />
+
+        <report
+            id="trip_sheet_report"
+            model="sale.order"
+            string="Trip Sheet"
+            report_type="qweb-pdf"
+            name="isofterp_cts.report_trip_sheet"
+            attachment_use="False"
+            file="isofterp_cts.report_tripsheet"
+            />
+
+        <!--<report
+            id="waybill_report"
+            model="sale.order"
+            string="Way Bill "
+            report_type="qweb-html"
+            name="isofterp_cts.report_waybill"
+            attachment_use="False"
+            file="isofterp_cts.report_waybillr"
+            />
+        -->
+    </data>
+</openerp>

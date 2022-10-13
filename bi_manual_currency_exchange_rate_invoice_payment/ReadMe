@@ -1,0 +1,17 @@
+14.0.0.1 ==>1. fixed issue of amount is not updating when tax is not given
+            2.update _get_fields_onchange_subtotal_model method according to v14
+            3.added super in _onchange_product_id method.
+14.0.0.2 ==> Fixed the Issue of product price in invoice when create new invoice without Apply Manual exchange.
+14.0.0.3 ==> Fixed Issue For In the payment, apply manual exchange Rate button is not available
+
+
+
+14.0.0.4 ==>fixed issue of Currency Calculation is not calculating correctly it just multiplying currency rate with unit price .
+
+
+14.0.0.5 ==>fixed issue of onchange method of product in account move line.
+         ==>fixed issue of traceback for selected currency in account move.
+
+14.0.0.6 ==>1.fixed issue of amount in payment for company currency.
+            2.fixed issue of tax in journal entry.
+            3.fixed issue of exchange difference.

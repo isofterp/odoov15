@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Meter Reading Form View -->
+    <record id="meter_reading_form_view" model="ir.ui.view">
+        <field name="name">meter.reading.form.view</field>
+        <field name="model">meter.reading</field>
+        <field name="arch" type="xml">
+            <form string="Reading">
+                    <group name="branch_detail">
+                        <group>
+                            <field name="name"/>
+                            <field name="x_equipment_id"/>
+                            <field name="task_id"/>
+                            <field name="x_reading_date"/>
+                            <field name="user_id"/>
+                        </group>
+                    </group>
+            </form>
+        </field>
+    </record>
+    <!-- Meter Reading Tree View -->
+    <record id="meter_reading_tree_view" model="ir.ui.view">
+        <field name="name">meter.reading.tree.view</field>
+        <field name="model">meter.reading</field>
+        <field name="arch" type="xml">
+            <tree string="Meter Reading">
+                <field name="name" />
+                <field name="x_equipment_id" />
+                <field name="task_id"/>
+                <field name="x_reading_date"/>
+                <field name="user_id"/>
+            </tree>
+        </field>
+    </record>
+<!--    &lt;!&ndash; Action view for Multi Branch &ndash;&gt;-->
+<!--    <record id="action_multi_branch_view" model="ir.actions.act_window">-->
+<!--        <field name="name">Branch</field>-->
+<!--        <field name="res_model">multi.branch</field>-->
+<!--        <field name="view_mode">tree,form</field>-->
+<!--        <field name="help" type="html">-->
+<!--            <p class="oe_view_nocontent_create">-->
+<!--                Click to add a Branch.-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                No branch available.-->
+<!--            </p>-->
+<!--        </field>-->
+<!--    </record>-->
+    <!-- Menu item for Multi Branch -->
+<!--    <menuitem-->
+<!--        id="menu_multi_branch"-->
+<!--        name="Branches"-->
+<!--        parent="base.menu_users"-->
+<!--        action="action_multi_branch_view"-->
+<!--        groups="multi_branch.group_branch_manager"-->
+<!--        sequence="11"-->
+<!--    />-->
+</odoo>

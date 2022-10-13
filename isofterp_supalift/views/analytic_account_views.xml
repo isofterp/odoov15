@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_account_analytic_line_tree2" model="ir.ui.view">
+            <field name="name">account.analytic.line.tree2</field>
+            <field name="model">account.analytic.line</field>
+             <field name="inherit_id" ref="analytic.view_account_analytic_line_tree"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                <field name="task_id" string="Task_id" optional="show"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

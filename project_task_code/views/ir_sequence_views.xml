@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Sequences -->
+    <record id="project_task_code.sequence_view" model="ir.ui.view">
+        <field name="model">ir.sequence</field>
+        <field name="name">view.ir.sequence.form.branch</field>
+        <field name="inherit_id" ref="base.sequence_view"/>
+        <field name="mode">extension</field>
+        <field name="arch" type="xml">
+            <field name="number_increment" position="after">
+                <field name="branch_id" string="Branch Name"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="project_task_code.sequence_view_tree" model="ir.ui.view">
+        <field name="model">ir.sequence</field>
+        <field name="name">view.ir.sequence.tree.branch</field>
+        <field name="inherit_id" ref="base.sequence_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="implementation" position="after">
+                <field name="branch_id" string="Branch"/>
+            </field>
+        </field>
+    </record>
+</odoo>

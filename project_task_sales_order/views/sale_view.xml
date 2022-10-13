@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_order_form_inherit_custom_taskcustom_id" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.task_custom_id</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name='task_custom_id'/>
+                    <field name='x_task_stage'/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_quotation_tree1" model="ir.ui.view">
+            <field name="name">sale.quotation.tree1</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="task_custom_id" string="Job Number"/>
+                </field>
+
+            </field>
+        </record>
+
+        <record id="view_order_tree1" model="ir.ui.view">
+            <field name="name">sale.order.tree1</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="task_custom_id" string="Job Number"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>

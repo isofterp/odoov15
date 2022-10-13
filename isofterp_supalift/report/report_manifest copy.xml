@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_manifest">
+           <!-- <t t-foreach="docs" t-as="o">-->
+            <div class="page">
+                <div class="oe_structure"/>
+                <table class="table table-bordered table-responsive" border="1px solid" cellpadding="0" cellspacing="0" style="width:1100px; font-size: small;">
+                    <tbody>
+                            <tr>
+                                <td colspan="12" style="width: 1100px; font-size: large; text-align:center;"><strong>LOADING SCHEDULE</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="12" style="width: 1100px; font-size: small; text-align:center;"> Report Date  <t t-usertime="%d-%m-%Y %H:%M" /></td>
+                            </tr>
+                    </tbody>
+                </table>
+                <table class="table table-bordered table-responsive" border="1px solid" cellpadding="0" cellspacing="0" style="width:1100px; font-size: small;">
+                     <tbody>
+                         <tr>
+                            <td style="width:90px;">         WAYBILL NO.</td>
+                            <td style="width:165px;">         CUSTOMER</td>
+                            <td style="width:165px;">         CONSIGNEE</td>
+                            <td style="width:165px;">         DESTINATION</td>
+                            <td style="width:90px;">         NO. OF CTNS</td>
+                            <td style="width:90px;">         WEIGHT</td>
+                            <td style="width:165px;">         REMARKS</td>
+                         </tr>
+                         <t t-foreach="docs" t-as="order">
+                             <t t-foreach="order.order_line" t-as="l">
+                                <span  t-if="l.product_id.product_tmpl_id.state == 'sellable'" >
+                                     <tr>
+                                        <td style="width:165px;"><span t-field="order.name"/></td>
+                                        <td style="width:165px;"><span t-field="order.partner_id.name"/></td>
+                                        <td style="width:165px;"><span t-field="order.partner_shipping_id.name"/>   </td>
+                                        <td style="width:165px;"><span t-field="order.partner_shipping_id.street2"/>    </td>
+                                        <span t-if="l.name in ['Base Rate/kg']" >
+                                             <td style="width:165px;"><span t-field="l.th_weight"/></td>
+                                             <td style="width:165px;" align="center"> <span t-field="l.no_crtns"/>  </td>
+                                             <td style="width:165px;" align="center"><span t-field="l.product_uom_qty" />  </td>
+                                         </span>
+                                         <span t-if="l.name not in ['Base Rate/kg']" >
+                                             <td style="width:165px;"  align="center"><span t-field="l.product_uom_qty" /> /></td>
+                                             <td style="width:165px;"  align="center">  <span t-field="l.no_crtns"/> </td>
+                                         </span>
+                                        <td style="width:165px;">        </td>
+                                     </tr>
+                                </span>
+                             </t>
+                         </t>
+                    </tbody>
+                </table>
+            </div>
+          <!--  </t>-->
+        </template>
+
+
+
+        <report
+            id="manifest_report"
+            model="sale.order"
+            string="Manifest"
+            report_type="qweb-html"
+            name="isofterp_cts.report_manifest"
+            attachment_use="False"
+            file="isofterp_cts.report_manifest"
+            />
+
+
+    </data>
+</openerp>

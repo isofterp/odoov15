@@ -162,7 +162,7 @@ class SaleOrder(models.Model):
     x_is_contract_quote = fields.Boolean('Subscription Quote',help="By ticking this box it means you intend converting this Quote into a subscription")
     #x_service_type = fields.Char("Service type")
     x_service_type = fields.Char(related='x_lot_id.x_service_type_id.name')
-    x_no_charge = fields.Boolean("No Charge", help="Tick if you want a No-Charge Sale")
+    x_no_charge = fields.Boolean("Tick here if you want to create a No Charge Invoice", help="Tick if you want a No-Charge Sale")
     #x_rental_factor = fields.Selection(VALUES, string='Rental Factor')
 
     @api.onchange('partner_id')
@@ -423,32 +423,32 @@ class SaleOrder(models.Model):
         else:  # we need to create one
             raise ValidationError("You need to go to Products and load a Charge called 'Rental' for the macine on this Sales Order")
 
-    @api.model
-    def create(self, vals):
-        #logging.warning("=======THE VALS is %s", vals.get('order_line'))
-        if 'x_no_charge' in vals:
-            if vals.get('x_no_charge') == True:
-                lines = vals.get('order_line')
-                #logging.warning("Lines = %s", type(lines))
-                for line in lines:
-                    logging.warning("==Lines %s", line[2].get('price_unit'))
-                    if line[2].get('price_unit') > 0:
-                        raise ValidationError("No Charge Option ticked - Some order lines are not zero '")
+    # @api.model
+    # def create(self, vals):
+    #     #logging.warning("=======THE VALS is %s", vals.get('order_line'))
+    #     if 'x_no_charge' in vals:
+    #         if vals.get('x_no_charge') == True:
+    #             lines = vals.get('order_line')
+    #             #logging.warning("Lines = %s", type(lines))
+    #             for line in lines:
+    #                 logging.warning("==Lines %s", line[2].get('price_unit'))
+    #                 if line[2].get('price_unit') > 0:
+    #                     raise ValidationError("No Charge Option ticked - Some order lines are not zero '")
+    #
+    #     result = super(SaleOrder, self).create(vals)
+    #     return result
 
-        result = super(SaleOrder, self).create(vals)
-        return result
-
-    def write(self, vals):
-        if self.x_no_charge:
-            logging.warning("The vals is %s", vals)
-            if 'order_line' in vals:
-                lines = vals.get('order_line')
-                for line in lines:
-                    logging.warning("==Lines %s", line[2].get('price_unit'))
-                    if line[2].get('price_unit') > 0:
-                        raise ValidationError("No Charge Option ticked - Some order lines are not zero '")
-        res = super(SaleOrder, self).write(vals)
-        return
+    # def write(self, vals):
+    #     if self.x_no_charge:
+    #         logging.warning("The vals is %s", vals)
+    #         if 'order_line' in vals:
+    #             lines = vals.get('order_line')
+    #             for line in lines:
+    #                 logging.warning("==Lines %s", line[2].get('price_unit'))
+    #                 if line[2].get('price_unit') > 0:
+    #                     raise ValidationError("No Charge Option ticked - Some order lines are not zero '")
+    #     res = super(SaleOrder, self).write(vals)
+    #     return
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'

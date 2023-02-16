@@ -16,7 +16,7 @@
 										('privacy_visibility', '!=', 'followers'),
 										'|',
 											('message_partner_ids', 'in', [user.partner_id.id]),
-											('message_channel_ids', 'in', user.partner_id.channel_ids.ids),
+
 
 									]</field>
 		<field name="groups" eval="[(4, ref('base.group_user')),(4, ref('branch.group_branch_user'))]"/>
@@ -29,7 +29,7 @@
 		<field name="groups" eval="[(4,ref('project.group_project_manager')),(4, ref('branch.group_branch_user_manager'))]"/>
 	</record>
 
-	<record model="ir.rule" id="project.task_visibility_rule">
+	<!--<record model="ir.rule" id="project.task_visibility_rule">
 		<field name="name">Project/Task: employees: follow required for follower-only projects</field>
 		<field name="model_id" ref="model_project_task"/>
 		<field name="domain_force">[
@@ -41,10 +41,10 @@
 				'|',
 					('message_partner_ids', 'in', [user.partner_id.id]),
 					# to subscribe check access to the record, follower is not enough at creation
-					('user_id', '=', user.id)
+					('user_ids', 'in', user.id)
 		]</field>
 		<field name="groups" eval="[(4,ref('base.group_user')),(4, ref('branch.group_branch_user'))]"/>
-	</record>
+	</record>-->
 
 </data>
 

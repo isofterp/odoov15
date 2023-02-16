@@ -18,6 +18,6 @@ from . import inherited_product
 from . import inherited_equipment
 from . import inherited_hr_expense
 from . import inherited_hr_employee
-#from . import ir_http
+from . import ir_http
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

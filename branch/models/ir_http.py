@@ -76,10 +76,22 @@ class Http(models.AbstractModel):
             })
             session_info.update({
                 # current_company should be default_company
+                "allowed_branches_sp":{
+                    'branch.id': {
+                        'branch_id': branch.id,
+                        'branch_name': branch.name,
+                    } for branch in user.branch_ids
+                },
                 "user_companies": {
                     'current_company': user.company_id.id,
                     "user_branches": {'current_branch': (user.branch_id.id, user.branch_id.name),
-                                      'allowed_branch': [(comp.id, comp.name) for comp in user.branch_ids]},
+                                      'allowed_branch': [(branch.id, branch.name) for branch in user.branch_ids]},
+                    'allowed_branches':{
+                        branch.id: {
+                            'branch_id': branch.id,
+                            'branch_name': branch.name,
+                        } for branch in user.branch_ids
+                    },
                     'allowed_companies': {
                         comp.id: {
                             'id': comp.id,
@@ -90,7 +102,7 @@ class Http(models.AbstractModel):
                 },
                 "show_effect": True,
                 "display_switch_company_menu": user.has_group('base.group_multi_company') and len(user.company_ids) > 1,
-                "display_switch_branch_menu": user.has_group('branch.group_multi_branch') and len(user.branch_ids) > 1,
+                "isDisplayed": user.has_group('branch.group_multi_branch') and len(user.branch_ids) > 1,
                 "allowed_branch_ids": user.branch_id.ids
             })
         logging.warning("Session ifo is %s", session_info)

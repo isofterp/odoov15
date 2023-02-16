@@ -64,7 +64,7 @@ operating-Unit Operation for POS,operating-Unit Operation for Sales,operating-Un
     "currency": 'EUR',
     'depends': ['base','branch','project'],
     'data': [
-                'security/project_branch_security.xml',
+                #'security/project_branch_security.xml',
                 'views/project_branch_view.xml',
              ],
     'qweb': [],

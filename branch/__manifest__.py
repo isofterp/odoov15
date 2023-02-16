@@ -90,7 +90,7 @@ operating-Unit Operation for POS,operating-Unit Operation for Sales,operating-Un
     'website': 'https://www.browseinfo.in',
     "price": 149.00,
     "currency": 'EUR',
-    'depends': ['base', 'sale_management', 'purchase', 'stock', 'account', 'purchase_stock', 'web', 'hr_expense'],
+    'depends': ['base', 'sale_management', 'purchase', 'stock', 'account', 'purchase_stock', 'web', 'hr_expense', 'maintenance'],
     'data': [
         'security/branch_security.xml',
         'security/multi_branch.xml',
@@ -114,18 +114,23 @@ operating-Unit Operation for POS,operating-Unit Operation for Sales,operating-Un
         'views/inherited_hr_employee.xml',
         # 'views/branch_template.xml',
     ],
-    'qweb': [
-        'static/src/xml/branch.xml',
-    ],
-    # 'assets': {
-    #     'web.assets_backend': [
-    #         '/branch/static/src/js/session.js',
-    #         '/branch/static/src/js/default_branch.js',
-    #         '/branch/static/src/js/abstract_web_client.js',
-    #
-    #     ],
-    #
-    # },
+    'assets': {
+        'web.assets_backend': [
+            #'/branch/static/src/js/branch_service.js',
+            #'/branch/static/src/js/switch_branch_menu.js',
+            #'/branch/static/src/scss/switch_branch_menu.xml',
+
+            #'/branch/static/src/js/edgar.js',
+            #'branch/static/src/js/default_branch.js',
+            #'branch/static/src/js/session.js',
+            #'branch/static/src/js/abstract_web_client.js',
+
+        ],
+        'web.assets_qweb': [
+            '/branch/static/src/xml/switch_branch_menu.xml',
+        ],
+
+    },
     'demo': [],
     'test': [],
     'installable': True,

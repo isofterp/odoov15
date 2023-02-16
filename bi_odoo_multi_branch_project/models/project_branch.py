@@ -8,8 +8,8 @@ class ProjectProject(models.Model):
 
 	branch_id = fields.Many2one('res.branch', string='Branch')
 	
-	@api.model 
-	def default_get(self, flds): 
+	@api.model
+	def default_get(self, flds):
 		result = super(ProjectProject, self).default_get(flds)
 		user_obj = self.env['res.users']
 		branch_id = user_obj.browse(self.env.user.id).branch_id.id
@@ -42,19 +42,19 @@ class ProjectTask(models.Model):
 			self.partner_id = default_partner
 			self.stage_id = False
 
-	@api.onchange('user_id')
+	@api.onchange('user_ids')
 	def _onchange_project_task_user(self):
 		branch_user = self.env.user.has_group('branch.group_branch_user')
 		branch_manager = self.env.user.has_group('branch.group_branch_user_manager')
 		if branch_user and not branch_manager :
 			users = self.env['res.users'].search([('branch_id','=',self.env.user.branch_id.id)])
-			return {'domain': {'user_id': [('id', 'in', users.ids)]}}
+			return {'domain': {'user_ids': [('id', 'in', users.ids)]}}
 
 	@api.model
 	def create(self, vals):
 		res = super(ProjectTask,self).create(vals)
 		res.write({'branch_id':res.project_id.branch_id})
-		return res 		
+		return res
 
 
 		

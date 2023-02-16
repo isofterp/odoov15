@@ -1,0 +1,41 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_subscription_view,access_sale_subscription_view,sale_subscription.model_sale_subscription,perms.group_sale_subscription_user,1,0,0,0
+access_sale_subscription_stage_view,access_sale_subscription_stage_view,sale_subscription.model_sale_subscription_stage,perms.group_sale_subscription_user,1,0,0,0
+access_sale_subscription_template_view,access_sale_subscription_template_view,sale_subscription.model_sale_subscription_template,perms.group_sale_subscription_user,1,0,0,0
+access_sale_subscription_line_view,access_sale_subscription_line_view,sale_subscription.model_sale_subscription_line,perms.group_sale_subscription_user,1,0,0,0
+access_sale_subscription_close_reason_view,access_sale_subscription_close_reason_view,sale_subscription.model_sale_subscription_close_reason,perms.group_sale_subscription_user,1,0,0,0
+access_sale_subscription_log,access_sale_subscription_log,sale_subscription.model_sale_subscription_log,perms.group_sale_subscription_user,1,0,0,0
+
+access_account_cash_rounding_uinvoice,account.cash.rounding,account.model_account_cash_rounding,perms.group_debtors_user,1,1,1,1
+access_account_invoice_report_debtors,account.invoice.report_debtors,account.model_account_invoice_report,perms.group_debtors_user,1,0,0,0
+
+access_account_bank_statement_group_debtors,account.bank.statement.group.debtors,account.model_account_bank_statement,perms.group_debtors_user,1,0,0,0
+access_account_bank_statement_line_group_debtors,account.bank.statement.line.group.debtors,account.model_account_bank_statement_line,perms.group_debtors_user,1,0,0,0
+
+access_account_move_udebtors,account.move,account.model_account_move,perms.group_debtors_user,1,1,1,1
+access_account_move_line_udebtors,account.move.line debtors,account.model_account_move_line,perms.group_debtors_user,1,1,1,1
+
+access_account_analytic_line_debtors,account.analytic.line debtors,account.model_account_analytic_line,perms.group_debtors_user,1,1,1,1
+
+access_account_journal_debtors,account.journal debtors,account.model_account_journal,perms.group_debtors_user,1,0,0,0
+access_account_account_debtors,account.account debtors,account.model_account_account,perms.group_debtors_user,1,0,0,0
+access_account_account_type_debtors,account.account.type invoice,account.model_account_account_type,perms.group_debtors_user,1,0,0,0
+access_account_tax_debtors,account.tax,account.model_account_tax,perms.group_debtors_user,1,0,0,0
+access_account_account_tax_user,account.account.tag,account.model_account_account_tag,perms.group_debtors_user,1,0,0,0
+access_account_tax_repartition_line_debtors,account.tax repartition.line.invoice,account.model_account_tax_repartition_line,perms.group_debtors_user,1,0,0,0
+access_account_tax_group,account.tax.group,account.model_account_tax_group,perms.group_debtors_user,1,0,0,0
+
+access_account_reconcile_model_debtors,account.reconcile.model.debtors,account.model_account_reconcile_model,perms.group_debtors_user,1,0,1,0
+access_account_reconcile_model_line_debtors,account.reconcile.model.line.debtors,account.model_account_reconcile_model_line,perms.group_debtors_user,1,0,1,0
+access_account_reconcile_model_partner_mapping_debtors,account.reconcile.model.partner.mapping.debtors,account.model_account_reconcile_model_partner_mapping,perms.group_debtors_user,1,0,1,0
+access_account_partial_reconcile_group_debtors,account.partial.reconcile.group.debtors,account.model_account_partial_reconcile,perms.group_debtors_user,1,1,1,1
+access_account_full_reconcile_group_debtors,account.full.reconcile.group.debtors,account.model_account_full_reconcile,perms.group_debtors_user,1,1,1,1
+
+access_account_payment_method_line,account.payment.method.line,account.model_account_payment_method_line,perms.group_debtors_user,1,1,1,1
+access_account_payment_method,account.payment.method,account.model_account_payment_method,perms.group_debtors_user,1,1,1,1
+access_account_payment,account.payment,account.model_account_payment,perms.group_debtors_user,1,1,1,1
+access_account_payment_register,access.account.payment.register,account.model_account_payment_register,perms.group_debtors_user,1,1,1,0
+access_validate_account_move,access.validate.account.move,account.model_validate_account_move,perms.group_debtors_user,1,1,1,0
+access_account_move_reversal,access.account.move.reversal,account.model_account_move_reversal,perms.group_debtors_user,1,1,1,0
+access_account_invoice_send,access.account.invoice.send,account.model_account_invoice_send,perms.group_debtors_user,1,1,1,0
+access_account_analytic_default_invoice,account.analytic.default invoice,account.model_account_analytic_default,perms.group_debtors_user,1,1,1,1

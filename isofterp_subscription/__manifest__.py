@@ -3,12 +3,13 @@
 
 {
     'name': 'I-Soft Subscription Management - Recurring',
-    'version': '11.0.4.0.0',
+    'version': '15.0.0.0.0',
     'category': 'Subscription Management',
     'license': 'AGPL-3',
     'author': "I-Soft Solutions",
     'website': 'https://github.com/oca/contract',
-    'depends': ['base','account','analytic','sale','sale_subscription','industry_fsm','portal','project','helpdesk','account_followup'],
+    'depends': ['base', 'account', 'analytic', 'sale', 'sale_subscription', 'industry_fsm', 'portal', 'project',
+                'helpdesk', 'account_followup', 'crm'],
     'data': [
 
         'views/sale_subscription_view.xml',
@@ -22,18 +23,18 @@
         'views/project_view.xml',
         'views/stock_production_lot_views.xml',
         'views/meter_reading_import_view.xml',
+        'views/meter_reading_error_view.xml',
         'views/meter_click_combined_view.xml',
         'views/res_partner_view.xml',
+        'views/crm_lead_views.xml',
+        'views/account_move_views.xml',
         'data/data.xml',
         'wizard/add_hoc_increase_views.xml',
         'wizard/meter_reading_request_views.xml',
-
-
-
-
-
-
         'security/ir.model.access.csv',
+        'security/subscription_security.xml',
+        'report/sale_report_templates.xml',
+        'report.xml',
 
     ],
     'installable': True,

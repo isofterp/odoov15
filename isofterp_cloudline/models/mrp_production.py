@@ -15,3 +15,9 @@ class MrpProduction(models.Model):
     #     return
 
     product_id = fields.Many2one('product.product',domain="[('categ_id.name','=','In-House')]", string='Product')
+
+class MrpBom(models.Model):
+    """ Bill of Materials """
+    _inherit = 'mrp.bom'
+
+    bom_instructions = fields.Char(string="Work Instructions")

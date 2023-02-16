@@ -14,15 +14,15 @@
     'category': 'Sales/Sales',
     'version': '1.0',
 
-    'depends': ['base', 'sale','account','repair' ],
+    'depends': ['base', 'sale','account','repair','purchase'],
   
 
     'data': [
         # 'security/ir.model.access.csv',
         'views/purchase_views.xml',
         'views/stock_production_lot.xml',
-        # 'views/tank_views.xml',
-
+        'views/product_views.xml',
+        'views/mrp_bom_views.xml'
     ],
 
     'application': True,

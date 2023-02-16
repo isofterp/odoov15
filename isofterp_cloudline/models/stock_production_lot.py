@@ -4,7 +4,7 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
-class ProductionLot(models.Model):
+class StockLot(models.Model):
     _inherit = 'stock.production.lot'
 
     x_partner_id = fields.Many2one('res.partner', 'Customer')

@@ -51,6 +51,13 @@ class ProductTemplate(models.Model):
         )
     ]
 
+    list_price = fields.Float(
+        'Sales Price', default=0.0,
+        digits='Product Price',
+        help="Price at which the product is sold to customers.",
+        readonly=True,
+    )
+
     @api.model
     def create(self, vals):
         logging.warning("----the vals are %s", vals)
@@ -63,7 +70,6 @@ class ProductTemplate(models.Model):
 
     def write(self,vals):
         logging.warning("----WRITE the vals are %s", vals)
-        print(err)
         if 'name' in vals:
             self._check_for_duplicates('name', vals['name'])
         if 'default_code' in vals:
@@ -86,3 +92,7 @@ class ProductTemplate(models.Model):
                 raise ValidationError('A Product code ' + rec.default_code + ' already exists ')
 
 
+class ProductSupplierinfo(models.Model):
+    _inherit = "product.supplierinfo"
+
+    prod_vendor = fields.Char(string="Product Vendor Site")

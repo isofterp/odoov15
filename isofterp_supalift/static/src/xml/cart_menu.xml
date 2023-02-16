@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="lv_ord.CartMenu">
+        <div class="o_MessagingMenu dropdown" id="cart_menu" cart-menu="false">
+            <a href="#" title="Cart" role="button" aria-expanded="true" aria-haspopup="true" class="o_MessagingMenu_toggler dropdown-toggle o-no-caret o-dropdown--narrow" id="cart_menu_icon">
+                <i role="img" aria-label="Messages" class="o_MessagingMenu_icon fa fa-shopping-basket"/>
+                <span class="o_MessagingMenu_counter badge badge-pill" id="id_cart_count">0</span>
+            </a>
+            <div role="menu" class="o_MessagingMenu_dropdownMenu dropdown-menu dropdown-menu-center" id="cart_menu_dropdown" style="display:none">
+
+                <div class="o_NotificationList o_MessagingMenu_notificationList">
+                    <div class="o_NotificationRequest o_NotificationList_notificationRequest">
+
+                        <div class="o_NotificationRequest_content">
+                            <div class="o_NotificationRequest_header">
+                                <div class="row w-100 m-0">
+                                    <div class="col-10 p-0">
+                                        <span class="o_NotificationRequest_name text-truncate" style="color:#263445;">NEW ORDER</span>
+                                    </div>
+                                    <div class="col-2 p-0 text-right">
+                                        <i role="img" title="Hide Shopping Cart" class="o_MessagingMenu_icon fa fa-times" id="cart_menu_times"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_NotificationRequest_core">
+                                <div class="row w-100 m-0">
+                                    <div class="col-10 p-0">
+                                        <span class="o_NotificationRequest_coreItem" style="font-weight:bold;color:#263445;">Customer: &amp;nbsp;<b id="cart_customer_name" style="color:#f6921e;"></b></span>
+                                    </div>
+                                    <div class="col-2 p-0 text-right">
+                                        <a href="#" title="Empty Cart" class="o_MessagingMenu_icon fa fa-trash" id="id_empty_cart" data-id="69"></a>
+                                    </div>
+                                    <div class="col-10 p-0">
+                                        <span class="o_NotificationRequest_coreItem" style="font-weight:bold;color:#263445;">Chain:  &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;<b id="cart_chain_name" style="color:#f6921e;"/></span>
+                                    </div>
+                                    <div class="col-2 p-0 text-right">
+                                        <i role="img" title="Preview Order" class="o_MessagingMenu_icon fa fa-print" style="color:#000000;vertical-align:bottom;"/>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="o_NotificationList_separator"/>
+
+                    <div class="">
+                        <table class="table table-bordered w-100">
+                            <thead>
+                                <th><input type="checkbox" id="checkout_all" style="accent-color:#f6921e;"/></th>
+                                <th>#</th>
+                                <th>Product Ref.</th>
+                                <th>Qty</th>
+                                <th>Edit</th>
+                            </thead>
+                            <tbody id="cart_table">
+                                <tr>
+                                    <td colspan="5">Your cart is empty</td>
+                                </tr>
+                            </tbody>
+                            <tfoot style="text-align: right;">
+                                <tr>
+                                    <td colspan="5"><a href="#" id="checkout_cart" title="Submit order for items in your shopping cart" style="font-size:14pt;"><i role="img" class="fa fa-sign-out"/> Checkout</a></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

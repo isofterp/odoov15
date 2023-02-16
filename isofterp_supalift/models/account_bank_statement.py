@@ -1,4 +1,4 @@
-from openerp import models, fields, api
+from odoo import api, fields, models, _
 
 class AccountBankStatementLine(models.Model):
     _inherit = "account.bank.statement.line"

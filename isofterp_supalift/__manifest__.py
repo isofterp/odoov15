@@ -30,7 +30,7 @@
 
     """,
     'author': 'i-Soft Solutions (Pty) Ltd',
-    'depends': ['purchase','sale_stock', 'branch','project_task_code'],
+    'depends': ['purchase', 'sale_stock', 'branch', 'project_task_code','web_tour', 'bus'],
     'data': [
 
         'views/project_view.xml',
@@ -55,6 +55,16 @@
         'data/supalift_data.xml'
 
     ],
+    'assets': {
+        'web.assets_backend': [
+            'isofterp_supalift/static/src/js/*.js',
+        ],
+        'web.assets_qweb': [
+            'isofterp_supalift/static/src/xml/cart_menu.xml',
+        ],
+
+    },
+    'license': 'LGPL-3',
     'installable': True,
     'application': False,
     'auto_install': False,

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_report_machine_assembly" model="ir.actions.report">
+            <field name="name">Machine Assembly</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">isofterp_subscription.report_machine_assembly</field>
+            <field name="report_file">isofterp_subscription.report_machine_assembly</field>
+            <field name="print_report_name">"Machine Assembly"</field>
+            <field name="binding_model_id" ref="model_sale_order"/>
+            <field name="binding_type">report</field>
+
+        </record>
+    </data>
+</odoo>

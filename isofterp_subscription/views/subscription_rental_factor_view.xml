@@ -40,6 +40,7 @@
               parent="sale_subscription.menu_sale_subscription_config"
               action="action_rental_factor"
               sequence="5"
+              groups="account.group_account_user"
           />
 
     </data>

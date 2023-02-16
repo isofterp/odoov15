@@ -10,10 +10,32 @@
                 <header>
                     <!--<button name="action_meterreading_send" string="Request Meter Reading" class="btn-primary"
                             type="object"/>-->
-                    <button name="cron_meter_reading_bulk_mail" string="Cron Meter Reading Test DONT PRESS"
+                    <!-- The below is not needed -->
+                    <!--<button name="cron_meter_reading_bulk_mail" string="Cron Meter Reading Test DONT PRESS"
                             class="btn-primary"
-                            type="object"/>
+                            type="object"
+                            groups="sale_subscription.group_sale_subscription_manager"
+                    />-->
                 </header>
+                <xpath expr="//button[@name='%(sale_subscription.wizard_action)d']" position="replace">
+                    <button string="Upsell" name="%(sale_subscription.wizard_action)d"
+                            type="action"
+                            attrs="{'invisible': [('stage_category', '!=', 'progress')]}"
+                            data-hotkey="z"
+                            groups="sale_subscription.group_sale_subscription_manager"
+                    />
+                </xpath>
+
+                <xpath expr="//button[@name='%(sale_subscription.sale_subscription_close_reason_wizard_action)d']"
+                       position="replace">
+                    <button string="Close" name="%(sale_subscription.sale_subscription_close_reason_wizard_action)d"
+                            type="action"
+                            attrs="{'invisible': [('stage_category', 'in', ['draft', 'closed'])]}"
+                            data-hotkey="x"
+                            groups="sale_subscription.group_sale_subscription_manager"
+                    />
+                </xpath>
+
                 <field name="close_reason_id" position="before">
                     <field name="x_ceded_reference"/>
                     <field name="x_sale_order_id"/>
@@ -27,12 +49,30 @@
                                     'default_x_lot_id': x_machine_ids,
                                     'form_view_initial_mode': 'edit',
                                     'force_detailed_view': 'true'}"
+                            groups="sale_subscription.group_sale_subscription_manager"
                     />
-                    <button name="open_sale_orders" string="Sales Orders to Invoice =>" type="object" class="oe_link"/>
+                    <button name="open_sale_orders"
+                            string="Sales Orders to Invoice =>"
+                            type="object"
+                            class="oe_link"
+                            groups="sale_subscription.group_sale_subscription_manager"
+                    />
                 </field>
                 <field name="partner_id" position="attributes">
                     <attribute name="string">Ceded Debtor</attribute>
                 </field>
+
+                <xpath expr="//sheet/group/group/div/button[@name='generate_recurring_invoice']" position="replace">
+                    <button name="generate_recurring_invoice"
+                                        string="Generate Invoice"
+                                        class="oe_link"
+                                        icon="fa-long-arrow-right"
+                                        type="object"
+                                        groups="sale_subscription.group_sale_subscription_manager"
+                                        attrs="{'invisible': [('payment_mode', 'in', ['manual', 'success_payment'])]}"/>
+
+                </xpath>
+
                 <!--
                 <field name="team_id" position="after">
                     <field name="x_add_hoc_increase" widget="radio" options="{'horizontal': true}"/>
@@ -46,6 +86,7 @@
                     <field name="x_rental_group_id"/> <!--domain="[('group_type','=','V')]"-->
                     <field name="x_bank_name"/>
                 </field>
+
                 <xpath expr="//page[@id='other_info']" position="before">
                     <page string="Equipment on this Contract">
                         <field name="id" invisible="1"/>

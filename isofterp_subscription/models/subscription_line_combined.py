@@ -8,26 +8,28 @@ class subscription_line_combined(models.Model):
     _auto = False
 
     contract = fields.Char('Contract', readonly=True)
-    acc = fields.Char('acc', readonly=True)
+    cust = fields.Char('Customer', readonly=True)
     start_date = fields.Date('Start Date', readonly=True)
     end_date = fields.Date('End Date', readonly=True)
-    serial = fields.Char('serial', readonly=True)
-    product = fields.Char('product', readonly=True)
-    main = fields.Boolean('main', readonly=True)
-    type = fields.Char('type', readonly=True)
-    bill = fields.Boolean('bill', readonly=True)
-    reading = fields.Integer('end reading', readonly=True)
-    price = fields.Float('price', readonly=True)
-    esc_date = fields.Char('esc date', readonly=True)
-    esc_percent = fields.Float('esc ', readonly=True)
-    esc_price = fields.Float('new price', readonly=True)
-    bank = fields.Char('bank', readonly=True)
+    serial = fields.Char('Serial', readonly=True)
+    product = fields.Char('Product', readonly=True)
+    main = fields.Boolean('Main', readonly=True)
+    type = fields.Char('Type', readonly=True)
+    bill = fields.Boolean('Bill', readonly=True)
+    reading = fields.Integer('End reading', readonly=True)
+    price = fields.Float('Price', readonly=True)
+    average_quantity = fields.Integer('Ave qty', readonly=True)
+    average_value = fields.Float('Ave val', readonly=True)
+    esc_date = fields.Char('Esc date', readonly=True)
+    esc_percent = fields.Float('Esc ', readonly=True)
+    esc_price = fields.Float('New price', readonly=True)
+    bank = fields.Char('Bank', readonly=True)
 
     def _select(self):
         select_str = """
              SELECT min(l.id) as id,
                     sub.name as contract,
-                    partner.x_account_number as acc,
+                    partner.name as cust,
                     l.x_start_date1 as start_date,
                     l.x_end_date1 as end_date,
                     lot.name as serial,
@@ -37,6 +39,9 @@ class subscription_line_combined(models.Model):
                     l.x_start_date1_billable as bill,
                     l.x_copies_last as reading,
                     l.price_unit as price,
+                    l.x_average_quantity as average_quantity,
+                    l.x_average_value as average_value,
+
                     CASE
                         WHEN l.name = 'Monthly Service' THEN lot.x_increase_service_date
                         WHEN l.name = 'Monthly Rental' THEN lot.x_increase_rental_date
@@ -66,17 +71,19 @@ class subscription_line_combined(models.Model):
     def _group_by(self):
         group_by_str = """
             GROUP BY l.product_id,
-                    
                     sub.name,
                     lot.name,
                     l.name ,
-                    partner.x_account_number,l.x_start_date1 ,
+                    partner.name,
+                    l.x_start_date1 ,
                     l.x_end_date1 ,
                     prod.name ,
                     lot.ref ,
                     l.x_start_date1_billable,
                     l.x_copies_last ,
                     l.price_unit ,
+                    l.x_average_quantity,
+                    l.x_average_value,
                     lot.x_main_product,
                     lot.x_increase_rental_date ,
                     lot.x_increase_service_date ,

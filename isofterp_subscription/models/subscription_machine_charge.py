@@ -21,7 +21,7 @@ class SubscriptionMachineCharge(models.Model):
 
     name = fields.Char('Description')
     charges_type_id = fields.Many2one('subscription.charges.type', 'Transaction Type')
-    product_id = fields.Many2one('product.product',string='Product')
+    product_id = fields.Many2one('product.product',string='Product', domain=[('categ_id','in', ['charge', 'copies','component'])])
     product_key = fields.Integer('Key')
     qty = fields.Float('Quantity')
     price = fields.Float('Price')

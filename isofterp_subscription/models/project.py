@@ -14,7 +14,8 @@ class Task(models.Model):
         partner = self.env['res.partner'].search([('id','=',self.partner_id.id)])
         #print('amt due',partner.due_amount)
         if self.partner_id and partner.total_due > partner.credit_limit:
-            self.user_id = False
+            # user id has been replaced with user_ids (multiple assignees)
+            self.user_ids = False
             title = ("Warning for %s") % partner.name
             message = "Has exceeded Credit Limit"
             warning = {

@@ -14,7 +14,7 @@
                     <field name="x_product_id"/>
                     <field name="x_start_date1"/>
                     <field name="x_end_date1"/>
-                    <field name="x_start_date1_billable"/>
+                    <field name="x_start_date1_billable" />
                     <field name="x_copies_previous" attrs="{'invisible': [('x_copies_show', '=', False)]}"/>
                     <field name="x_copies_last" attrs="{'invisible': [('x_copies_show', '=', False)]}"/>
                     <field name="quantity" />
@@ -83,17 +83,18 @@
             <field name="arch" type="xml">
                 <tree >
                     <field name="contract" />
-                    <field name="acc"/>
-
+                    <field name="cust"/>
                     <field name="serial"/>
                     <field name="product"/>
-                    <field name="main"/>
+                    <field name="main" optional="hide"/>
                     <field name="type"/>
                     <field name="start_date"/>
                     <field name="end_date"/>
-                    <field name="bill"/>
-                    <field name="reading"/>
+                    <field name="bill" optional="hide"/>
+                    <field name="reading" optional="hide"/>
                     <field name="price"/>
+                    <field name="average_quantity" optional="hide"/>
+                    <field name="average_value" optional="hide"/>
                     <field name="esc_date" />
                     <field name="esc_percent" />
                     <field name="esc_price" />
@@ -109,12 +110,13 @@
             <field name="arch" type="xml">
             <search>
                 <field name="contract"/>
-                <field name="acc"/>
+                <field name="cust"/>
                 <field name="serial"/>
                 <filter name="Billable" string="Billable" domain="[('bill','=',True)]"/>
                 <separator/>
                 <group expand="1" string="Group By">
-                    <filter string="Customer" name="type" context="{'group_by':'acc'}"/>
+                    <filter string="Type" name="type" context="{'group_by':'type'}"/>
+                    <filter string="Customer" name="Cust" context="{'group_by':'cust'}"/>
                     <filter string="Conract" name="categ_id" context="{'group_by':'contract'}"/>
                 </group>
             </search>

@@ -6,13 +6,16 @@
             <field name="model">meter.click.combined</field>
             <field name="arch" type="xml">
                 <tree string="Meter Clicks" delete="false" create="false" editable="bottom">
-                    <field name="code" readonly="1" string="Code"/>
-                    <field name="partner" readonly="1" string="Partner"/>
+                     <field name="partner" readonly="1" string="Customer"/>
+                    <field name="code" readonly="1" string="Contract"/>
+                      <field name="product" readonly="1" string="Model"/>
+
                     <field name="serial" readonly="1" string="Serial Number"/>
-                    <field name="product" readonly="1" string="Model"/>
+
                     <field name="salesperson" string="Owner"/>
-                    <field name="last_reading" readonly="1" string="Lasr Reading"/>
+
                     <field name="prevous_reading" readonly="1" string="Previous"/>
+                     <field name="last_reading" readonly="1" string="Current Reading"/>
                     <field name="to_bill" readonly="1" string="Copies to Bill"/>
                     <field name="price" readonly="1" string="CPC"/>
                     <field name="billamt" readonly="1" string="Min Billing"/>
@@ -31,6 +34,7 @@
                   parent="sale_subscription.menu_sale_subscription"
                   action="action_meter_click_combined"
                   sequence="99"
+                  groups="sale_subscription.group_sale_subscription_manager,access_meter_reading_extra_group"
         />
 
 

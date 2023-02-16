@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="crm_lead_view_form_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.form.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+                <h1>
+                    <field class="text-break" name="name_seq" attrs="{'invisible': [('type', '=', 'lead')]}"/>
+                </h1>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_case_tree_view_oppor_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.form.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="name_seq"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_case_kanban_view_leads_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.lead.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="priority" eval="1"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+                <div class="o_kanban_record_title oe_kanban_details">
+                    <strong>
+                        <field name="name_seq"/>
+                    </strong>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_case_form_view_oppor_isoft" model="ir.ui.view">
+        <field name="name">crm.lead.oppor.inherited.crm.isoft</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="sale_crm.crm_case_form_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_sale_quotations_new']" position="replace">
+                <button string="New Quotation" name="action_sale_quotations_new" type="object" class="oe_highlight" data-hotkey="q"
+                        title="Create new quotation"
+                        attrs="{'invisible': ['|', ('type', '=', 'lead'), '&amp;', ('probability', '=', 0), ('active', '=', False)]}"
+                        groups="sale_subscription.group_sale_subscription_manager"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

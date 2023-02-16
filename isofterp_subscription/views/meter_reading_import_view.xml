@@ -7,11 +7,13 @@
             <field name="arch" type="xml">
                 <tree string="Meter Clicks" delete="false" create="false" editable="bottom"
                       decoration-danger="quantity &lt;1">
+                    <field name="x_partner_id" readonly="1" string="Customer  "/>
                     <field name="analytic_account_id" readonly="1" string="Rental Contract"/>
+                     <field name="product_id" readonly="1"/>
                     <field name="x_serial_number_id" readonly="1"/>
-                    <field name="product_id" readonly="1"/>
-                    <field name="x_copies_last"/>
-                    <field name="x_copies_previous" readonly="1"/>
+                    <field name="x_copies_previous" string="Previous reading" readonly="1"/>
+                    <field name="x_copies_last" string="Current reading"/>
+
                     <field name="quantity" readonly="1" sum="Total Billable Copies"/>
                 </tree>
 
@@ -49,6 +51,7 @@
                   parent="sale_subscription.menu_sale_subscription"
                   action="action_capture_meter_click"
                   sequence="95"
+                  groups="sale_subscription.group_sale_subscription_manager,access_meter_reading_extra_group"
         />
 
         <record id="action_import_readings" model="ir.actions.act_window">

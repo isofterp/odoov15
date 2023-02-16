@@ -8,11 +8,12 @@
                 <form string="Machine Charges">
                     <group>
                         <field name="charges_type_id"/>
-                        <field name="product_id" domain="[('categ_id.name','in',['charge','copies','component'])]"/>
+                        <field name="product_id" domain="[('categ_id.name','in',['charge','copies','rental'])]"
+                        options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,}"/>
                         <field name="name"  />
                         <field name="price"/>
                     </group>
-                    <group attrs="{'invisible': [('charges_type_id','>', 2), ]}">
+                    <group attrs="{'invisible': [('charges_type_id','>=', 2), ]}">
 
                         <field name="minimum_charge"/>
                         <field name="copies_free"/>

@@ -8,7 +8,7 @@ class meter_click_combined(models.Model):
     _auto = False
 
     code = fields.Char('Code', readonly=True)
-    partner = fields.Char('Partner', readonly=True)
+    partner = fields.Char('Customer', readonly=True)
     salesperson = fields.Char('Owner', readonly=True)
     serial = fields.Char('Serial', readonly=True)
     last_reading = fields.Integer('Last reading', readonly=True)

@@ -8,11 +8,12 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <field name="user_id" position="replace"/>
+                <!--
                 <field name="type" position="before">
                     <field name="x_account_number"/>
                     <field name="total_overdue"/>
                     <field name="unpaid_invoices"/>
-                </field>
+                </field>-->
                 <field name="website" position="before">
                     <field name="x_fax"/>
                 </field>

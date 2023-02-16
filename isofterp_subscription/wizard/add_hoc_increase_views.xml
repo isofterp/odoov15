@@ -6,21 +6,41 @@
             <field name="model">addhoc.increase.wizard</field>
             <field name="arch" type="xml">
                 <form>
+
+
+                        <DIV>Hello</DIV><field name="current_user"></field><DIV>You are about to run VERY serious operation.</DIV>
+                        <DIV>This is a VERY serious operation. It will effect all future Billing. You <b>MUST</b> make a backup of the Database before runnning this Program.</DIV>
+                      <DIV>Are you sure you want to run the following increases?</DIV>
+                    <DIV>If so, please type in the word "Yes" to continue (this meanes you have agreed that a backup has been made.</DIV>
+                        <field name="yes_to_backup" string="Answer"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    <DIV>============================================================================================================================</DIV>
+
                     <group col="4">
-                        <field name="amt_start" />
-                        <field name="amt_end"/>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                    <group col="4">
+                        <field name="min_amount"/>
+                        <field name="max_amount"/>
                     </group>
                     <group col="2">
                         <field name="copy_chrg_1" widget="radio" options="{'horizontal': true}"/>
                         <field name="copy_chrg_2" widget="radio" options="{'horizontal': true}"/>
                         <field name="copy_chrg_3" widget="radio" options="{'horizontal': true}"/>
                     </group>
-                    <group>
+                    <group col="2">
+                        <field name="rental_chrg" widget="radio" options="{'horizontal': true}"/>
                         <field name="service_chrg" widget="radio" options="{'horizontal': true}"/>
                         <field name="chrg_type" widget="radio" options="{'horizontal': true}"/>
+
+                    </group>
+                    <group>
                         <field name="amount"/>
                     </group>
-                     <footer>
+                    <DIV>Please check all your options are correct before clicking on the "Run Increases" button</DIV>
+
+                    <footer>
                         <button name="run_increase_update" string="Run Increases" type="object" class="oe_highlight"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel"/>
@@ -29,18 +49,18 @@
             </field>
         </record>
 
-         <record id="action_add_hoc_increase" model="ir.actions.act_window" >
+        <record id="action_add_hoc_increase" model="ir.actions.act_window">
             <field name="name">Add Hoc Increases</field>
             <field name="res_model">addhoc.increase.wizard</field>
             <field name="view_mode">form</field>
-             <field name="target">new</field>
+            <field name="target">new</field>
         </record>
 
         <menuitem id="menu_add_hoc_increase"
-              parent="sale_subscription.menu_sale_subscription_config"
-              action="action_add_hoc_increase"
-              sequence="5"
-          />
+                  parent="sale_subscription.menu_sale_subscription_config"
+                  action="action_add_hoc_increase"
+                  sequence="5"
+        />
 
     </data>
 </odoo>

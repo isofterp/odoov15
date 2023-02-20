@@ -61,8 +61,8 @@ class sale_subscription_line(models.Model):
     x_copies_price_2 = fields.Float('Charge 2',digits = (3,4))
     x_copies_vol_3 = fields.Integer('Volume 3')
     x_copies_price_3 = fields.Float('Charge 3',digits = (3,4))
-    x_average_quantity = fields.Integer('Average Qty',compute='_average_quantity',store=True)
-    #x_average_quantity = fields.Integer('Ave Qty', default=1)
+    #x_average_quantity = fields.Integer('Average Qty',compute='_average_quantity',store=True)
+    x_average_quantity = fields.Integer('Ave Qty', default=1)
     x_average_value = fields.Float('Ave Val',digits = (3,4))
     x_average_months = fields.Integer('Average Months', default=1,help="Set the average number of months to use")
     x_billing_frequency = fields.Integer("Billing Frequency", default=1)
@@ -83,11 +83,11 @@ class sale_subscription_line(models.Model):
     """ This might need to run as a cron monthly to calculate and store values"""
     @api.depends('quantity')
     def _average_quantity(self):
-        self.ensure_one()
+        #self.ensure_one()
         now = datetime.now()
         date_N_months_ago = now - timedelta(days=self.x_average_months * 30)
-        sortBy = "create_date desc"
-        print (self.create_date," ",date_N_months_ago)
+        #sortBy = "create_date desc"
+        #print (self.create_date," ",date_N_months_ago)
         trx = self.env['account.move.line'].search([('subscription_id','=',self.id),
                                                        ('product_id','=', self.product_id.id ),
                                                        ('create_date', '>=' , str(date_N_months_ago))])

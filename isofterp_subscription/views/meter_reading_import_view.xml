@@ -9,8 +9,9 @@
                       decoration-danger="quantity &lt;1">
                     <field name="x_partner_id" readonly="1" string="Customer  "/>
                     <field name="analytic_account_id" readonly="1" string="Rental Contract"/>
-                     <field name="product_id" readonly="1"/>
+                    <field name="product_id" readonly="1"/>
                     <field name="x_serial_number_id" readonly="1"/>
+                    <field name="x_product_id" readonly="1"/>
                     <field name="x_copies_previous" string="Previous reading" readonly="1"/>
                     <field name="x_copies_last" string="Current reading"/>
 
@@ -67,6 +68,7 @@
                   parent="sale_subscription.menu_sale_subscription"
                   action="action_import_readings"
                   sequence="96"
+                  groups="sale_subscription.group_sale_subscription_manager,access_meter_reading_extra_group"
         />
 
 

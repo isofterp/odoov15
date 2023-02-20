@@ -13,74 +13,74 @@ class SaleSubscription(models.Model):
 
     # this is commented out to run the conversion program
     #  !!!!!!!!!! Uncomment the below to go live !!!!!
-    #
+    #   25/10/2022 I dont beleieve we need this anymore. The create is in the sale.py
 
     #   Must be active once conversion has been run
-    @api.model
-    def create(self, vals):
-        print('@21 create sale_subscription.py')
-        list_of_ids = []
-
-        # Now create the Subscription - THIS routine is to be used when automatic creation of Subscription fro Sales Order
-        new_rec = super(SaleSubscription, self).create(vals)
-
-        subscription_line_obj = self.env['sale.subscription.line']
-        production_lot_obj = self.env['stock.production.lot']
-        machines = vals.get('x_machine_ids')
-        print('list of mac', machines)
-        if machines:
-            list_of_ids = machines[0][2]
-        if list_of_ids:
-            print('list of  ids', list_of_ids)
-            for x in list_of_ids:
-                rec_found = subscription_line_obj.search_count([('line.x_serial_number_id', '=', x)])
-                if rec_found:
-                    continue
-                else:
-                    # print("need to create charges for ", x)
-                    mac = production_lot_obj.search([('id', '=', x)])
-                    mac.x_in_use = True
-                    for rec in mac.product_id.x_machine_charge_ids:
-                        show = False
-                        if rec.product_id.categ_id.name == 'copies':
-                            show = True
-                            res = {
-                                'name': " Tier One",
-                                'uom_id': 1,
-                                'product_id': rec.product_id.id,
-                                'quantity': 0,
-                                'price_unit': rec.copies_price_1,
-                                'analytic_account_id': new_rec.id,
-                                'x_copies_show': show,
-                                'x_product_id': mac.product_id,
-                                'line.x_serial_number_id': mac.id,
-                                'x_copies_minimum': rec.minimum_charge,
-                                'x_copies_free': rec.copies_free,
-                                'x_copies_vol_1': rec.copies_vol_1,
-                                'x_copies_price_1': rec.copies_price_1,
-                                'x_copies_vol_2': rec.copies_vol_2,
-                                'x_copies_price_2': rec.copies_price_2,
-                                'x_copies_vol_3': rec.copies_vol_2,
-                                'x_copies_price_3': rec.copies_price_3,
-                            }
-                            line_id = subscription_line_obj.create(res)
-
-                        else:
-                            res = {
-                                'name': rec.name,
-                                'uom_id': 1,
-                                'product_id': rec.product_id.id,
-                                'quantity': rec.qty,
-                                'price_unit': rec.price,
-                                'analytic_account_id': new_rec.id,
-                                'x_copies_show': show,
-                                'x_product_id': mac.product_id,
-                                'line.x_serial_number_id': mac.id,
-
-                            }
-                            line_id = subscription_line_obj.create(res)
-
-        return new_rec
+    #@api.model
+    # def create(self, vals):
+    #     print('@21 create sale_subscription.py',vals)
+    #     list_of_ids = []
+    #
+    #     # Now create the Subscription - THIS routine is to be used when automatic creation of Subscription fro Sales Order
+    #     new_rec = super(SaleSubscription, self).create(vals)
+    #
+    #     subscription_line_obj = self.env['sale.subscription.line']
+    #     production_lot_obj = self.env['stock.production.lot']
+    #     machines = vals.get('x_machine_ids')
+    #     print('list of mac', machines)
+    #     if machines:
+    #         list_of_ids = machines[0][2]
+    #     if list_of_ids:
+    #         print('list of  ids', list_of_ids)
+    #         for x in list_of_ids:
+    #             rec_found = subscription_line_obj.search_count([('line.x_serial_number_id', '=', x)])
+    #             if rec_found:
+    #                 continue
+    #             else:
+    #                 print("need to create charges for ", x)
+    #                 mac = production_lot_obj.search([('id', '=', x)])
+    #                 mac.x_in_use = True
+    #                 for rec in mac.product_id.x_machine_charge_ids:
+    #                     show = False
+    #                     if rec.product_id.categ_id.name == 'copies':
+    #                         show = True
+    #                         res = {
+    #                             'name': " Tier One",
+    #                             'uom_id': 1,
+    #                             'product_id': rec.product_id.id,
+    #                             'quantity': 0,
+    #                             'price_unit': rec.copies_price_1,
+    #                             'analytic_account_id': new_rec.id,
+    #                             'x_copies_show': show,
+    #                             'x_product_id': mac.product_id,
+    #                             'line.x_serial_number_id': mac.id,
+    #                             'x_copies_minimum': rec.minimum_charge,
+    #                             'x_copies_free': rec.copies_free,
+    #                             'x_copies_vol_1': rec.copies_vol_1,
+    #                             'x_copies_price_1': rec.copies_price_1,
+    #                             'x_copies_vol_2': rec.copies_vol_2,
+    #                             'x_copies_price_2': rec.copies_price_2,
+    #                             'x_copies_vol_3': rec.copies_vol_2,
+    #                             'x_copies_price_3': rec.copies_price_3,
+    #                         }
+    #                         line_id = subscription_line_obj.create(res)
+    #
+    #                     else:
+    #                         res = {
+    #                             'name': rec.name,
+    #                             'uom_id': 1,
+    #                             'product_id': rec.product_id.id,
+    #                             'quantity': rec.qty,
+    #                             'price_unit': rec.price,
+    #                             'analytic_account_id': new_rec.id,
+    #                             'x_copies_show': show,
+    #                             'x_product_id': mac.product_id,
+    #                             'line.x_serial_number_id': mac.id,
+    #
+    #                         }
+    #                         line_id = subscription_line_obj.create(res)
+    #
+    #     return new_rec
 
     #   need attention - wont work if called from sales order
     # def write(self, vals):
@@ -148,23 +148,25 @@ class SaleSubscription(models.Model):
     #                         line_id = subscription_line_obj.create(res)
     #     return super(SaleSubscription, self).write(vals)
 
-    # @api.model
-    # #   havent worked out how to get this to fire - it appears even the standard does not fire
-    # def _name_search(self, name='', args=None, operator='ilike',
-    #                  limit=100, name_get_uid=None):
-    #     args = [] if args is None else args.copy()
-    #     print('@179 in my sale_subscription ,args', args)
-    #     if not (name == '' and operator == 'ilike'):
-    #         args += ['|', '|',
-    #                  ('x_serial_number_id', operator, name),
-    #                  ('analytic_account_id', operator, name),
-    #                  ('analytic_account_id.partner_id.x_account_number', operator, name)
-    #                  ]
-    #     return super(SaleSubscription, self)._name_search(name='', args=args, operator='ilike', limit=limit,
-    #                                                       name_get_uid=name_get_uid)
+    """ This _name_search is NOT firing """
+    @api.model
+    def name_search(self, name='', args=None, operator='ilike',limit=100, name_get_uid=None):
+        print("*** in my name_search")
+        args = [] if args is None else args.copy()
+        print('@179 in my sale_subscription ,args', args)
+        if not (name == '' and operator == 'ilike'):
+            args += ['|', '|',
+                     ('x_serial_number_id', operator, name),
+                     ('analytic_account_id', operator, name),
+                     ('analytic_account_id.partner_id.x_account_number', operator, name)
+                     ]
+        return super(SaleSubscription, self)._name_search(name='', args=args, operator='ilike', limit=limit,
+                                                          name_get_uid=name_get_uid)
 
-    x_add_hoc_increase = fields.Selection([('yes', 'Yes'), ('no', 'No')], default='yes',
+    x_add_hoc_increase = fields.Selection(selection=[('yes', 'Yes'), ('no', 'No')], default='yes',
                                           string='Add Hoc Increases')
+    x_third_party_rental_billing = fields.Selection(selection=[('yes', 'Yes'), ('no', 'No')], default='no',
+                                                    string='3rd Party Rental Billing')
     x_account_number = fields.Char('Account Number', related='partner_id.x_account_number', index=True)
     x_sale_order_id = fields.Many2one('sale.order', 'Sales Order')
     x_rental_group_id = fields.Many2one('subscription.rental.group', 'Rental Group')
@@ -224,7 +226,7 @@ class SaleSubscription(models.Model):
         }
 
     def _prepare_invoice_lines(self, fiscal_position):
-        print(" My _prepare_invoice_lines")
+        print("@229 My _prepare_invoice_lines in sale_subscription.py")
         self.ensure_one()
         revenue_date_start = self.recurring_next_date
         periods = {'daily': 'days', 'weekly': 'weeks', 'monthly': 'months', 'yearly': 'years'}
@@ -245,7 +247,6 @@ class SaleSubscription(models.Model):
             if machine:
                 # print("@262", line.name, line.product_id.categ_id.name)
                 # print('machine',machine.x_increase_copies_date)
-
                 if machine.x_increase_rental_date:
                     if self.recurring_next_date >= machine.x_increase_rental_date:
                         if line.product_id.categ_id.name == 'rental':
@@ -267,7 +268,11 @@ class SaleSubscription(models.Model):
                             line.x_copies_price_3 += machine.x_increase_copies_percent * line.x_copies_price_3 / 100
                             increment_copies = 'yes'
             if line.x_end_date1:
-                if self.recurring_next_date >= line.x_end_date1:
+                if self.recurring_next_date >= line.x_end_date1 and not x_third_party_rental_billing:
+                    # If the end_date1 has been reached, that means the bank will stop billing so we set the billing
+                    # indicator to 'yes' and this program will start creating invoices instead of the Bank (3rd party).
+                    # However, if the x_third_party_rental_billing field is set to 'yes' then that means the
+                    # Bank (3rd party) will continue billing and the billing indicator will remain off.
                     line.x_start_date1_billable = True
                     group_id = self.env['subscription.rental.group'].search(
                         [('group_type', '=', 'C'), ('group_code', '=', 10)])  # should point to Secondary Rental
@@ -277,8 +282,8 @@ class SaleSubscription(models.Model):
             # print (line.x_start_date1 ,line.x_start_date1_billable )
             if line.x_start_date1:
                 if line.x_start_date1 > self.recurring_next_date or not line.x_start_date1_billable:
-                    print('product = %s next recurring invoice date = %s start date = %s billable=%s' % (
-                    line.name, self.recurring_next_date, line.x_start_date1, line.x_start_date1_billable))
+                    # print('product = %s next recurring invoice date = %s start date = %s billable=%s' % (
+                    # line.name, self.recurring_next_date, line.x_start_date1, line.x_start_date1_billable))
                     continue
             if line.x_billing_frequency > 1:
                 # print("billing freq", line.x_billing_frequency, line.x_billing_hold)
@@ -322,6 +327,7 @@ class SaleSubscription(models.Model):
                 if copies_total_value < line.x_copies_minimum:
                     line_vals = {
                         'subscription_id': line.analytic_account_id.id,
+                        'ref': "Contract Number " + line.analytic_account_id.name,
                         'quantity': 1,
                         # vals.update({'specific_price': line.x_copies_price_1}),
                         'price_unit': line.x_copies_minimum,
@@ -340,6 +346,7 @@ class SaleSubscription(models.Model):
                     if qty_tier_1 > 0:
                         line_vals = {
                             'subscription_id': line.analytic_account_id.id,
+                            'ref': "Contract Number " + line.analytic_account_id.name,
                             'quantity': qty_tier_1,
                             'product_uom_id': line.uom_id.id,
                             'product_id': line.product_id.id,
@@ -358,6 +365,7 @@ class SaleSubscription(models.Model):
                     if qty_tier_2 > 0:
                         line_vals = {
                             'subscription_id': line.analytic_account_id.id,
+                            'ref': "Contract Number " + line.analytic_account_id.name,
                             'quantity': qty_tier_2,
                             # vals.update({'specific_price': line.x_copies_price_1}),
                             'product_uom_id': line.uom_id.id,
@@ -375,6 +383,7 @@ class SaleSubscription(models.Model):
                     if qty_tier_3 > 0:
                         line_vals = {
                             'subscription_id': line.analytic_account_id.id,
+                            'ref': "Contract Number " + line.analytic_account_id.name,
                             'quantity': qty_tier_3,
                             # vals.update({'specific_price': line.x_copies_price_1}),
                             'product_uom_id': line.uom_id.id,
@@ -398,6 +407,7 @@ class SaleSubscription(models.Model):
                 print(line.x_serial_number_id.id, line.x_serial_number_id.name)
                 line_vals = {
                     'subscription_id': line.analytic_account_id.id,
+                    'ref': "Contract Number " + line.analytic_account_id.name,
                     'product_uom_id': line.uom_id.id,
                     'product_id': line.product_id.id,
                     'tax_ids': [(6, 0, line.product_id.taxes_id.filtered(
@@ -409,7 +419,7 @@ class SaleSubscription(models.Model):
                     # 'analytic_account_id': analyticAccount_id,
                     # 'analytic_tag_ids':  [(4,line.product_id.categ_id.id)],
                 }
-                print('ana tag=', line.product_id.categ_id.id, line.product_id.categ_id)
+                #('ana tag=', line.product_id.categ_id.id, line.product_id.categ_id)
                 # print('@439',line_vals)
 
                 lines.append(line_vals)
@@ -431,6 +441,11 @@ class SaleSubscription(models.Model):
                 machine.x_increase_rental_date = machine.x_increase_rental_date + relativedelta(years=+1)
 
         return lines
+
+    def _recurring_create_invoice(self, automatic=False):
+        rec = super(SaleSubscription, self)._recurring_create_invoice(automatic=automatic)
+        rec.write({'ref': self.name})
+        return rec
 
     def _find_mail_template(self, force_confirmation_template=False):
         template_id = False
@@ -475,7 +490,7 @@ class SaleSubscription(models.Model):
         message_0 = "Could you please fill in the latest meter reading figures for the following:"
         message_1 = "This is your second reminder to enter your meter readings"
         message_2 = "This is your FINAL reminder to enter your meter readings"
-        logging.warning("----- Cron Meter reading running")
+
         line_ids = self.env['sale.subscription.line'].search(['|', ('name', '=', 'Black copies'),
                                                               ('name', '=', 'Colour copies'),
                                                               ('quantity', '=', 0)])
@@ -501,7 +516,7 @@ class SaleSubscription(models.Model):
                 email_body += " on " + line.analytic_account_id.partner_id.phone + " and enter the last meter readings for "
                 email_body += "</br>" + product + " Serial Number: " + serial_number + "</div>"
                 email_body += "<div style = 'text-align: center; margin: 16px 0px 16px 0px;' >"
-                email_body += "<a href = /my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
+                email_body += "<a href = copytype-billing.isofterp.co.za/my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
                 email_body += "</div>"
                 mail_values = {
                     'email_from': email_from,
@@ -531,11 +546,11 @@ class SaleSubscription(models.Model):
             # !!!!!!!!! take the follwing line out after teting !!!!!!!!!!!!!!!!!!!!!!!!!!
             email_body += "<div> FOR TESTING - the real email address for " + email_person + " is " + email_to
             email_body += "<div style = 'text-align: center; margin: 16px 0px 16px 0px;' >"
-            email_body += "<a href = /my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
+            email_body += "<a href = copytype-billing.isofterp.co.za/my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
             email_body += "</div>"
 
             email_to = 'sue@copytype.co.za'  ################   !!!!!!!!!!!   Testing email address - remove to go live  !!!!!
-            email_to = 'edgar@isoft.co.za'
+            email_to = 'roly@isoft.co.za'
             mail_values = {
                 'email_from': email_from,
                 'email_to': email_to,
@@ -548,9 +563,9 @@ class SaleSubscription(models.Model):
 
             # if line.analytic_account_id.partner_id.id == 186:  # KaapAgrie
             # print("we are here at last", line.analytic_account_id.partner_id.id)
-            #if line.analytic_account_id.code == '11104580':
-            #self.message_post(
-            #    body=" THIS needs to change for go live " + email_body + " THIS needs to change for go live ")
-            mail_out = mail.create(mail_values)
-            # mail.send(mail_out)
-            line.x_email_count += 1
+            if line.analytic_account_id.code == '11104580':
+                self.message_post(
+                    body=" THIS needs to change for go live " + email_body + " THIS needs to change for go live ")
+                mail_out = mail.create(mail_values)
+                # mail.send(mail_out)
+                line.x_email_count += 1

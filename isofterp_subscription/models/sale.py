@@ -192,11 +192,11 @@ class SaleOrder(models.Model):
     @api.constrains('x_finance_rental','x_finance_factor','x_finance_settlement','x_finance_cost')
     def _check_values(self):
         for rec in self:
-            if rec.x_finance_rental <= 0:
+            if rec.x_finance_rental <= 0 and rec.x_is_contract_quote:
                 raise ValidationError('Please enter a valid value for Rental')
-            if rec.x_finance_factor <= 0:
+            if rec.x_finance_factor <= 0 and rec.x_is_contract_quote:
                 raise ValidationError('Please enter a valid value for Factor')
-            if not rec.x_finance_months :
+            if not rec.x_finance_months and rec.x_is_contract_quote:
                 raise ValidationError('Please enter a valid value for Months')
 
     @api.onchange('x_finance_rental','x_finance_factor','x_finance_settlement','x_finance_cost')

@@ -28,6 +28,7 @@
         'views/res_partner_view.xml',
         'views/crm_lead_views.xml',
         'views/account_move_views.xml',
+        'views/purchase_views.xml',
         'data/data.xml',
         'wizard/add_hoc_increase_views.xml',
         'wizard/meter_reading_request_views.xml',

@@ -5,6 +5,7 @@ from dateutil.relativedelta import relativedelta
 #from odoo import exceptions
 from odoo.exceptions import ValidationError
 
+
 import pandas as pd
 import tempfile
 import xlsxwriter
@@ -19,19 +20,22 @@ _logger = logging.getLogger(__name__)
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
+
     def _prepare_invoice(self):
         res = super(SaleOrder, self)._prepare_invoice()
-        if self.x_sale_subscription_id:
-            res['ref'] = "Rental Contract number " + self.x_sale_subscription_id.name
-        res['x_no_charge'] =  self.x_no_charge
+        for rec in self:
+            if rec.x_sale_subscription_id:
+                res['ref'] = "Rental Contract number " + rec.x_sale_subscription_id.name
+        res['x_no_charge'] = self.x_no_charge
         return res
 
     def action_spreadsheet(self):
-        # for rec in self:
-        #
-        #     print('quote',rec.x_is_contract_quote)
-        #
-        # print('now we are here')
+        print("we are in action_spreadsheet")
+        for rec in self:
+
+            print('quote',rec.x_is_contract_quote)
+
+        print('now we are here')
 
         file_path = tempfile.mktemp(suffix='.xlsx')
         model = []
@@ -81,7 +85,11 @@ class SaleOrder(models.Model):
                 for line in order.order_line:
                     if line.product_id.categ_id.name == 'main product':
                         model[i] = line.name
+
+
+
                         for charge in line.product_id.x_machine_charge_ids:
+                            print('charge name=',charge.name)
                             if charge.name == 'Black copies':
                                 black_vol1[i] = charge.copies_vol_1
                                 black_charge[i] = charge.copies_price_1
@@ -92,6 +100,7 @@ class SaleOrder(models.Model):
                         cash_deal[i] = line.price_unit
                     if line.product_id.name == 'Finance Deal':
                         rental[i] =line.price_unit
+
                 i = i + 1
             df = pd.DataFrame({'Model': model,
                                'Cash Deal': cash_deal,
@@ -138,6 +147,7 @@ class SaleOrder(models.Model):
 
             # Close the Pandas Excel writer and output the Excel file.
             writer.save()
+            print("finished")
             workbook.close()
             with open(writer, 'rb') as r:
                 xls_file = base64.b64encode(r.read())
@@ -152,18 +162,50 @@ class SaleOrder(models.Model):
             return attachment_id.id
 
     x_lot_id = fields.Many2one('stock.production.lot', 'Serial Number')
+    x_is_billable = fields.Boolean(related='x_lot_id.x_service_type_id.billable')
     x_sale_subscription_id = fields.Many2one('sale.subscription', 'Subscription')
-    x_cash1 = fields.Float("Toner")
-    x_cash2 = fields.Float("Mark up")
-    x_cash3 = fields.Float("Settelment")
-    x_cash4 = fields.Float("Sponsorship")
-    x_cash5 = fields.Float("Salesman Profit")
+    x_finance_rental = fields.Float("Rental", digits = (6,2))
+    x_finance_factor = fields.Float("Factor Used",digits = (3,5))
+    x_finance_months = fields.Selection([
+        ('12', '12 Mnths'),
+        ('24', '24 Mnths'),
+        ('36', '36 Mnths'),
+        ('48', '48 Mnths'),
+        ('60', '60 Mnths'),
+        ('72', '72 Mnths'),
+    ], string="Term")
+    x_finance_capital= fields.Float("Capital")
+    x_finance_cost = fields.Float("Cost", digits = (6,2))
+    x_finance_settlement = fields.Float("Settlement", digits = (6,2))
+    x_finance_escalation = fields.Selection([('0','0%'),
+                                             ('5','5%'),
+                                             ('10','10%'),
+                                             ('15','15%'),],
+                                            string="Escalation %",default='0')
+    x_finance_profit = fields.Float("Profit")
     x_rental_factor = fields.Many2one("subscription.rental.factor", 'Rental Factor')
     x_is_contract_quote = fields.Boolean('Subscription Quote',help="By ticking this box it means you intend converting this Quote into a subscription")
-    #x_service_type = fields.Char("Service type")
     x_service_type = fields.Char(related='x_lot_id.x_service_type_id.name')
-    x_no_charge = fields.Boolean("Tick here if you want to create a No Charge Invoice", help="Tick if you want a No-Charge Sale")
-    #x_rental_factor = fields.Selection(VALUES, string='Rental Factor')
+    x_component_ids = fields.Many2many(related='x_lot_id.product_id.x_optional_component_ids')
+    x_no_charge = fields.Boolean("Tick here if you want to create a No Charge Invoice",
+                                 help="Tick if you want a No-Charge Sale")
+    @api.constrains('x_finance_rental','x_finance_factor','x_finance_settlement','x_finance_cost')
+    def _check_values(self):
+        for rec in self:
+            if rec.x_finance_rental <= 0:
+                raise ValidationError('Please enter a valid value for Rental')
+            if rec.x_finance_factor <= 0:
+                raise ValidationError('Please enter a valid value for Factor')
+            if not rec.x_finance_months :
+                raise ValidationError('Please enter a valid value for Months')
+
+    @api.onchange('x_finance_rental','x_finance_factor','x_finance_settlement','x_finance_cost')
+
+    def onchange_finance_deal(self):
+        if self.x_finance_rental and self.x_finance_factor:
+            self.x_finance_capital = self.x_finance_rental / self.x_finance_factor
+            self.x_finance_profit = self.x_finance_capital - self.x_finance_settlement - self.x_finance_cost
+
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):
@@ -175,9 +217,15 @@ class SaleOrder(models.Model):
         return new_rec
 
     @api.onchange('x_lot_id')
-    def onchange_x_lot_id(self, context=None):
+    def onchange_x_lot_id(self,context=None):
         if not self.x_lot_id:
             return
+        if self.order_line:
+            for rec in self.order_line:
+                rec.unlink()
+                return
+        self.env.context = dict(self.env.context)
+        self.env.context.update({'default_dlv_ids': self.x_lot_id.x_dlv_id.id})
         ana_id = self.env['account.analytic.account'].search([('name','=',self.x_lot_id.name)]).id
         if not ana_id:
             title = 'WARNING -------> ' + self.x_lot_id.product_id.name
@@ -188,12 +236,11 @@ class SaleOrder(models.Model):
             return {'warning': warning}
         self.analytic_account_id = ana_id
         #self.x_service_type = self.x_lot_id.x_service_type_id.name
-        self.env.context = dict(self.env.context)
-        self.env.context.update({'default_dlv_ids': self.x_lot_id.x_dlv_id.id})
+
+
+        #print ('in onchange lot_id',self.env.context)
         self.x_sale_subscription_id = self.x_lot_id.x_subscription_id.id,
-        #self.partner_id =self.x_lot_id.x_sale_subscription_id.partner_id
         self.partner_id = self.x_sale_subscription_id.partner_id
-       # self.partner_id = self.x_lot_id.x_dlv_id.parent_id.id
         self.partner_shipping_id = self.x_lot_id.x_dlv_id.id
         if not self.partner_shipping_id:
             self.partner_shipping_id =  self.partner_id
@@ -207,27 +254,27 @@ class SaleOrder(models.Model):
                 'message': message,
             }
             return {'warning': warning}
+
+
         return
 
-    def _create_analytic_account(self,serial):
+    """This is called from the 'Done' button on the form once finance deal has been entered"""
+    def update_deal(self):
+        prod_id = self.env['product.product'].search([('name', '=', 'Finance Deal')])
+        if not prod_id:
+            raise ValidationError("You need to create a Product of type Consumable called 'Finance Deal'")
+        self.env['sale.order.line'].search([('product_id', '=', prod_id.id), ('order_id', '=', self.id)]).unlink()
+        """Now create a new Rental line using the values from the finance deal"""
+        res = {
+            'name': 'Monthly Rental',
+            'order_id': self.id,
+            'product_id': prod_id.id,
+            'product_uom_qty': 1,
+            'price_unit': self.x_finance_rental
+        }
+        self.env['sale.order.line'].create(res)
 
-        lot = self.env['stock.production.lot'].search([('id', '=', serial)])
-
-        analytic_acc_obj = self.env['account.analytic.account']
-        analytic_account = analytic_acc_obj.search([('name', '=', lot.name)])
-        #print("217",analytic_account)
-        #print(err)
-        if not analytic_account:
-            analytic_account = analytic_acc_obj.create(
-                {'name': lot.name,
-                 'code': lot.product_id.name,
-                 'partner_id':  self.partner_id.id
-                 }
-            )
-            # Set this on the Subscription Contract
-        return analytic_account
-
-
+    """This is no longer used - but left in for reference"""
     def calculate_deal(self):
         #print (self.amount_untaxed)
         # Check if order line exists - if so delete them and recreate
@@ -238,14 +285,13 @@ class SaleOrder(models.Model):
              raise ValidationError("You need a Product of type Consumable called 'Cash Deal'")
         order_line_obj.search([('product_id', '=', prod_id[0].id), ('order_id', '=', self.id)]).unlink()
         amt = self.amount_untaxed + self.x_cash1 + self.x_cash2 + self.x_cash3 + self.x_cash4 + self.x_cash5
-        #print ("we are in Cash Deal", prod_id.id)
         res = {
             'name': 'Cash Deal',
             'customer_lead': 0.0,
             'invoice_status': 'to invoice',
             'order_id': self.id,
             'product_id': prod_id.id,
-            'product_uom_qty': 0,
+            'product_uom_qty': 1,
             'price_unit': amt
         }
         order_line_obj.create(res)
@@ -277,53 +323,53 @@ class SaleOrder(models.Model):
                 'name': self.x_rental_factor.name,
                 'order_id': self.id,
                 'product_id': prod_id[0].id,
-                'product_uom_qty': 0,
+                'product_uom_qty': 1,
                 'price_unit': amt
             }
             order_line_obj.create(res)
 
     def action_create_contract_from_quote(self):
         if self.env.context.get('active_ids', False):
+            analytic_obj = self.env['account.analytic.account']
             sale_order_ids = self.browse(self.env.context.get('active_ids'))
             subscription_obj = self.env['sale.subscription']
             subscription_line_obj = self.env['sale.subscription.line']
             subscription_obj.search([('name', '=', self.name)]).unlink()
+            order_line_obj = self.env['sale.order.line']
             stock_move_obj = self.env['stock.move']
             stock_move_line_obj = self.env['stock.move.line']
-            #print('@279 we are in action_create_contract_from_quote', self.id)
-
+            stock_production_lot_obj = self.env['stock.production.lot']
+            product_template_obj = self.env['product.template']
             for order in sale_order_ids:
                 if not order.x_is_contract_quote:
                     raise ValidationError(
-                        "This is NOT a Subscription Quote so no Contract will be created")
-                #print('Found Order ',order.name,order.state)
+                        " This is NOT a Subscription Quote so no Contract will be created")
                 if order.state == 'draft':
-                    #print('got here')
                     raise ValidationError("You can't Create a subscription while the Quote is in Draft mode !\n You must first Confirm Sale")
-
                 # First delete a subscription if one already exists ???
                 subscription_obj.search([('x_sale_order_id', '=', order.id)]).unlink()
                 # Then re-create a new subscription
-                subscription_vals = {
-                            'partner_id': order.partner_id.id,
-                            'recurring_monthly': True,
-                            'template_id': 1,
-                            'x_sale_order_id': order.id
+                res = {
+                    'partner_id': order.partner_id.id,
+                    'user_id': order.partner_id.user_id.id,
+                    'x_sale_order_id': order.id,
+                    'template_id': 1
                 }
-                #Now create a Contract in the custom 'create' of sale_subscription.py
-                new_id = subscription_obj.create(subscription_vals)
-                # and link this new Contact to this Sales Order
-                order.x_sale_subscription_id = new_id.id
-                for line in order.order_line:
-                    # create equipment  i.e category is 'component' or 'main product'
+                new_subscription_id = subscription_obj.create(res)
+                # and link this new Contact back to this Sales Order
+                order.x_sale_subscription_id = new_subscription_id.id
+
+                lines = order_line_obj.search([('order_id', '=', order.id)])
+                for line in lines:
                     if line.product_id.categ_id.name in ['copies', 'charge', 'service', 'rental']:
+                        # print("line.product_id.categ_id.name=",line.product_id.name, line.product_id.categ_id.name)
                         if line.product_id.categ_id.name == 'copies':
                             copies = True
                         else:
                             copies = False
                         res = {
                             'name': line.name,
-                            'analytic_account_id': new_id.id,
+                            'analytic_account_id': new_subscription_id.id,
                             'uom_id': 1,
                             'product_id': line.product_id.id,
                             'x_copies_show': copies,
@@ -332,25 +378,26 @@ class SaleOrder(models.Model):
                         }
                         line_id = subscription_line_obj.create(res)
                         end_date = False
-                    ### Create machine on this contract - look up the serial number fromthe stock_move_line
+                    # Create machine on this contract - look up the serial number from the stock_move_line
                     # which can be found via the 'origin' field which is the SO number
+                    # create equipment  i.e category is 'component' or 'main product'
                     if line.product_id.categ_id.name in ['main product', 'component']:
-                        if line.product_id.categ_id.name == 'main product':
-                            main_prod = 1
                         move_line = stock_move_obj.search([('sale_line_id', '=', line.id)]).id
-                        serial = stock_move_line_obj.search([('move_id', '=', move_line)]).lot_id.id
+                        serial = stock_move_line_obj.search([('move_id', '=', move_line)]).lot_id
                         if not serial:
                             delivery_note = self.env['stock.picking'].search([('sale_id', '=', order.id)]).name
                             msg = "You can't Create a subscription until Serial Numbers have been allocated by Stores !\n"
-                            msg = msg + "Please ask Stores to confirm Delivery Note number " + delivery_note
+                            msg = msg + "Please ask Stores to allocate Serial Numbers to this machine"
                             raise ValidationError(msg)
-                        new_id.x_machine_ids = [(4, serial, 0)]
-                        # Create a analytic account for this machine
-                        analytic_account_id = self._create_analytic_account(serial)
-                        new_id.analytic_account_id = analytic_account_id
-
-                        #new_id.x_machine_ids = [(6, 0, [serial])]
-                        # Now create Subscription lines from pre loaded charges on this product
+                        new_subscription_id.x_machine_ids = [(4, serial.id,0)]
+                        if line.product_id.categ_id.name == 'main product':
+                            # Now create a Analytic Account based on the Serial Number of the Main Product
+                            res = {'name': serial.name,
+                                   'group_id': 3,
+                                   'partner_id': order.partner_id.id,
+                                   }
+                            analytic_obj.create(res)
+                            # Now create Subscription lines from pre loaded charges on this product
                         for rec in line.product_id.x_machine_charge_ids:
                             show = False
                             if rec.product_id.categ_id.name == 'copies':
@@ -361,10 +408,10 @@ class SaleOrder(models.Model):
                                     'product_id': rec.product_id.id,
                                     'quantity': 0,
                                     'price_unit': rec.copies_price_1,
-                                    'analytic_account_id': new_id.id,
+                                    'analytic_account_id': new_subscription_id.id,
                                     'x_copies_show': show,
                                     'x_product_id': line.product_id,
-                                    'x_serial_number_id': serial,
+                                    'x_serial_number_id': serial.id,
                                     'x_copies_minimum': rec.minimum_charge,
                                     'x_copies_free': rec.copies_free,
                                     'x_copies_vol_1': rec.copies_vol_1,
@@ -382,82 +429,62 @@ class SaleOrder(models.Model):
                                     'product_id': rec.product_id.id,
                                     'quantity': rec.qty,
                                     'price_unit': rec.price,
-                                    'analytic_account_id': new_id.id,
+                                    'analytic_account_id': new_subscription_id.id,
                                     'x_copies_show': show,
                                     'x_product_id': line.product_id,
-                                    'x_serial_number_id': serial,
-
+                                    'x_serial_number_id': serial.id,
                                 }
                                 line_id = subscription_line_obj.create(res)
 
-                self._check_for_finance_deal(sale_order_ids,subscription_line_obj,new_id)
+                    if line.product_id.name == 'Finance Deal':
+                        mths = int(order.x_finance_months)
+                        end_date = datetime.today() + relativedelta(months=mths)
+                        lot = stock_production_lot_obj.search([('id', '=', serial.id), ])
+                        lot.x_subscription_id = new_subscription_id.id
+                        dlv_address = order.partner_id.address_get(['delivery'])
+                        lot.x_dlv_id = self.env['res.partner'].search([('id', '=', dlv_address['delivery'])])
+                        lot.x_main_product = 1
+                        lot.x_increase_rental_percent = order.x_finance_escalation
+                        lot.x_increase_rental_date = datetime.today() + relativedelta(months=12)
+                        res = {
+                            'name':'Monthly Rental',
+                            'analytic_account_id': new_subscription_id.id,  # This is the key back to the Subscription and has nothing to do with analytic accounts
+                            'uom_id': 1,
+                            'product_id':line.product_id.id,
+                            'x_copies_show': False,
+                            'quantity': 1,
+                            'price_unit': line.price_unit,
+                            'x_serial_number_id': serial.id,
+                            'x_end_date1': end_date,
+                            'x_start_date1_billable': False,  # Bank will do the billing
+                        }
+                        subscription_line_obj.create(res)
 
-    def _check_for_finance_deal(self,sale_order_ids,subscription_line_obj,new_id):
-        finance_line = self.env['sale.order.line'].search([('order_id','=',sale_order_ids.id),('product_id.name','=','Finance Deal')])
-        if not finance_line:
-            return
-
-        factor_odj = self.env['subscription.rental.factor']
-        factor_line = factor_odj.search([('name', '=', finance_line.name)])
-        mnths = factor_line.months - 1
-        end_date = datetime.today() + relativedelta(months=mnths)
-        res = {
-            'name': finance_line.name,
-            'analytic_account_id': new_id.id,
-            'uom_id': 1,
-            'product_id': finance_line.product_id.id,
-            'x_copies_show': False,
-            'quantity': -1,
-            'price_unit': finance_line.price_unit,
-            'x_end_date1': end_date,
-            'x_start_date1_billable': False,  # Bank will do the billing
-        }
-        line_id = subscription_line_obj.create(res)
-        rental_line = subscription_line_obj.search([('analytic_account_id','=',new_id.id)]).filtered(lambda r: r.name == 'Rental')
-        if rental_line:  # we found a Rental line in te subscrition, so update the amount with the finance amount.
-            # Now create a billing line to start billing customer once Bank billing has stopped
-            start_date = datetime.today() + relativedelta(months=mnths + 1)
-            rental_line.price_unit += finance_line.price_unit + finance_line.price_unit * factor_line.escalation / 100
-            rental_line.x_start_date1 = start_date
-            rental_line.x_start_date1_billable = True  # Start billing next month after bank billing stops
-        else:  # we need to create one
-            raise ValidationError("You need to go to Products and load a Charge called 'Rental' for the macine on this Sales Order")
-
-    # @api.model
-    # def create(self, vals):
-    #     #logging.warning("=======THE VALS is %s", vals.get('order_line'))
-    #     if 'x_no_charge' in vals:
-    #         if vals.get('x_no_charge') == True:
-    #             lines = vals.get('order_line')
-    #             #logging.warning("Lines = %s", type(lines))
-    #             for line in lines:
-    #                 logging.warning("==Lines %s", line[2].get('price_unit'))
-    #                 if line[2].get('price_unit') > 0:
-    #                     raise ValidationError("No Charge Option ticked - Some order lines are not zero '")
-    #
-    #     result = super(SaleOrder, self).create(vals)
-    #     return result
-
-    # def write(self, vals):
-    #     if self.x_no_charge:
-    #         logging.warning("The vals is %s", vals)
-    #         if 'order_line' in vals:
-    #             lines = vals.get('order_line')
-    #             for line in lines:
-    #                 logging.warning("==Lines %s", line[2].get('price_unit'))
-    #                 if line[2].get('price_unit') > 0:
-    #                     raise ValidationError("No Charge Option ticked - Some order lines are not zero '")
-    #     res = super(SaleOrder, self).write(vals)
-    #     return
+                    """ Copytype changed the way they do business and dont need this"""
+                    #     # Now create a billing line to start billing customer once Bank billing has stopped
+                    #     start_date = datetime.today() + relativedelta(months=mnths + 1)
+                    #     line.price_unit += line.price_unit * factor_line.escalation / 100
+                    #     res = {
+                    #         'name': line.name,
+                    #         'analytic_account_id': new_subscription_id.id,
+                    #         'uom_id': 1,
+                    #         'product_id': line.product_id.id,
+                    #         'x_copies_show': False,
+                    #         'quantity': 1,
+                    #         'price_unit': line.price_unit,
+                    #         'x_start_date1': start_date,
+                    #         'x_start_date1_billable': True,
+                    #
+                    #     }
+                    #     line_id = subscription_line_obj.create(res)
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    x_component_ids = fields.Many2many(related='product_id.x_optional_component_ids')
 
     @api.onchange('product_id')
-    def onchange_product_id(self, context=None):
-        if not self.product_id :
+    def onchange_product_id(self,context=None):
+        if not self.product_id:
             return
         if self.order_id.x_is_contract_quote and len(self.product_id.x_machine_charge_ids) == 0:
             warning = {}
@@ -471,9 +498,9 @@ class SaleOrderLine(models.Model):
                 }
                 return {'warning': warning}
 
+    """This doesnt seem to be called from anywhere """
     def add_component(self):
         list = []
-        #self.sale_order_option_ids = [(4,975)]
         for id in self.x_component_ids:
             list.append(id.id)
         return {
@@ -487,11 +514,29 @@ class SaleOrderLine(models.Model):
             'domain': [('id','=', list)],
             'context':self.env.context,
         }
-
         rec = super(SaleOrderLine,self).create(vals_list)
-
         return rec
 
+    def _timesheet_create_task_prepare_values(self, project):
+        self.ensure_one()
+        planned_hours = self._convert_qty_company_hours(self.company_id)
+        sale_line_name_parts = self.name.split('\n')
+        title = sale_line_name_parts[0] or self.product_id.name
+        description = '<br/>'.join(sale_line_name_parts[1:])
+        return {
+            'name': title if project.sale_line_id else '%s: %s' % (self.order_id.name or '', title),
+            'planned_hours': planned_hours,
+            'partner_id': self.order_id.partner_id.id,
+            'email_from': self.order_id.partner_id.email,
+            'description': description,
+            'project_id': project.id,
+            'sale_line_id': self.id,
+            'sale_order_id': self.order_id.id,
+            'company_id': project.company_id.id,
+            'user_ids': False,  # force non assigned task, as created as sudo()
+            'x_serial_number_id': self.order_id.x_lot_id.id or False,
+            
+        }
 
 
 

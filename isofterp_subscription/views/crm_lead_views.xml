@@ -10,6 +10,10 @@
                     <field class="text-break" name="name_seq" attrs="{'invisible': [('type', '=', 'lead')]}"/>
                 </h1>
             </xpath>
+            <xpath expr="//field[@name='partner_id']" position="replace">
+                <field name="partner_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'
+                       domain="[('is_company', '=', True)]"/>
+            </xpath>
         </field>
     </record>
 
@@ -46,7 +50,8 @@
         <field name="inherit_id" ref="sale_crm.crm_case_form_view_oppor"/>
         <field name="arch" type="xml">
             <xpath expr="//button[@name='action_sale_quotations_new']" position="replace">
-                <button string="New Quotation" name="action_sale_quotations_new" type="object" class="oe_highlight" data-hotkey="q"
+                <button string="New Quotation" name="action_sale_quotations_new" type="object" class="oe_highlight"
+                        data-hotkey="q"
                         title="Create new quotation"
                         attrs="{'invisible': ['|', ('type', '=', 'lead'), '&amp;', ('probability', '=', 0), ('active', '=', False)]}"
                         groups="sale_subscription.group_sale_subscription_manager"

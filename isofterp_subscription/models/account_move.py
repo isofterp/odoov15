@@ -19,7 +19,7 @@ _logger = logging.getLogger(__name__)
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-    x_no_charge = fields.Boolean("No Charge", help="Tick if you want a No-Charge Sale")
+    x_no_charge = fields.Boolean("Tick here if you want to create a No Charge Invoice", help="Tick if you want a No-Charge Sale")
 
 
 

@@ -13,3 +13,4 @@ from . import subscription_line_combined
 from . import meter_click_combined
 from . import crm_lead
 from . import account_move
+from . import approval_request

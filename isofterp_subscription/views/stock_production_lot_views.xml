@@ -8,40 +8,63 @@
             <field name="ref" position="after">
                 <field name="x_subscription_id"/>
                 <field name="x_dlv_id"/>
-                <field name="x_main_product" />
+                <field name="x_main_product"/>
                 <field name="x_service_type_id"/>
             </field>
-             <xpath expr="//page[@name='description']" position="after">
-                 <page string="Increase Dates and % " name="rates">
-                     <group string="Rates and Dates" col="4">
-                          <field name="x_increase_rental_date"/>
-                          <field name="x_increase_rental_percent"/>
-                          <field name="x_increase_service_date"/>
-                          <field name="x_increase_service_percent"/>
-                          <field name="x_increase_copies_date"/>
-                          <field name="x_increase_copies_percent"/>
-                     </group>
-                 </page>
-             </xpath>
+            <xpath expr="//page[@name='description']" position="after">
+                <page string="Increase Dates and % " name="rates">
+                    <group string="Rates and Dates" col="4">
+                        <field name="x_increase_rental_date"/>
+                        <field name="x_increase_rental_percent"/>
+                        <field name="x_increase_service_date"/>
+                        <field name="x_increase_service_percent"/>
+                        <field name="x_increase_copies_date"/>
+                        <field name="x_increase_copies_percent"/>
+                    </group>
+                </page>
+            </xpath>
         </field>
     </record>
 
-     <record id="view_production_lot_tree_inherit" model="ir.ui.view">
+    <record id="view_production_lot_tree_inherit" model="ir.ui.view">
         <field name="name">stock.production.lot.tree.inherit</field>
         <field name="model">stock.production.lot</field>
-       <field name="inherit_id" ref="stock.view_production_lot_tree"/>
+        <field name="inherit_id" ref="stock.view_production_lot_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//tree" position="replace">
-                <tree string="Lots/Serial Numbers" multi_edit="1" >
-                <field name="name"/>
-                <field name="x_main_product" />
-                <field name="product_id" readonly="1"/>
-                <field name="create_date" optional="show"/>
-                <field name="company_id" groups="base.group_multi_company"/>
-            </tree>
+                <tree string="Lots/Serial Numbers" multi_edit="1">
+                    <field name="name"/>
+                    <field name="x_main_product"/>
+                    <field name="product_id" readonly="1"/>
+                    <field name="create_date" optional="show"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
 
             </xpath>
 
         </field>
     </record>
+
+    <record id="view_picking_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field eval="12" name="priority"/>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="replace">
+                <field name="partner_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+            </xpath>
+            <xpath expr="//field[@name='picking_type_id']" position="replace">
+                <field name="picking_type_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="user_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+            </xpath>
+            <xpath expr="//field[@name='location_dest_id']" position="replace">
+                <field name="location_dest_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+            </xpath>
+
+        </field>
+    </record>
+
 </odoo>

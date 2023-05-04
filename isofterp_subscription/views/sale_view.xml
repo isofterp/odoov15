@@ -67,8 +67,8 @@
                     <attribute name="attrs">{'readonly':[('parent.x_is_billable','=', True)]}</attribute>
                 </xpath>
                 <xpath expr="//page[2]" position="after">
-                    <page string="Finanical Calculations" attrs="{'invisible': [('x_is_contract_quote', '=', False)]}">
-                        <group string="Finanical Calculations" col="2">
+                    <page string="Financial Calculations" attrs="{'invisible': [('x_is_contract_quote', '=', False)]}">
+                        <group string="Financial Calculations" col="2">
                             <field name="x_finance_rental" attrs="{'required': [('x_is_contract_quote','=', True)]}"/>
                             <field name="x_finance_factor" attrs="{'required': [('x_is_contract_quote','=', True)]}"/>
                             <field name="x_finance_escalation" attrs="{'required': [('x_is_contract_quote','=', True)]}"/>

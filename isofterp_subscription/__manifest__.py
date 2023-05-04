@@ -8,8 +8,8 @@
     'license': 'AGPL-3',
     'author': "I-Soft Solutions",
     'website': 'https://github.com/oca/contract',
-    'depends': ['base', 'account', 'analytic', 'sale', 'sale_subscription', 'industry_fsm', 'portal', 'project',
-                'helpdesk', 'account_followup', 'crm'],
+    'depends': ['base', 'account', 'analytic', 'sale', 'sale_subscription', 'industry_fsm', 'industry_fsm_sale','portal', 'project',
+                'helpdesk', 'account_followup', 'crm', 'approvals'],
     'data': [
 
         'views/sale_subscription_view.xml',
@@ -29,6 +29,7 @@
         'views/crm_lead_views.xml',
         'views/account_move_views.xml',
         'views/purchase_views.xml',
+        'views/approval_request_views.xml',
         'data/data.xml',
         'wizard/add_hoc_increase_views.xml',
         'wizard/meter_reading_request_views.xml',

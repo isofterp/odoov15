@@ -18,8 +18,10 @@ class SaleAdvancePaymentInv(models.TransientModel):
         if self.advance_payment_method == 'delivered':
             logging.warning("=====Doing this part")
             moves = sale_orders._create_invoices(final=self.deduct_down_payments)
-            if sale_orders.x_no_charge:
-                moves.action_post()
+            for sale in sale_orders:
+                if sale.x_no_charge:
+                    for m in moves:
+                        m.action_post()
         else:
             # Create deposit product if necessary
             if not self.product_id:

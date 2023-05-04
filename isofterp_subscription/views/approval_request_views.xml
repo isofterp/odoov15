@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Request-->
+    <record id="approval_request_view_tree_inherit" model="ir.ui.view">
+        <field name="name">approval.request.view.tree.inherit</field>
+        <field name="model">approval.request</field>
+        <field name="inherit_id" ref="approvals.approval_request_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='request_status']" position="after">
+                <field name="x_project_id" optional="hide"/>
+                <field name="x_sales_order_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="approval_request_view_form_inherit" model="ir.ui.view">
+        <field name="name">approval.request.view.form.inherit</field>
+        <field name="model">approval.request</field>
+        <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_confirmed']" position="after">
+                <field name="x_project_id"/>
+                <field name="x_sales_order_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

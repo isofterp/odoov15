@@ -100,7 +100,21 @@
                     <field name="ref"/>
                 </xpath>
                 <xpath expr="//field[@name='payment_reference']" position="after">
-                    <field name="x_no_charge"/>
+                    <field name="x_no_charge" readonly="1"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="replace">
+                    <field name="partner_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'
+                    domain="[('is_company', '=', True)]"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_shipping_id']" position="replace">
+                    <field name="partner_shipping_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'
+                    domain="[('is_company', '=', True)]"/>
+                </xpath>
+                <xpath expr="//field[@name='journal_id']" position="replace">
+                    <field name="journal_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+                </xpath>
+                <xpath expr="//field[@name='currency_id']" position="replace">
+                    <field name="currency_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
                 </xpath>
             </field>
         </record>

@@ -18,9 +18,15 @@ class Partner(models.Model):
     #             {'name': account_no, 'partner_id': partners.id, 'group_id': 1})
     #     return partners
 
+    def _get_subscrptions(self):
+        for rec in self:
+            subs = self.env['sale.subscription'].search([('partner_id','=', rec.id)])
+            rec.subs_count = len(subs)
+
     x_account_number = fields.Char('Account Number', index=True, required='Yes')
     x_fax = fields.Char('Fax Number')
     x_company_reg_no = fields.Char('Company reg no')
+    subs_count = fields.Integer(string='Subscription Count', compute='_get_subscrptions', readonly=True)
 
     def set_sales_team_on_users(self):
         users = self.env['res.users'].search([('share','!=', True),
@@ -76,3 +82,42 @@ class Partner(models.Model):
             # else:
             #     #Assign sales team to contact
             #     partner.team_id = crm_team.id
+
+
+    def show_subscriptions(self):
+        logging.warning("Getting here")
+        #res = self.env.ref('isofterp_subscription.sale_subscription_line_combined_tree')
+        #res = res.sudo().read()[0]
+        #res['domain'] = str([('x_task_id', '=', self.id)])
+        # return {
+        #     'res_model': 'sale.subscription.line',
+        #     'res_id': [],
+        #     'type': 'ir.actions.act_window',
+        #     'view_mode': 'tree',
+        #     'view_id': [[self.env.ref('isofterp_subscription.sale_subscription_line_combined_tree').id, 'form']],
+        #     'target': 'new',
+        # }
+        try:
+            sub_ids = self.env['subscription.line.combined'].search([('cust','=', self.name)])
+            if sub_ids:
+                for subs in sub_ids:
+                    logging.warning("The lines are %s %s", subs.cust, self.name)
+
+
+            form_view_id = self.env.ref("isofterp_subscription.sale_subscription_line_combined_tree").id
+            logging.warning("View iD is %s",form_view_id )
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Subscriptions',
+                'view_mode': 'tree',
+                'res_model': 'subscription.line.combined',
+                'views': [[form_view_id, 'tree']],
+                'domain': [('id', 'in', sub_ids.ids)],
+                'target': 'current',
+                'view_id': False,
+            }
+        except Exception as e:
+            form_view_id = False
+
+
+

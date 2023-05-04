@@ -10,7 +10,7 @@
                         This Wizard will send bulk emails to customers requesting meter readings
                     </p>
                     <footer>
-                        <button name="run_meter_reading_bulk_request" string="Request Meter Readings" type="object"
+                        <button name="cron_meter_reading_bulk_mail" string="Request Meter Readings" type="object"
                                 class="oe_highlight"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel"/>

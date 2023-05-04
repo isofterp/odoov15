@@ -25,6 +25,9 @@ class MeterReadingRequestWizard(models.TransientModel):
         email_from = user_id.partner_id.email
         email_to = ''
         previous_serial_number = ''
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        logging.warning("Base Url is %s", base_url)
+        #print(err)
         for line in line_ids:
             serial_number = line.x_serial_number_id.name
             if serial_number == previous_serial_number: continue
@@ -40,7 +43,8 @@ class MeterReadingRequestWizard(models.TransientModel):
                 email_body += " on " + line.analytic_account_id.partner_id.phone + " and enter the last meter readings for "
                 email_body += "</br>" + product + " Serial Number: " + serial_number + "</div>"
                 email_body += "<div style = 'text-align: center; margin: 16px 0px 16px 0px;' >"
-                email_body += "<a href = /my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
+                #email_body += "<a href = /my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
+                email_body += "<a href =" + base_url + "/my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
                 email_body += "</div>"
                 mail_values = {
                     'email_from': email_from,
@@ -70,7 +74,8 @@ class MeterReadingRequestWizard(models.TransientModel):
             # !!!!!!!!! take the follwing line out after teting !!!!!!!!!!!!!!!!!!!!!!!!!!
             email_body += "<div> FOR TESTING - the real email address for " + email_person + " is " + email_to
             email_body += "<div style = 'text-align: center; margin: 16px 0px 16px 0px;' >"
-            email_body += "<a href = /my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
+            #email_body += "<a href = /my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
+            email_body += "<a href =" + base_url + "/my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
             email_body += "</div>"
 
             email_to = 'sue@copytype.co.za'  ################   !!!!!!!!!!!   Testing email address - remove to go live  !!!!!

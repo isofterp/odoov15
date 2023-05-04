@@ -20,6 +20,33 @@
         </record>
         -->
 
+        <!-- Project Task Kanban View -->
+        <record model="ir.ui.view" id="view_task_kanban_inherit">
+            <field name="name">project.task.kanban.inherit</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_kanban"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='o_kanban_record_headings']/t[4]" position="after">
+                    <br/>
+                    <span>
+                        <strong>Machine Descriptiom:</strong>
+                        <field name="x_serial_number_name"/>
+                    </span>
+                    <br/>
+                    <span>
+                        <strong>Contact:</strong><br/>
+                        <field name="x_serial_number_dlv"/>
+                    </span>
+                    <br/>
+                    <span>
+                        <strong>Address:</strong><br/>
+                        <field name="x_serial_number_street"/>
+                        <field name="x_serial_number_street2"/>
+                    </span>
+                </xpath>
+            </field>
+        </record>
+
         <record id="view_task_form2_inherit" model="ir.ui.view">
             <field name="name">project.task.form.inherit</field>
             <field name="model">project.task</field>
@@ -38,17 +65,21 @@
                     <div>
                         <field name="x_serial_number_street2" readonly="1"/>
                     </div>
+                    <label for="x_cust_rep" string="Customer Representative"/>
+                    <div>
+                        <field name="x_cust_rep" />
+                    </div>
                     <label for="x_serial_number_phone" string="Phone"/>
                     <div>
-                        <field name="x_serial_number_phone" readonly="1"/>
+                        <field name="x_serial_number_phone" />
                     </div>
                     <label for="x_serial_number_mobile" string="Mobile"/>
                     <div>
-                        <field name="x_serial_number_mobile" readonly="1"/>
+                        <field name="x_serial_number_mobile" />
                     </div>
                     <label for="x_serial_number_email" string="Email"/>
                     <div>
-                        <field name="x_serial_number_email" readonly="1"/>
+                        <field name="x_serial_number_email" />
                     </div>
                     <field name="x_rental_group"/>
                     <field name="x_problem_type"
@@ -64,12 +95,13 @@
                 <xpath expr="//page[@name='extra_info']" position="after">
                     <page string="Main Customer" name="main_partner">
                         <group>
-                            <field name="partner_id" />
-                            <field name="partner_email" />
-                            <field name="partner_phone" />
+                            <field name="partner_id"/>
+                            <field name="partner_email"/>
+                            <field name="partner_phone"/>
                         </group>
                     </page>
                 </xpath>
+                <xpath expr="//field[@name='tag_ids']" position="replace"/>
             </field>
         </record>
 

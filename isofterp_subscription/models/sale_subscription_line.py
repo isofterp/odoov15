@@ -83,7 +83,7 @@ class sale_subscription_line(models.Model):
     """ This might need to run as a cron monthly to calculate and store values"""
     @api.depends('quantity')
     def _average_quantity(self):
-        #self.ensure_one()
+        self.ensure_one()
         now = datetime.now()
         date_N_months_ago = now - timedelta(days=self.x_average_months * 30)
         #sortBy = "create_date desc"

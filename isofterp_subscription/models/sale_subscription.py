@@ -170,7 +170,6 @@ class SaleSubscription(models.Model):
     x_account_number = fields.Char('Account Number', related='partner_id.x_account_number', index=True)
     x_sale_order_id = fields.Many2one('sale.order', 'Sales Order')
     x_rental_group_id = fields.Many2one('subscription.rental.group', 'Rental Group')
-
     x_ceded_reference = fields.Char('Ceded Ref Number')
     x_bank_name = fields.Char('Bank Name')
     x_machine_ids = fields.Many2many('stock.production.lot', 'sale_subscription_subscription_stock_production_lot_rel',
@@ -234,6 +233,20 @@ class SaleSubscription(models.Model):
             **{periods[self.recurring_rule_type]: self.recurring_interval}) - relativedelta(days=1)
         return self._isoft_prepare_invoice_line(fiscal_position, revenue_date_start, revenue_date_stop)
 
+    def _prepare_invoice_data(self):
+        self.ensure_one()
+        res = super(SaleSubscription,self)._prepare_invoice_data()
+        logging.warning("====Doing _prepare_invoice_data")
+        if self.user_id:
+            res['invoice_user_id'] = 1
+
+        if self.name:
+            res['ref'] = self.name
+        else:
+            res['ref'] = 'edgar==='
+        logging.warning("Res is %s", res)
+        return res
+
     def _isoft_prepare_invoice_line(self, fiscal_position, date_start=False, date_stop=False):
         print('fisacl=', fiscal_position)
         lines = []
@@ -268,7 +281,7 @@ class SaleSubscription(models.Model):
                             line.x_copies_price_3 += machine.x_increase_copies_percent * line.x_copies_price_3 / 100
                             increment_copies = 'yes'
             if line.x_end_date1:
-                if self.recurring_next_date >= line.x_end_date1 and not x_third_party_rental_billing:
+                if self.recurring_next_date >= line.x_end_date1 and not self.x_third_party_rental_billing:
                     # If the end_date1 has been reached, that means the bank will stop billing so we set the billing
                     # indicator to 'yes' and this program will start creating invoices instead of the Bank (3rd party).
                     # However, if the x_third_party_rental_billing field is set to 'yes' then that means the
@@ -404,7 +417,7 @@ class SaleSubscription(models.Model):
                     line.quantity = 0
             else:
                 # print('Non copies')
-                print(line.x_serial_number_id.id, line.x_serial_number_id.name)
+                # print(line.x_serial_number_id.id, line.x_serial_number_id.name)
                 line_vals = {
                     'subscription_id': line.analytic_account_id.id,
                     'ref': "Contract Number " + line.analytic_account_id.name,
@@ -424,7 +437,7 @@ class SaleSubscription(models.Model):
 
                 lines.append(line_vals)
 
-        print("===================returning the following", lines)
+        # print("===================returning the following", lines)
         if increment_copies == 'yes':
             increment_copies = ''
             if machine.x_increase_copies_date:
@@ -443,7 +456,7 @@ class SaleSubscription(models.Model):
         return lines
 
     def _recurring_create_invoice(self, automatic=False):
-        rec = super(SaleSubscription, self)._recurring_create_invoice(automatic=automatic)
+        rec = super(SaleSubscription, self)._recurring_create_invoice()
         rec.write({'ref': self.name})
         return rec
 
@@ -511,7 +524,6 @@ class SaleSubscription(models.Model):
                 email_to = line.x_serial_number_id.x_dlv_id.email
                 email_person = line.x_serial_number_id.x_dlv_id.name
             else:  # send am email to the Company warning of no email address
-                print("no email")
                 email_body = "<div>This Contract: " + line.analytic_account_id.code + " has no email address. </br>Please phone " + line.analytic_account_id.partner_id.name
                 email_body += " on " + line.analytic_account_id.partner_id.phone + " and enter the last meter readings for "
                 email_body += "</br>" + product + " Serial Number: " + serial_number + "</div>"

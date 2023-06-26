@@ -30,7 +30,7 @@
                   parent="sale_subscription.menu_sale_subscription"
                   action="action_meter_reading_request"
                   sequence="5"
-                  groups="sale_subscription.group_sale_subscription_manager,access_meter_reading_extra_group"
+                  groups="sale_subscription.group_sale_subscription_manager"
         />
 
     </data>

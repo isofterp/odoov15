@@ -1,25 +1,22 @@
 
 from odoo import fields, models, tools
 
+
 class meter_click_combined(models.Model):
     _name = "meter.click.combined"
     _description = "Meter Click Report"
-    #_order = 'contract desc'
     _auto = False
 
     code = fields.Char('Code', readonly=True)
-    partner = fields.Char('Customer', readonly=True)
+    partner = fields.Char('Partner', readonly=True)
     salesperson = fields.Char('Owner', readonly=True)
     serial = fields.Char('Serial', readonly=True)
     last_reading = fields.Integer('Last reading', readonly=True)
-    prevous_reading = fields.Integer('revious reading', readonly=True)
+    previous_reading = fields.Integer('previous reading', readonly=True)
     to_bill = fields.Integer('Copies to Bill', readonly='True')
     product = fields.Char('Product', readonly=True)
     price = fields.Float('AvePrice', readonly=True)
     billamt = fields.Float('MinBilling', readonly=True)
-
-
-
 
     def _select(self):
         select_str = """
@@ -28,16 +25,14 @@ class meter_click_combined(models.Model):
                     partner.name as partner,
                     users.login as salesperson,
                     l.x_copies_last as last_reading,
-                    l.x_copies_previous as prevous_reading,
+                    l.x_copies_previous as previous_reading,
                     l.x_copies_last - l.x_copies_previous as to_bill,
                     lot.name as serial,
                     prod.name as product,
                     partner.x_account_number as acc,
                     partner.email as partner_email,
                     l.x_copies_price_1 as price,
-                    ((l.x_copies_last - l.x_copies_previous) * l.x_copies_price_1) as billamt
-                    
-                   
+                    ((l.x_copies_last - l.x_copies_previous) * l.x_copies_price_1) as billamt         
         """
         return select_str
 

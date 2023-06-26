@@ -17,8 +17,7 @@ class ProductionLot(models.Model):
     #     if not rec:
     #         self.env['account.analytic.account'].create({'name': new_name})
     #     return super(ProductionLot, self).create(vals_list)
-
-
+    product_qty = fields.Float('Quantity', compute='_product_qty', store=True)
     x_main_product = fields.Boolean('Main Product')
     x_cost_price = fields.Float('Cost Price')
     x_list_price = fields.Float('List Price')
@@ -30,7 +29,6 @@ class ProductionLot(models.Model):
     x_increase_service_percent = fields.Float(string='Increase Service %')
     x_increase_copies_date = fields.Date('Increase Copy Date')
     x_increase_copies_percent = fields.Float(string='Increase Copy %')
-    x_in_use = fields.Boolean('Machine Allocated')
     x_service_type_id = fields.Many2one('subscription.rental.group','Service Type',  domain="[('group_type','=', 'V')]")
 
 

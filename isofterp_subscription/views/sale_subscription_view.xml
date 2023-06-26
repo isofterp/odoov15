@@ -52,7 +52,7 @@
                 <xpath expr="//page[@id='other_info']" position="before">
                     <page string="Equipment on this Contract">
                         <field name="id" invisible="1"/>
-                        <field name="x_machine_ids" domain="[('x_in_use','=', False)]">
+                        <field name="x_machine_ids" domain="[('product_qty','=', 1)]">
                         </field>
                     </page>
                 </xpath>
@@ -94,9 +94,13 @@
             <field name="model">sale.subscription</field>
             <field name="inherit_id" ref="sale_subscription.sale_subscription_view_search"/>
             <field name="arch" type="xml">
-                <field name="name" position="before">
-                    <field name="x_machine_ids" filter_domain="[('x_machine_ids', 'ilike', self)]"/>
-                    <field name="x_account_number" filter_domain="[('x_account_number', 'ilike', self)]"/>
+                <field name="name" position="replace">
+<!--                    <field name="x_machine_ids" filter_domain="[('x_machine_ids', 'ilike', self)]"/>-->
+                    <field name="name" string="WildCard"
+                           filter_domain="['|','|',('x_machine_ids', 'ilike', self),
+                           ('x_account_number', 'ilike', self),
+                           ('partner_id.name', 'ilike', self)]"/>
+<!--                    <field name="x_account_number" filter_domain="[('x_account_number', 'ilike', self)]"/>-->
                 </field>
             </field>
         </record>

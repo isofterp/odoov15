@@ -27,6 +27,7 @@ class Partner(models.Model):
     x_fax = fields.Char('Fax Number')
     x_company_reg_no = fields.Char('Company reg no')
     subs_count = fields.Integer(string='Subscription Count', compute='_get_subscrptions', readonly=True)
+    x_equipment_ids = fields.One2many('stock.production.lot', 'last_delivery_partner_id', string='Equipment')
 
     def set_sales_team_on_users(self):
         users = self.env['res.users'].search([('share','!=', True),
@@ -85,7 +86,7 @@ class Partner(models.Model):
 
 
     def show_subscriptions(self):
-        logging.warning("Getting here")
+        logging.warning("===Going to show subscriptions for this customer")
         #res = self.env.ref('isofterp_subscription.sale_subscription_line_combined_tree')
         #res = res.sudo().read()[0]
         #res['domain'] = str([('x_task_id', '=', self.id)])

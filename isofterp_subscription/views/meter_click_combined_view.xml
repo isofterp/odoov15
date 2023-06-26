@@ -10,8 +10,9 @@
                     <field name="code" readonly="1" string="Contract"/>
                     <field name="product" readonly="1" string="Model"/>
                     <field name="serial" readonly="1" string="Serial Number"/>
+
                     <field name="salesperson" string="Owner"/>
-                    <field name="prevous_reading" readonly="1" string="Previous"/>
+                    <field name="previous_reading" readonly="1" string="Previous"/>
                     <field name="last_reading" readonly="1" string="Current Reading"/>
                     <field name="to_bill" readonly="1" string="Copies to Bill"/>
                     <field name="price" readonly="1" string="CPC"/>
@@ -31,7 +32,7 @@
                   parent="sale_subscription.menu_sale_subscription"
                   action="action_meter_click_combined"
                   sequence="99"
-                  groups="sale_subscription.group_sale_subscription_manager,access_meter_reading_extra_group"
+                  groups="sale_subscription.group_sale_subscription_manager"
         />
 
 

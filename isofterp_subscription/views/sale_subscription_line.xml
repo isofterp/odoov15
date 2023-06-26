@@ -34,7 +34,7 @@
                 <form>
                     <field name="uom_id"  invisible="1" default="1"/>
                     <field name="product_uom_category_id" invisible="1"/>
-                    <field name="analytic_account_id"/>
+                    <field name="analytic_account_id" invisible="1"/>
                     <field name="x_copies_show" invisible="1" />
                     <group col="4">
                         <field name="x_serial_number_id"  options="{ 'no_create': True}" domain="[('id','in',context.get('default_machines'))]"/>
@@ -93,6 +93,7 @@
                     <field name="bill" optional="hide"/>
                     <field name="reading" optional="hide"/>
                     <field name="price"/>
+
                     <field name="average_quantity" optional="hide"/>
                     <field name="average_value" optional="hide"/>
                     <field name="esc_date" />

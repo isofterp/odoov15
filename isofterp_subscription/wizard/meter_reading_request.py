@@ -78,7 +78,6 @@ class MeterReadingRequestWizard(models.TransientModel):
             email_body += "<a href =" + base_url + "/my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
             email_body += "</div>"
 
-            email_to = 'sue@copytype.co.za'  ################   !!!!!!!!!!!   Testing email address - remove to go live  !!!!!
             email_to = 'edgar@isoft.co.za'
             mail_values = {
                 'email_from': email_from,

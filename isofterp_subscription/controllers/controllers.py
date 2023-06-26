@@ -48,6 +48,7 @@ class ContractsPortal(CustomerPortal):
                     # print(line)
                     line.x_copies_last = kwargs['black']
                     message_1 = 'Thank you for submitting your readings for Serial Number ' + kwargs['serial'] + " Last meter reading for Black Copies=" + kwargs['black']
+                    line.x_reading_type_last = 'Web'
                 else:
                     err_message_1 = "We kave a problem - could not find a machine with Serial Number= " + kwargs['serial'] + " for" + kwargs['black'] + " Black Copies"
                     err_message_1 += "Please contact CopyType 021 559 1605"
@@ -59,6 +60,7 @@ class ContractsPortal(CustomerPortal):
                     #print(line)
                     line.x_copies_last = kwargs['colour']
                     message_2 = 'Thank you for submitting your readings for Serial Number ' + kwargs['serial'] + " Last meter reading for Colour Copies=" + kwargs['colour']
+                    line.x_reading_type_last = 'Web'
                 else:
                     err_message_2 = "We kave a problem - could not find a machine with Serial Number " + kwargs['serial'] + " with Colour Copies"
                     err_message_2 += " Please contact CopyType 021 559 1605"

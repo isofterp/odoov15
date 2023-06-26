@@ -16,10 +16,26 @@
                     <field name="x_copies_last" string="Current reading"/>
 
                     <field name="quantity" readonly="1" sum="Total Billable Copies"/>
+                    <field name="x_copies_last" string="Current reading"/>
+                    <field name="x_reading_type_last" string="Reading Type"/>
                 </tree>
 
             </field>
         </record>
+
+        <!--<record id="meter_click_filter" model="ir.ui.view">
+            <field name="name">meter.click.search</field>
+            <field name="model">sale.subscription.line</field>
+            <field name="arch" type="xml">
+                <search string="Search Meter Clicks">
+                    <group expand="0" string="Group By">
+                        <filter name="Customer" string="Customer" domain="[]" context="{'group_by': 'x_partner_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>-->
+
+
 
         <record id="meter_reading_import_view" model="ir.ui.view">
             <field name="name">Import Meter Reading</field>
@@ -28,7 +44,7 @@
             <field name="arch" type="xml">
                 <form string="Import Meter Readings">
                     <group string='Import Meter Readings' col="4">
-                        <field name="input_layout"/>
+                        <field name="input_layout" widget="radio"/>
                         <field name="data_file" filename="filename"/>
                     </group>
                     <footer>
@@ -52,7 +68,7 @@
                   parent="sale_subscription.menu_sale_subscription"
                   action="action_capture_meter_click"
                   sequence="95"
-                  groups="sale_subscription.group_sale_subscription_manager,access_meter_reading_extra_group"
+                  groups="sale_subscription.group_sale_subscription_manager"
         />
 
         <record id="action_import_readings" model="ir.actions.act_window">
@@ -68,7 +84,7 @@
                   parent="sale_subscription.menu_sale_subscription"
                   action="action_import_readings"
                   sequence="96"
-                  groups="sale_subscription.group_sale_subscription_manager,access_meter_reading_extra_group"
+                  groups="sale_subscription.group_sale_subscription_manager"
         />
 
 

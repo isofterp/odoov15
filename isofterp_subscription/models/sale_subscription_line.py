@@ -36,17 +36,14 @@ class sale_subscription_line(models.Model):
     x_product_id = fields.Many2one('product.product',related='x_serial_number_id.product_id',string='Machine')
     x_partner_id = fields.Many2one('res.partner',related='analytic_account_id.partner_id',string='Customer')
     #x_machine_master_id = fields.Char( string='Machine Master', ondelete='cascade')
-
     x_copies_show = fields.Boolean('Show copies')
     x_copies_free = fields.Integer('Free Copies')
     x_copies_minimum = fields.Float('Minimum Charge',help='This is the minimum amount in Rands to bill')
     x_email_count = fields.Integer('Email Count')
-
-
     x_copies_previous = fields.Integer('Previous Reading')
-    x_copies_last = fields.Integer('Last Reading',tracking=True)
+    x_copies_last = fields.Integer('Last Reading', tracking=True)
     x_start_date1 = fields.Date('Start Date', default=datetime.today())  # default=datetime.today()
-    x_start_date1_billable = fields.Boolean('Bill',tracking=True,default='1' )
+    x_start_date1_billable = fields.Boolean('Bill', tracking=True,default='1')
     x_end_date1 = fields.Date('End Date')
 
     #x_charges_type1_id = fields.Many2one('subscription.charges.type', 'Type 1')  # Not sure we need this ?
@@ -56,17 +53,18 @@ class sale_subscription_line(models.Model):
     #x_start_date2_billable = fields.Boolean('Bill 2')
 
     x_copies_vol_1 = fields.Integer('Volume 1')
-    x_copies_price_1 = fields.Float('Charge 1',digits = (3,4) )
+    x_copies_price_1 = fields.Float('Charge 1', digits=(3, 4))
     x_copies_vol_2 = fields.Integer('Volume 2')
-    x_copies_price_2 = fields.Float('Charge 2',digits = (3,4))
+    x_copies_price_2 = fields.Float('Charge 2', digits=(3, 4))
     x_copies_vol_3 = fields.Integer('Volume 3')
-    x_copies_price_3 = fields.Float('Charge 3',digits = (3,4))
+    x_copies_price_3 = fields.Float('Charge 3', digits=(3, 4))
     #x_average_quantity = fields.Integer('Average Qty',compute='_average_quantity',store=True)
     x_average_quantity = fields.Integer('Ave Qty', default=1)
-    x_average_value = fields.Float('Ave Val',digits = (3,4))
+    x_average_value = fields.Float('Ave Val', digits=(3, 4))
     x_average_months = fields.Integer('Average Months', default=1,help="Set the average number of months to use")
     x_billing_frequency = fields.Integer("Billing Frequency", default=1)
     x_billing_hold = fields.Integer("Billing Hold")
+    x_reading_type_last = fields.Char("Reading Type")
 
     _defaults = {
         'uom_id': 1,

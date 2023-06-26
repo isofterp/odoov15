@@ -21,7 +21,8 @@ class ApprovalRequest(models.Model):
             self.x_project_id.action_approve()
         if self.x_sales_order_id:
             self.x_sales_order_id.action_approve()
-
+        if self.x_sales_order_id and self.category_id.name == 'Contract Approval':
+            self.x_sales_order_id.action_quote_approve()
 
 
     def action_refuse(self, approver=None):

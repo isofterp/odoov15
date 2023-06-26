@@ -18,17 +18,6 @@
         </field>
     </record>
 
-    <record id="task_type_wip_to_cust_material_material" model="ir.ui.view">
-        <field name="name">project.task.type.wip.cust.material</field>
-        <field name="model">project.task.type</field>
-        <field name="inherit_id" ref="project.task_type_edit"/>
-        <field name="arch" type="xml">
-            <field name="consume_material" position="after">
-                <field name="wip_to_cust_material"/>
-            </field>
-        </field>
-    </record>
-
     <record id="view_project_task_form_material_stock" model="ir.ui.view">
         <field name="name">project.task.form.material</field>
         <field name="model">project.task</field>
@@ -49,9 +38,9 @@
             </field>
             <field name="material_ids" position="replace">
                 <field name="stock_state" invisible="1"/>
-                <field name="consume_material" invisible="0" string="To Comsune"/>
-                <field name="wip_to_cust_material" invisible="0" string="Move from WIP"/>
+                <field name="consume_material" invisible="1"/>
                 <group string="Locations to consume" name="materials" groups="stock.group_stock_multi_locations">
+                    <field name="picking_type_id"/>
                     <field name="location_source_id"/>
                     <field name="location_dest_id"/>
                 </group>
@@ -61,11 +50,8 @@
                             <field name="material_ids">
                                 <tree string="Materials used" editable="top">
                                     <field name="product_id"/>
-                                    <field name="description"/>
                                     <field name="quantity"/>
-                                    <field name="ticked"/>
-                                    <field name="price_unit"/>
-<!--                                   <field name="product_uom_id" groups="uom.group_uom"/>-->
+                                    <field name="product_uom_id" groups="uom.group_uom"/>
                                 </tree>
                             </field>
                         </page>
@@ -74,6 +60,7 @@
                                 <tree string="Stock Moves">
                                     <field name="picking_id"/>
                                     <field name="date"/>
+                                    <field name="date_deadline"/>
                                     <field name="origin"/>
                                     <field name="product_id"/>
                                     <field name="product_uom_qty"/>

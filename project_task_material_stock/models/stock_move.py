@@ -1,7 +1,7 @@
 # Copyright 2019 Valentin Vinagre <valentin.vinagre@qubiq.es>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl)
 from odoo import api, fields, models
-import logging
+
 
 class StockMove(models.Model):
     _inherit = 'stock.move'
@@ -12,7 +12,7 @@ class StockMove(models.Model):
         string='Project Task Material',
     )
 
-    def _action_done(self, cancel_backorder=False):
+    def _action_done(self):
         # The analytical amount is updated with the value of the
         # stock movement, because if the product has a tracking by
         # lot / serial number, the cost when creating the

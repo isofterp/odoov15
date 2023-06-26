@@ -20,16 +20,3 @@ class ProjectProject(models.Model):
         index=True,
         help='Default location to which materials are consumed.',
     )
-
-    location_wip_source_id = fields.Many2one(
-        comodel_name='stock.location',
-        string='Source Location',
-        index=True,
-        help='Default location from which WIP materials are consumed.',
-    )
-    location_wip_dest_id = fields.Many2one(
-        comodel_name='stock.location',
-        string='Destination Location',
-        index=True,
-        help='Default location to which WIP materials are delivered.',
-    )

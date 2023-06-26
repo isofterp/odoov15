@@ -8,44 +8,10 @@
     -->
     <data>
         <!-- Sequence new picking type -->
-
         <record model="ir.sequence" id="project_task_material_sequence">
             <field name="name">Project Task Material Sequence</field>
-            <field name="code">project_task_material_sequence</field>
             <field name="active">1</field>
             <field name="prefix">CONSUM/</field>
-            <field name="padding">5</field>
-            <field name="number_increment">1</field>
-            <field name="implementation">standard</field>
-        </record>
-
-
-
-        <record model="ir.sequence" id="project_task_material_sequence_jhb">
-            <field name="name">Project Task Material Sequence JHB</field>
-            <field name="code">project_task_material_sequence_jhb</field>
-            <field name="active">1</field>
-            <field name="prefix">JHB-TO-WIP/</field>
-            <field name="padding">5</field>
-            <field name="number_increment">1</field>
-            <field name="implementation">standard</field>
-        </record>
-
-        <record model="ir.sequence" id="project_task_material_sequence_cpt">
-            <field name="name">Project Task Material Sequence CPT</field>
-            <field name="code">project_task_material_sequence_cpt</field>
-            <field name="active">1</field>
-            <field name="prefix">CPT-TO-WIP/</field>
-            <field name="padding">5</field>
-            <field name="number_increment">1</field>
-            <field name="implementation">standard</field>
-        </record>
-
-        <record model="ir.sequence" id="project_task_wip_out_material_sequence">
-            <field name="name">Project Task Material WIP OUT Sequence</field>
-            <field name="code">project_task_material_wip_out_sequence</field>
-            <field name="active">1</field>
-            <field name="prefix">WIP-OUT/</field>
             <field name="padding">5</field>
             <field name="number_increment">1</field>
             <field name="implementation">standard</field>
@@ -54,36 +20,11 @@
         <!-- New Picking type -->
         <record model="stock.picking.type" id="project_task_material_picking_type">
             <field name="name">Project Task Material Operations</field>
-            <field name="sequence_code">OUT</field>
             <field name="code">outgoing</field>
             <field name="sequence_id" ref="project_task_material_sequence"/>
             <field name="warehouse_id" ref="stock.warehouse0"/>
             <field name="default_location_src_id" ref="stock.stock_location_stock"/>
             <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
         </record>
-
-
-        <record model="stock.picking.type" id="project_task_material_wip_out_picking_type">
-            <field name="name">Project Task Material WIP OUT Operations</field>
-            <field name="sequence_code">WIP-OUT</field>
-            <field name="code">internal</field>
-            <field name="sequence_id" ref="project_task_wip_out_material_sequence"/>
-            <field name="warehouse_id" ref="stock.warehouse0"/>
-            <field name="default_location_src_id" ref="stock.stock_location_stock"/>
-            <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
-        </record>
-
-        <!-- Consume Material JHB Picking Type -->
-        <record model="stock.picking.type" id="project_task_material_picking_type_jhb">
-            <field name="name">Project Task Material Operations-JHB</field>
-            <field name="sequence_code">WIP-IN-JHB</field>
-            <field name="code">internal</field>
-            <field name="sequence_id" ref="project_task_material_sequence_jhb"/>
-            <field name="warehouse_id" ref="stock.warehouse0"/>
-            <field name="default_location_src_id" ref="stock.stock_location_stock"/>
-            <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
-        </record>
-
-
     </data>
 </odoo>

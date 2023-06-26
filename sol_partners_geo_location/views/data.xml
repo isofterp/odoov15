@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="sol_map_partner_integration_view">
+        <field name="model">res.partner</field>
+        <field name="mode">primary</field>
+<!--        <field name="sequence">17</field>-->
+        <field name="arch" type="xml">
+            <solmap longitude="partner_longitude" latitude="partner_latitude" geofield="map_form">
+                <field name="image_1920"/>
+                <field name="name"/>
+                <field name="partner_longitude"/>
+                <field name="partner_latitude"/>
+                <field name="map_form"/>
+               <!-- <field name="invoice_ids" projection="id,name,display_name,code_rapport"/>
+                <field name="total_invoiced" widget='monetary'/>
+                <field name="currency_id" />
+                <field name="sale_order_ids" projection="id,name,display_name"/>
+                <field name="sale_order_count" />-->
+            </solmap>
+        </field>
+    </record>
+
+    <record id="sol_inherit_view_order_form" model="ir.ui.view">
+        <field name="name">sol.inherit.view.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//page[1]" position="after">
+                <!--
+                    autofocus="autofocus"
+                    'geocode_btn' : '0' to hide
+                -->
+                <page string="Location" name="Location"  class="o_field_map_from">
+                    <field name="map_form" widget="solMapForm"
+                           options="{
+                            'longitude': 'partner_longitude',
+                            'latitude': 'partner_latitude',
+                            'street': 'street',
+                            'postalcode': 'zip',
+                            'city': 'city',
+                            'state': 'state_id',
+                            'country': 'country_id',
+                            'geocode_btn' : '1'
+                            }">
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="contacts.action_contacts">
+            <field name="view_mode">kanban,tree,form,activity,solmap</field>
+    </record>
+
+    <record id="action_sol_map_partner_integration" model="ir.actions.act_window.view">
+<!--        <field eval="3" name="sequence"/>-->
+        <field name="view_mode">solmap</field>
+        <field name="view_id" ref="sol_map_partner_integration_view"/>
+        <field name="act_window_id" ref="contacts.action_contacts"/>
+    </record>
+</odoo>

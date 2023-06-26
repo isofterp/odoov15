@@ -12,12 +12,13 @@
         <field name="arch" type="xml">
             <field name="currency_id" position="after">
                 <field name="x_sale_approved" invisible="1"/>
+                <field name="x_sale_approve" invisible="1"/>
             </field>
             <xpath expr="/form/sheet" position="before">
                 <div
                         class="alert alert-warning"
                         role="alert"
-                        attrs="{'invisible': [('x_sale_approved','=', True)]}"
+                        attrs="{'invisible': [('state','!=','to_approve')]}"
                 >
                     Quotation sent for Management Approval
 

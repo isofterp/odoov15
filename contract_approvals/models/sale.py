@@ -35,11 +35,16 @@ class SaleOrder(models.Model):
                 exists = True
         if not exists:
             selection.insert(0, ('to_approve', _('To Approve')))
+
+    @api.model
     def create(self, vals):
-        obj = super().create(vals)
+
+        logging.warning("====Is this create being called")
+        obj = super(SaleOrder,self).create(vals)
         if obj.x_is_contract_quote:
             # Search for the approval stage and set it
             obj.state = 'to_approve'
+            obj.x_sale_approve = True
 
             # Notify Approvers
             msg = _(

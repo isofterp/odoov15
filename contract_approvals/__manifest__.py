@@ -11,7 +11,7 @@
     "author": "I-Soft Solutions",
     "maintainers": ["i-soft"],
     "website": "http://isoft.co.za",
-    "depends": ["sale",],
+    "depends": ["sale",'isofterp_subscription'],
     "data": [
         "views/sale_views.xml",
     ],

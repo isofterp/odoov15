@@ -1,0 +1,148 @@
+<odoo>
+    <data>
+        <record id="category_customer" model="ir.ui.view">
+            <field name="name">Customer Class</field>
+            <field name="model">category.customer</field>
+            <field name="arch" type="xml">
+                <form string="Customer Class Form">
+                    <sheet>
+                        <group string="Category Information">
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="category_customer_tree" model="ir.ui.view">
+            <field name="name">Customer Class</field>
+            <field name="model">category.customer</field>
+            <field name="arch" type="xml">
+                <tree string="Categories">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="category_customer_action" model="ir.actions.act_window">
+            <field name="name">Customer Class</field>
+            <field name="res_model">category.customer</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <menuitem id="custom_category_sales"
+                  name="Customer Category"
+                  parent="sale.menu_sale_config"
+                  action="category_customer_action"
+                  sequence="3"/>
+
+        <record id="view_partner_form" model="ir.ui.view">
+            <field name="name">Class</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="category_id" position="after">
+                    <field name="categ_id" decoration-success="categ_id == 'A'"  string="Class"/>
+                </field>
+
+            </field>
+        </record>
+        <record id="view_partner_tree_inherit" model="ir.ui.view">
+            <field name="name">res.partner.tree.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field eval="8" name="priority"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="categ_id" decoration-success="categ_id == 'A'" widget="badge" string="Class"
+                           optional="hide"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="view_order_form" model="ir.ui.view">
+            <field name="name">Customer Category</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="categ_id" decoration-success="categ_id == 'Class A'" widget="badge"
+                           options="{'no_create_edit': True, 'no_create':True, 'no_open':True}"
+                    />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_order_tree_inherit" model="ir.ui.view">
+            <field name="name">Customer Category</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="categ_id" optional="hide" decoration-success="categ_id == 'A'" widget="badge"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_quotation_tree_inherit" model="ir.ui.view">
+            <field name="name">Customer Category</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="categ_id" optional="hide" decoration-success="categ_id == 'A'" widget="badge"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_task_form_class_inherit" model="ir.ui.view">
+            <field name="name">project.task.form.class.inherit</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="arch" type="xml">
+                <field name="x_serial_number_id" position="before">
+                    <field name="categ_id" decoration-success="categ_id == 'A'" widget="badge"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="project_task_view_list_fsm_class" model="ir.ui.view">
+            <field name="name">project.task.form.class.inherit</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="industry_fsm.project_task_view_list_fsm"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="default_order">categ_id asc, create_date </attribute>
+                </xpath>
+                <field name="user_ids" position="before">
+                    <field name="categ_id" decoration-success="categ_id == 'A'"
+                           widget="badge"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="project_task_view_search_fsm_class" model="ir.ui.view">
+            <field name="name">project.task.search.fsm.class</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="industry_fsm.project_task_view_search_fsm"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="inside">
+                    <filter string="Class" name="categ_id" domain="[]" context="{'group_by':'categ_id'}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_res_partner_filter_class" model="ir.ui.view">
+            <field name="name">res.partner.select.class</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="inside">
+                    <filter string="Class" name="categ_id" domain="[]" context="{'group_by':'categ_id'}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

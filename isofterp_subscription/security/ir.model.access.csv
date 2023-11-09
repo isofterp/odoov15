@@ -28,6 +28,4 @@ access_meter_reading_request_wizard_user,access_meter_reading_request_wizard,mod
 access_account_followup_followup_line_readonly,account_followup.followup.line,account_followup.model_account_followup_followup_line,access_account_follow_ups_extra_group,1,0,0,0
 access_meter_reading_history,meter_reading_history,model_meter_reading_history,,1,1,1,1
 access_area_codes,area_codes,model_area_codes,,1,1,1,1
-access_project_task_template,project_task_template,model_project_task_template,,1,1,1,1
-access_project_task_template_line,project_task_template_line,model_project_task_template_line,,1,1,1,1
 access_sale_add_phantom_bom,sale_add_phantom_bom,model_sale_add_phantom_bom,,1,1,1,1

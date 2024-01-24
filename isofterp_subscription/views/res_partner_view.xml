@@ -41,6 +41,18 @@
                     <field name="x_company_reg_no"/>
                     <field name="user_id" default="" required="1"/>
                 </field>
+
+                <notebook>
+                    <page string="Equipment">
+                        <field name="x_equipment_ids" mode="tree,kanban">
+                            <tree string="Equipment" create="false" delete="false" editable="false">
+                                <field name="product_id" string="Equipment"/>
+                                <field name="name" string="Serial No"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
             </field>
         </record>
 
@@ -49,9 +61,9 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_tree"/>
             <field name="arch" type="xml">
-                <field name="display_name" position="after">
+                <!--<field name="ref" position="after">
                     <field name="x_account_number"/>
-                </field>
+                </field>-->
                 <field name="phone" position="after">
                     <field name="x_fax"/>
                 </field>

@@ -2,15 +2,27 @@
 <odoo>
     <data>
 
-        <record id="view_stock_move_line_detailed_operation_tree1" model="ir.ui.view">
+        <!--<record id="view_stock_move_line_detailed_operation_tree1" model="ir.ui.view">
             <field name="name">stock.move.line.operations.tree1</field>
             <field name="model">stock.move.line</field>
             <field name="inherit_id" ref="stock.view_stock_move_line_detailed_operation_tree"/>
             <field name="arch" type="xml">
                 <field name="lot_id" position="replace">
                     <field name="lot_id"
-                           domain="[('x_subscription_id', '=', False),('product_id','=',product_id)]"/>
+                           domain="[('product_id','=',product_id),('x_dlv_id', 'child_of', parent.partner_id)]"/>
                 </field>
+            </field>
+        </record>
+        -->
+        <!-- This is a test button to test the creation of history records -->
+        <record model="ir.actions.server" id="create_history">
+            <field name="name">Run History</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="sale_subscription.model_sale_subscription"/>
+            <field name="binding_model_id" ref="sale_subscription.model_sale_subscription"/>
+            <field name="state">code</field>
+            <field name="code">
+                model._create_history_record()
             </field>
         </record>
 
@@ -42,31 +54,44 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
+                <field name="order_line" position="before">
+                    <button name="%(sale_add_phantom_bom_action)d" type="action"
+                            string="Add Kit" states="draft,sent"/>
+                </field>
                 <field name="analytic_account_id" position="replace"/>
                 <field name="payment_term_id" position="after">
-                    <field name="analytic_account_id" />
+                    <field name="analytic_account_id"/>
                 </field>
+                <!--
                 <field name="analytic_account_id" position="attributes">
                     <attribute name="help">Enter the Salesman who will be credited with this sale</attribute>
                 </field>
+                -->
                 <field name="partner_id" position="replace">
                     <field name="x_is_contract_quote"
                            groups="sale_subscription.group_sale_subscription_manager"
                     />
                     <field name="origin" attrs="{'invisible': [('x_is_contract_quote', '=', False)]}"/>
                     <field name="x_lot_id" attrs="{'invisible': [('x_is_contract_quote', '=', True)]}"/>
+                    <field name="x_product_name"/>
                     <field name="partner_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'
                            domain="[('is_company', '=', True)]"/>
+                    <field name="x_account_number"/>
 
                 </field>
+                <xpath expr="//field[@name='team_id']" position="replace"/>
+                <xpath expr="//field[@name='warehouse_id']" position="replace"/>
                 <field name="payment_term_id" position="after">
-                <field name="x_sale_subscription_id" string="Subscription"
-                       context="{'form_view_ref': 'contract.account_analytic_account_sale_form'}"
-                       attrs="{'invisible': [('x_is_contract_quote', '=', True)], 'readonly': True}"/>
-                <field name="x_is_billable" invisible="1"/>
+                    <field name="warehouse_id"/>
+                    <field name="team_id"/>
+                    <!--<field name="x_sale_subscription_id" string="Subscription"
+                           context="{'form_view_ref': 'contract.account_analytic_account_sale_form'}"
+                           attrs="{'invisible': [('x_is_contract_quote', '=', True)], 'readonly': True}"/>-->
+                    <field name="x_is_billable" invisible="1"/>
                 </field>
-                 <xpath expr="//tree/field[@name='price_unit']" position="before">
-                    <field name="x_rental_amount" />
+                <xpath expr="//tree/field[@name='price_unit']" position="before">
+                    <field name="x_rental_amount"
+                           attrs="{'column_invisible': [('parent.x_is_contract_quote', '=', False)]}"/>
                 </xpath>
                 <xpath expr="//tree/field[@name='price_unit']" position="attributes">
                     <attribute name="attrs">{'readonly':[('parent.x_is_billable','=', True)]}</attribute>
@@ -76,7 +101,8 @@
                         <group string="Financial Calculations" col="2">
                             <field name="x_finance_rental" attrs="{'required': [('x_is_contract_quote','=', True)]}"/>
                             <field name="x_finance_factor" attrs="{'required': [('x_is_contract_quote','=', True)]}"/>
-                            <field name="x_finance_escalation" attrs="{'required': [('x_is_contract_quote','=', True)]}"/>
+                            <field name="x_finance_escalation"
+                                   attrs="{'required': [('x_is_contract_quote','=', True)]}"/>
                             <field name="x_finance_months"
                                    attrs="{'required': [('x_is_contract_quote','=', True)]}"/>
                             <field name="x_finance_capital" readonly="1" force_save="1"/>
@@ -84,27 +110,30 @@
                             <field name="x_finance_settlement"/>
                             <field name="x_finance_profit" readonly="1" force_save="1"/>
                         </group>
-                        <button string="Done" type="object" name="update_deal" class="oe_highlight"/>
+                        <!--<button string="Done" type="object" name="update_deal" class="oe_highlight"/>-->
                     </page>
                 </xpath>
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="x_no_charge"/>
                 </xpath>
 
-                <!-- Remove the ability to open Many2one fields -->
-                <xpath expr="//field[@name='partner_invoice_id']" position="replace">
-                    <field name="partner_invoice_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'
-                           />
-                </xpath>
-                <xpath expr="//field[@name='partner_invoice_id']" position="replace">
-                    <field name="partner_invoice_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'
-                           />
-                </xpath>
                 <xpath expr="//field[@name='partner_shipping_id']" position="replace">
                     <field name="partner_shipping_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'
-                           />
+                    />
                 </xpath>
-
+                <xpath expr="//field[@name='partner_shipping_id']" position="after">
+                    <field name="x_partner_dlv_street"/>
+                    <field name="x_partner_dlv_street2"/>
+                    <field name="x_partner_dlv_email"/>
+                    <field name="x_partner_dlv_phone"/>
+                    <field name="x_partner_dlv_mobile"/>
+                </xpath>
+                <xpath expr="//field[@name='analytic_account_id']" position="after">
+                    <field name="x_copies_black" attrs="{'invisible': [('x_is_contract_quote', '=', True)],
+                    'readonly':[('state','!=', 'draft')]}"/>
+                    <field name="x_copies_color" attrs="{'invisible': [('x_is_contract_quote', '=', True)],
+                    'readonly':[('state','!=', 'draft')]}"/>
+                </xpath>
             </field>
         </record>
 

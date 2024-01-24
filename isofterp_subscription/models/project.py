@@ -38,11 +38,11 @@ class Task(models.Model):
 
     @api.onchange('x_serial_number_id')
     def onchange_serial_umber(self):
-        # print('onchange_serial_umber')
+        #print('onchange_serial_umber')
         self.partner_id = self.x_serial_number_id.x_subscription_id.partner_id
         self.x_serial_number_street = self.x_serial_number_id.x_subscription_id.partner_id.street
-        # self.x_serial_number_street2 = self.x_serial_number_id.x_subscription_id.partner_id.street2
-        if self.x_serial_number_id.x_dlv_id.street and self.x_serial_number_id.x_dlv_id.street2 and self.x_serial_number_id.x_dlv_id.city:
+        #self.x_serial_number_street2 = self.x_serial_number_id.x_subscription_id.partner_id.street2
+        if self.x_serial_number_id.x_dlv_id.street and  self.x_serial_number_id.x_dlv_id.street2 and self.x_serial_number_id.x_dlv_id.city:
             self.x_serial_number_street2 = self.x_serial_number_id.x_dlv_id.street + '\n' + \
                                            self.x_serial_number_id.x_dlv_id.street2 + '\n' + \
                                            self.x_serial_number_id.x_dlv_id.city
@@ -81,6 +81,39 @@ class Task(models.Model):
             result.append((record.id, "%s (# %s)" % (record.name, record.id)))
         return result
 
+    def _fsm_create_sale_order(self):
+        """ Create the SO from the task, with the 'service product' sales line and link all timesheet to that line it """
+        self.ensure_one()
+        if not self.partner_id:
+            raise UserError(_('A customer should be set on the task to generate a worksheet.'))
+
+        SaleOrder = self.env['sale.order']
+        if self.user_has_groups('project.group_project_user'):
+            SaleOrder = SaleOrder.sudo()
+
+        # TDE note: normally company comes from project, user should be in same company
+        # and _get_default_team_id already enforces company coherency + match
+        # Sale.onchange_user_id() that also calls _get_default_team_id
+        # Use the first assignee
+        user_id = self.user_ids[0] if self.user_ids else self.env['res.users']
+        team = self.env['crm.team'].sudo()._get_default_team_id(user_id=user_id.id, domain=None)
+        sale_order = SaleOrder.create({
+            'partner_id': self.partner_id.id,
+            'company_id': self.company_id.id,
+            'task_id': self.id,
+            'analytic_account_id': self._get_task_analytic_account_id().id,
+            'team_id': team.id if team else False,
+            'x_lot_id': self.x_serial_number_id.id,
+        })
+        sale_order.onchange_partner_id()
+        # invoking onchange_partner_shipping_id to update fiscal position
+        sale_order.onchange_partner_shipping_id()
+        # update after creation since onchange_partner_id sets the current user
+        sale_order.user_id = user_id.id
+        sale_order.onchange_user_id()
+
+        self.sale_order_id = sale_order
+
     name = fields.Char(placeholder="Problem Details")
     x_serial_number_id = fields.Many2one('stock.production.lot', 'Serial Number')
     x_serial_number_name = fields.Char(related='x_serial_number_id.product_id.name', string='Machine Description')
@@ -98,7 +131,46 @@ class Task(models.Model):
     x_invoice_warn = fields.Text(related='partner_id.invoice_warn_msg', string='Warning')
     x_problem_type = fields.Many2one('fsm.problem.type', 'Problem Type')
     x_cust_rep = fields.Char('Customer Representative')
+    x_project_task_template_id = fields.Many2one('project.task.template', 'Job Card Template')
 
+    def _compute_line_data_for_template_change(self, line):
+        return {
+            'product_id': line.product_id.id,
+            'product_qty':line.product_uom_qty,
+            'product_uom': line.product_uom_id.id,
+            'location_id':self.project_id.location_id.id,
+            'location_dest_id': self.project_id.location_dest_id.id,
+            'picking_type_id': self.project_id.picking_type_id.id,
+            'name':self.name
+
+        }
+    @api.onchange('x_project_task_template_id')
+    def onchange_x_project_task_template_id(self):
+        logging.warning("============= RUNNING ON CHANGE")
+        if not self.x_project_task_template_id:
+            return
+
+        template = self.x_project_task_template_id.with_context(lang=self.partner_id.lang)
+
+        # --- first, process the list of products from the template
+        parts_lines = [(5, 0, 0)]
+        for line in template.task_template_line_ids:
+            data = self._compute_line_data_for_template_change(line)
+
+            if line.product_id:
+                price = line.product_id.lst_price
+
+
+
+                data.update({
+                    'product_qty': line.product_uom_qty,
+                    'product_id': line.product_id.id,
+
+                })
+
+            parts_lines.append((0, 0, data))
+
+        self.move_ids = parts_lines
 
 class FSMProblemType(models.Model):
     _description = "FSM Problem Type"

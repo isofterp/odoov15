@@ -100,6 +100,7 @@
                     <field name="esc_percent" />
                     <field name="esc_price" />
                     <field name="bank"/>
+                    <field name="area_code"/>
                 </tree>
             </field>
 
@@ -118,7 +119,9 @@
                 <group expand="1" string="Group By">
                     <filter string="Type" name="type" context="{'group_by':'type'}"/>
                     <filter string="Customer" name="Cust" context="{'group_by':'cust'}"/>
-                    <filter string="Conract" name="categ_id" context="{'group_by':'contract'}"/>
+                    <filter string="Contract" name="categ_id" context="{'group_by':'contract'}"/>
+                    <filter string="Bank" name="bank" context="{'group_by':'bank'}"/>
+                    <filter string="Area Code" name="area_code" context="{'group_by':'area_code'}"/>
                 </group>
             </search>
             </field>

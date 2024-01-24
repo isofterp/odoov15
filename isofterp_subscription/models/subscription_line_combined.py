@@ -24,6 +24,7 @@ class subscription_line_combined(models.Model):
     esc_percent = fields.Float('Esc ', readonly=True)
     esc_price = fields.Float('New price', readonly=True)
     bank = fields.Char('Bank', readonly=True)
+    area_code = fields.Char('Area Code', readonly=True)
 
     def _select(self):
         select_str = """
@@ -54,17 +55,19 @@ class subscription_line_combined(models.Model):
                         WHEN l.name = 'Monthly Service' THEN l.price_unit * lot.x_increase_service_percent /100 + l.price_unit
                         WHEN l.name = 'Monthly Rental' THEN l.price_unit * lot.x_increase_rental_percent /100 + l.price_unit
                     END as esc_price,
-                    sub.x_bank_name as bank
+                    sub.x_bank_name as bank,
+                    ar.name as area_code
         """
         return select_str
 
     def _from(self):
         from_str = """
-                    sale_subscription sub 
+                    sale_subscription sub
                     join sale_subscription_line l on sub.id = l.analytic_account_id
-                    join res_partner partner on sub.partner_id = partner.id    
+                    join res_partner partner on sub.partner_id = partner.id  
                     left join stock_production_lot lot on l.x_serial_number_id = lot.id  
-                    left join product_template prod on prod.id = lot.product_id     
+                    left join product_template prod on prod.id = lot.product_id   
+                    left join area_codes ar on sub.x_area_code = ar.id  
         """
         return from_str
 
@@ -89,7 +92,8 @@ class subscription_line_combined(models.Model):
                     lot.x_increase_service_date ,
                     lot.x_increase_rental_percent ,
                     lot.x_increase_service_percent ,
-                    sub.x_bank_name 
+                    sub.x_bank_name,
+                    area_code 
                     
         """
         return group_by_str

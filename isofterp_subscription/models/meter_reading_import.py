@@ -6,6 +6,11 @@ from datetime import datetime
 
 from odoo.tools.translate import _, pycompat
 from odoo.exceptions import UserError
+from xlrd import open_workbook
+from openpyxl import Workbook
+import openpyxl
+
+from openpyxl import load_workbook
 
 _logger = logging.getLogger(__name__)
 
@@ -53,12 +58,11 @@ class MeterReadingImport(models.TransientModel):
                     if colour.isdigit():
                         if line.name == 'Colour copies' and int(colour) > 0:
                             print('found Colour copies serialnumber ', serial_no, line.name, line.analytic_account_id.name)
+                            line.write({'x_copies_last': colour})
                     if self.input_layout == 'fm':
                         line.write({'x_reading_type_last': 'FM Audit'})
                     if self.input_layout == 'man':
                         line.write({'x_reading_type_last': 'Manual'})
-
-
 
         print('Finished')
         now = datetime.now()
@@ -73,3 +77,80 @@ class MeterReadingImport(models.TransientModel):
             'res_id': 121,
             'type': 'ir.actions.act_window'
         }
+
+    def read_xls_import(self):
+        error_obj = self.env['meter.reading.error']
+        error_obj.search([]).unlink()  # Delete All prevoius messages
+        line_obj = self.env['sale.subscription.line']
+        serial_no = ''
+        line_num = 0
+        # Read xls file
+        wb = openpyxl.load_workbook(
+
+            filename=io.BytesIO(base64.b64decode(self.data_file)), read_only=True
+        )
+        ws = wb.active
+        for row in ws.iter_rows(min_row=2, max_row=None, min_col=None,
+
+                                   max_col=None, values_only=True):
+            #logging.warning("Record %s %s %s", type(row[0]),type(row[1]),type(row[2]))
+
+            if row[0] == '':
+                continue
+            serial_no = row[0]
+            colour = row[1]
+            black = row[2]
+            if isinstance(serial_no,int):
+                serial_no = str(serial_no)
+                logging.warning("Serial number is %s %s %s", serial_no, type(serial_no),black)
+            #logging.warning("Reading line %s %s %s %s", serial_no, black, colour, str(line_num))
+
+
+            line_ids = line_obj.search([('x_serial_number_id', '=', serial_no)])
+            if line_ids:
+                for line in line_ids:
+                    #logging.warning("line name is %s %s %s %s", serial_no, line.name, black, colour)
+                    if line.name == 'Black copies' and int(black) > 0:
+                        # logging.warning('found Black copies serial number %s %s %s', serial_no, line.name,
+                        #       line.analytic_account_id.name)
+                        line.write({'x_copies_last': black})
+                    if line.name == 'Colour copies' and int(colour) > 0:
+                        # logging.warning('found Colour copies serial number %s %s %s', serial_no, line.name,
+                        #       line.analytic_account_id.name)
+                        line.write({'x_copies_last': colour})
+                    if self.input_layout == 'fm':
+                        line.write({'x_reading_type_last': 'FM Audit'})
+                    if self.input_layout == 'man':
+                        line.write({'x_reading_type_last': 'Manual'})
+            line_num += 1
+
+        print('Finished')
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M")
+        message = dt_string + ' Import Finished - last record was ' + serial_no + 'Line No' + str(line_num)
+        error_obj.create({'name': message})
+        return {
+            'view_type': 'form',
+            'view_mode': 'tree',
+            'res_model': 'meter.reading.error',
+            'target': 'current',
+            'res_id': 121,
+            'type': 'ir.actions.act_window'
+        }
+
+
+class MeterReadingHistory(models.Model):
+    _name = 'meter.reading.history'
+    _description = 'Meter Reading History'
+
+    name = fields.Char(string='Customer')
+    contract_id = fields.Many2one('sale.subscription',string='Contract')
+    product_id = fields.Many2one('product.product',string='Product')
+    serial_no_id = fields.Many2one('stock.production.lot', 'Serial Number')
+    machine_id = fields.Many2one('product.product',related='serial_no_id.product_id',string='Machine')
+    copies_previous = fields.Integer('Previous Reading')
+    copies_last = fields.Integer('Last Reading')
+    no_of_copies = fields.Integer('Qty')
+
+    def _close_window(self):
+        return {'type': 'ir.actions.act_window_close'}

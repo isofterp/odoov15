@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="area_codes_tree_view" model="ir.ui.view">
+        <field name="name">area.codes.tree.view</field>
+        <field name="model">area.codes</field>
+        <field name="arch" type="xml">
+            <tree string="Area Codes">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_area_codes" model="ir.actions.act_window">
+        <field name="name">Area Codes</field>
+        <field name="res_model">area.codes</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="area_codes_tree_view"/>
+    </record>
+
+    <menuitem id="area_codes"
+              name="Area Codes"
+              parent="sale_subscription.menu_sale_subscription_config"
+              action="action_area_codes"
+              sequence="5"
+              groups="sale_subscription.group_sale_subscription_manager"/>
+
+</odoo>

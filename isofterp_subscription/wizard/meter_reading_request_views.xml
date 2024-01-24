@@ -19,6 +19,40 @@
             </field>
         </record>
 
+        <record id="meter_reading_history_tree_view" model="ir.ui.view">
+            <field name="name">meter.reading.history.tree.view</field>
+            <field name="model">meter.reading.history</field>
+            <field name="arch" type="xml">
+                <tree  delete="false" create="false" >
+                    <field name="create_date"/>
+                    <field name="name"/>
+                    <field name="contract_id"/>
+                    <field name="machine_id" />
+                    <field name="serial_no_id"/>
+                    <field name="product_id"/>
+                    <field name="copies_previous"/>
+                    <field name="copies_last"/>
+                    <field name="no_of_copies"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="meter_reading_history_search" model="ir.ui.view">
+            <field name="name">meter.reading.history.search</field>
+            <field name="model">meter.reading.history</field>
+            <field name="arch" type="xml">
+                <search string="Subscriptions">
+                     <field name="name" string="WildCard"
+                                       filter_domain="['|','|','|','|',('machine_id', 'ilike', self),
+                                       ('contract_id', 'ilike', self),
+                                       ('product_id', 'ilike', self),
+                                       ('serial_no_id', 'ilike', self),
+                                       ('name', 'ilike', self)]"
+                     />
+                </search>
+            </field>
+        </record>
+
         <record id="action_meter_reading_request" model="ir.actions.act_window">
             <field name="name">Meter Reading Requests</field>
             <field name="res_model">meter.reading.request.wizard</field>
@@ -26,11 +60,25 @@
             <field name="target">new</field>
         </record>
 
+         <record id="action_meter_reading_history" model="ir.actions.act_window">
+            <field name="name">Meter Reading History</field>
+            <field name="res_model">meter.reading.history</field>
+            <field name="view_mode">tree</field>
+            <field name="target">new</field>
+        </record>
+
         <menuitem id="menu_meter_reading_request"
                   parent="sale_subscription.menu_sale_subscription"
                   action="action_meter_reading_request"
                   sequence="5"
-                  groups="sale_subscription.group_sale_subscription_manager"
+                  groups="sale_subscription.group_sale_subscription_manager,access_meter_reading_extra_group"
+        />
+
+         <menuitem id="menu_meter_reading_history"
+                  parent="sale_subscription.menu_sale_subscription"
+                  action="action_meter_reading_history"
+                  sequence="7"
+                  groups="sale_subscription.group_sale_subscription_manager,access_meter_reading_extra_group"
         />
 
     </data>

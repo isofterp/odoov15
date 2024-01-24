@@ -40,7 +40,7 @@ class MeterReadingRequestWizard(models.TransientModel):
             else:  # send am email to the Company warning of no email address
                 print("no email")
                 email_body = "<div>This Contract: " + line.analytic_account_id.code + " has no email address. </br>Please phone " + line.analytic_account_id.partner_id.name
-                email_body += " on " + line.analytic_account_id.partner_id.phone + " and enter the last meter readings for "
+                email_body += " on " + str(line.analytic_account_id.partner_id.phone) + " and enter the last meter readings for "
                 email_body += "</br>" + product + " Serial Number: " + serial_number + "</div>"
                 email_body += "<div style = 'text-align: center; margin: 16px 0px 16px 0px;' >"
                 #email_body += "<a href = /my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
@@ -58,7 +58,7 @@ class MeterReadingRequestWizard(models.TransientModel):
                 if line.analytic_account_id.code == '11104580':
                     # if line.analytic_account_id.partner_id.id == 186:  # KaapAgrie
                     self.message_post(body=email_body)
-                    mail_out = mail.create(mail_values)
+                    mail_out = mail.sudo().create(mail_values)
                     # mail.send(mail_out)
                     continue
             if line.x_email_count == 0:
@@ -94,7 +94,7 @@ class MeterReadingRequestWizard(models.TransientModel):
             #if line.analytic_account_id.code == '11104580':
             #self.message_post(
             #    body=" THIS needs to change for go live " + email_body + " THIS needs to change for go live ")
-            mail_out = mail.create(mail_values)
+            mail_out = mail.sudo().create(mail_values)
             # mail.send(mail_out)
             line.x_email_count += 1
 

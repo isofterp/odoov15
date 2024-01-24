@@ -36,12 +36,12 @@
                     <field name="name"/>
                     <field name="x_main_product"/>
                     <field name="product_id" readonly="1"/>
-                    <field name="create_date" optional="show"/>
+                    <field name="x_service_type_id" optional="show"/>
+                    <field name="x_subscription_id" optional="show"/>
+                    <field name="x_dlv_id" optional="show"/>
                     <field name="company_id" groups="base.group_multi_company"/>
                 </tree>
-
             </xpath>
-
         </field>
     </record>
 
@@ -60,9 +60,30 @@
             <xpath expr="//field[@name='user_id']" position="replace">
                 <field name="user_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
             </xpath>
+            <xpath expr="//field[@name='location_id']" position="after">
+                <field name="user_id" string="Responsible User"/>
+            </xpath>
             <xpath expr="//field[@name='location_dest_id']" position="replace">
                 <field name="location_dest_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
             </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="x_partner_dlv_street"/>
+                <field name="x_partner_dlv_street2"/>
+                <field name="x_partner_dlv_email"/>
+                <field name="x_partner_dlv_phone"/>
+                <field name="x_partner_dlv_mobile"/>
+            </xpath>
+
+            <xpath expr="//sheet/notebook/page[@name='operations']/field[@name='move_ids_without_package']/tree/field[@name='product_uom']" position="after">
+                <field name="x_copies_black" optional="hide"
+                attrs="{'column_invisible': ['&amp;', ('parent.picking_type_code', '!=', 'incoming'),
+                ('parent.picking_type_id','=',1)]}"/>
+                <field name="x_copies_color" optional="hide"
+                attrs="{'column_invisible': ['&amp;', ('parent.picking_type_code', '!=', 'incoming'),
+                ('parent.picking_type_id','=',1)]}"/>
+            </xpath>
+
+
 
         </field>
     </record>

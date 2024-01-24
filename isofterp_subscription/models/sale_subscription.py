@@ -9,7 +9,8 @@ _logger = logging.getLogger(__name__)
 
 
 class SaleSubscription(models.Model):
-    _inherit = "sale.subscription"
+    _name = "sale.subscription"
+    _inherit = ['sale.subscription', 'mail.thread', 'mail.activity.mixin']  # need this for tracking - not working
 
     # this is commented out to run the conversion program
     #  !!!!!!!!!! Uncomment the below to go live !!!!!
@@ -166,15 +167,18 @@ class SaleSubscription(models.Model):
     x_add_hoc_increase = fields.Selection(selection=[('yes', 'Yes'), ('no', 'No')], default='yes',
                                           string='Add Hoc Increases')
     x_third_party_rental_billing = fields.Selection(selection=[('yes', 'Yes'), ('no', 'No')], default='no',
-                                                    string='3rd Party Rental Billing')
+                                                    string='3rd Party Rental Billing',
+                                                    help='If yes, then when the end date is reached, the machine will '
+                                                         'continue to be billed to the customer by the Bank (3rd Party).')
     x_account_number = fields.Char('Account Number', related='partner_id.x_account_number', index=True)
     x_sale_order_id = fields.Many2one('sale.order', 'Sales Order')
     x_rental_group_id = fields.Many2one('subscription.rental.group', 'Rental Group')
     x_ceded_reference = fields.Char('Ceded Ref Number')
-    x_bank_name = fields.Char('Bank Name')
+    x_bank_name = fields.Char('Bank Name', tracking=True)
     x_machine_ids = fields.Many2many('stock.production.lot', 'sale_subscription_subscription_stock_production_lot_rel',
                                      'sale_subscription_id', 'stock_production_lot_id', string='Machine',
                                      ondelete='cascade')
+    x_area_code = fields.Many2one('area.codes', 'Area Code')
 
     def open_sale_orders(self):
         context = self._context.copy()
@@ -225,7 +229,7 @@ class SaleSubscription(models.Model):
         }
 
     def _prepare_invoice_lines(self, fiscal_position):
-        print("@229 My _prepare_invoice_lines in sale_subscription.py")
+        # print("@229 My _prepare_invoice_lines in sale_subscription.py")
         self.ensure_one()
         revenue_date_start = self.recurring_next_date
         periods = {'daily': 'days', 'weekly': 'weeks', 'monthly': 'months', 'yearly': 'years'}
@@ -235,24 +239,21 @@ class SaleSubscription(models.Model):
 
     def _prepare_invoice_data(self):
         self.ensure_one()
-        res = super(SaleSubscription,self)._prepare_invoice_data()
-        logging.warning("====Doing _prepare_invoice_data")
+        res = super(SaleSubscription, self)._prepare_invoice_data()
         if self.user_id:
             res['invoice_user_id'] = 1
-
         if self.name:
-            res['ref'] = self.name
-        else:
-            res['ref'] = 'edgar==='
-        logging.warning("Res is %s", res)
+            res['invoice_origin'] = self.display_name
         return res
 
     def _isoft_prepare_invoice_line(self, fiscal_position, date_start=False, date_stop=False):
-        print('fisacl=', fiscal_position)
+        # print('fisacl=', fiscal_position)
         lines = []
         increment_copies = increment_rental = increment_service = mac_serial = ''
         analytic_obj = self.env['account.analytic.account']
         for line in self.recurring_invoice_line_ids:
+            if line.product_id.categ_id.name == 'component':
+                continue
             mac_serial = "[" + line.x_serial_number_id.product_id.default_code + "]" + line.x_serial_number_id.name + " "
             machine = self.env['stock.production.lot'].search([('id', '=', line.x_serial_number_id.id)])
             account = analytic_obj.search([('name', '=', line.x_serial_number_id.name)])
@@ -411,7 +412,7 @@ class SaleSubscription(models.Model):
                         }
 
                         lines.append(line_vals)
-
+                    #########self._create_history_record(line)
                     line.x_copies_previous = line.x_copies_last
                     line.x_email_count = 0
                     line.quantity = 0
@@ -581,3 +582,38 @@ class SaleSubscription(models.Model):
                 mail_out = mail.create(mail_values)
                 # mail.send(mail_out)
                 line.x_email_count += 1
+
+    def _cron_delete_zero_invoices(self):
+        """Delete invoices where there are no invoice lines"""
+        SQL = "DELETE FROM account_move WHERE NOT EXISTS(SELECT 1 FROM account_move_line WHERE account_move_line.move_id = account_move.id)"
+        self.env.cr.execute(SQL)
+        self.env.cr.commit()
+        return
+
+    ##### Put back after conversion has completed!!!!!!!!
+    @api.model
+    def create(self, vals):
+        code = self.env['ir.sequence'].with_company(vals.get('company_id')).next_by_code('sale.subscription') or 'New'
+        vals['code'] = code
+        subscription = super(SaleSubscription, self).create(vals)
+        return subscription
+
+    # _create_history_record(self, line):
+    def _create_history_record(self):
+        if self.env.context.get('active_ids', False):
+            sale_order_id = self.browse(self.env.context.get('active_ids'))
+            for line in self.env['sale.subscription.line'].search([('analytic_account_id', '=', sale_order_id.id),
+                                                                   ('product_id.name', 'ilike', 'copies')]):
+                vals = {
+                    'name': line.analytic_account_id.partner_id.name,
+                    'contract_id': line.analytic_account_id.id,
+                    'machine_id': line.x_serial_number_id.product_id.id,
+                    'product_id': line.product_id.id,
+                    'serial_no_id': line.x_serial_number_id.id,
+                    'copies_last': line.x_copies_last,
+                    'copies_previous': line.x_copies_previous,
+                    'no_of_copies': line.x_copies_last - line.x_copies_previous,
+                }
+                print('vals', vals)
+                self.env['meter.reading.history'].create(vals)
+        return

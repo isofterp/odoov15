@@ -29,3 +29,4 @@ access_account_followup_followup_line_readonly,account_followup.followup.line,ac
 access_meter_reading_history,meter_reading_history,model_meter_reading_history,,1,1,1,1
 access_area_codes,area_codes,model_area_codes,,1,1,1,1
 access_sale_add_phantom_bom,sale_add_phantom_bom,model_sale_add_phantom_bom,,1,1,1,1
+access_generate_recurring_invoices_wizard,generate_recurring_invoices_wizard,model_generate_recurring_invoices_wizard,sale_subscription.group_sale_subscription_manager,1,1,1,1

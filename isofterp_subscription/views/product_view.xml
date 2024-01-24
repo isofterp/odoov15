@@ -2,55 +2,137 @@
 <odoo>
     <data>
 
-        <record id="product_normal_form_view_inherit" model="ir.ui.view">
-            <field name="name">product.normal.formm.view.inherit</field>
-            <field name="model">product.product</field>
-             <field name="inherit_id" ref="product.product_normal_form_view"/>
-            <field name="arch" type="xml">
-                <field name="default_code" position="replace">
-                    <field name="default_code" attrs="{'required': [('type', '=', 'product')]}"/>
-                </field>
-                <xpath expr="//page[@name='general_information']" position="after">
-                    <page name="charges" string="Charges" attrs="{'invisible': [('tracking', '=', 'none')]}">
-                        <field name="x_machine_charge_ids" />
-                    </page>
-                     <page name="component" string="Components" attrs="{'invisible': [('tracking', '=', 'none')]}">
-                        <field name="x_optional_component_ids" />
-                    </page>
-                </xpath>
-            </field>
-        </record>
+        <!--        <record id="product_normal_form_view_inherit" model="ir.ui.view">-->
+        <!--            <field name="name">product.normal.formm.view.inherit</field>-->
+        <!--            <field name="model">product.product</field>-->
+        <!--             <field name="inherit_id" ref="product.product_normal_form_view"/>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <field name="default_code" position="replace">-->
+        <!--                    <field name="default_code" attrs="{'required': [('type', '=', 'product')]}"/>-->
+        <!--                </field>-->
+        <!--                <xpath expr="//page[@name='general_information']" position="after">-->
+        <!--                    <page name="charges" string="Charges" attrs="{'invisible': [('tracking', '=', 'none')]}">-->
+        <!--                        <field name="x_machine_charge_ids" />-->
+        <!--                    </page>-->
+        <!--                     <page name="component" string="Components" attrs="{'invisible': [('tracking', '=', 'none')]}">-->
+        <!--                        <field name="x_optional_component_ids" />-->
+        <!--                    </page>-->
+        <!--                </xpath>-->
+        <!--            </field>-->
+        <!--        </record>-->
 
         <record id="product_form_view_inherit" model="ir.ui.view">
             <field name="name">product.formm.view.inherit</field>
             <field name="model">product.template</field>
-             <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
             <field name="arch" type="xml">
                 <field name="default_code" position="replace">
                     <field name="default_code" attrs="{'required': [('type', '=', 'product')]}"/>
                 </field>
+                <xpath expr="//field[@name='default_code']" position="after">
+                    <field name="x_kit"/>
+                    <field name="x_kit_quantity"/>
+                </xpath>
                 <xpath expr="//page[@name='general_information']" position="after">
                     <page name="charges" string="Charges" attrs="{'invisible': [('tracking', '=', 'none')]}">
-                        <field name="x_machine_charge_ids" />
+                        <field name="x_machine_charge_ids"/>
                     </page>
-                     <page name="component" string="Components" attrs="{'invisible': [('tracking', '=', 'none')]}">
-                        <field name="x_optional_component_ids" />
+                    <page name="component" string="Components" attrs="{'invisible': [('tracking', '=', 'none')]}">
+                        <field name="x_optional_component_ids"/>
                     </page>
+                    <page name="alternate_products" string="Alternate products">
+                        <field name="x_alternate_product_ids">
+                            <tree string="Alternate Products" editable="bottom">
+                                <field name="name" string="Product"/>
+                                <field name="default_code"/>
+                                <field name="categ_id"/>
+                                <field name="qty_available"/>
+                            </tree>
+                        </field>
+                    </page>
+
                 </xpath>
+                <div name="options" position="inside">
+                <span class="d-inline-block">
+                    <field name="x_invoice_ok"/>
+                    <label for="x_invoice_ok" string="Cannot Be Invoiced"/>
+                </span>
+            </div>
+
             </field>
         </record>
 
-        <!--<record id="product_form_view_restrict" model="ir.ui.view">
+        <record id="product_form_view_restrict" model="ir.ui.view">
             <field name="name">product.form.view.restrict</field>
             <field name="model">product.template</field>
-             <field name="inherit_id" ref="isofterp_subscription.product_form_view_inherit"/>
+            <field name="inherit_id" ref="isofterp_subscription.product_form_view_inherit"/>
             <field name="groups_id" eval="[(6, 0, [ref('isofterp_subscription.access_product_view_restrict_group')])]"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='standard_price']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+                <xpath expr="//button[@name='open_pricelist_rules']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
             </field>
-        </record>-->
+        </record>
+
+        <record id="view_product_supplier_inherit_isoft" model="ir.ui.view">
+            <field name="name">product.template.supplier.form.inherit.isoft</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="purchase.view_product_supplier_inherit"/>
+            <field name="groups_id" eval="[(6, 0, [ref('isofterp_subscription.access_product_view_restrict_group')])]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='purchase']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+
+
+        </record>
+
+        <record model="ir.ui.view" id="product_template_form_view_procurement_button_isoft">
+            <field name="name">product.template_procurement.isoft</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="stock.product_template_form_view_procurement_button"/>
+            <field name="groups_id" eval="[(6, 0, [ref('isofterp_subscription.access_product_view_restrict_group')])]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_update_quantity_on_hand']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='%(stock.action_product_replenish)d']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//div[@name='button_box']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_template_property_form_isoft" model="ir.ui.view">
+            <field name="name">product.template.stock.property.form.inherit.isoft</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="stock.view_template_property_form"/>
+            <field name="groups_id" eval="[(6, 0, [ref('isofterp_subscription.access_product_view_restrict_group')])]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='inventory']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_form_view_inherit_isoft" model="ir.ui.view">
+            <field name="name">product.formm.view.inherit.isoft</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="isofterp_subscription.product_form_view_inherit"/>
+            <field name="groups_id" eval="[(6, 0, [ref('isofterp_subscription.access_product_view_restrict_group')])]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='charges']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
 
 
         <!--<record id="product_template_component_tree_view" model="ir.ui.view">

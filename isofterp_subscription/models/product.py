@@ -1,5 +1,6 @@
 import logging
 
+
 from odoo import api, fields, models, _
 from collections import defaultdict
 _logger = logging.getLogger(__name__)
@@ -12,10 +13,12 @@ class productTemplate(models.Model):
     x_optional_component_ids = fields.Many2many(
         'product.template', 'product_component_rel', 'src_id', 'dest_id',
         string='Optional Products', help="Optional Components are suggested .", check_company=True)
-
-    def collected_ids(self):
-        print('here we are',self)
-
+    x_alternate_product_ids = fields.Many2many(
+        'product.template', 'product_alternate_rel', 'src_id', 'dest_id',
+        string='Alnternate Products', help="Alternate Products .", check_company=True)
+    x_invoice_ok = fields.Boolean(string="Cannot be Invoiced", help='If set the product will not be Invoiced')
+    x_kit = fields.Boolean(string="KIT")
+    x_kit_quantity = fields.Integer(string="How many quantities of an item to make up a kit")
 
 class Task(models.Model):
     _inherit = "project.task"
@@ -26,6 +29,7 @@ class Task(models.Model):
 # Do I need to worry if it already exist on the quotation? Don't think so
 class ProductProduct(models.Model):
     _inherit = "product.product"
+
 
     def _inverse_fsm_quantity(self):
         task = self._get_contextual_fsm_task()

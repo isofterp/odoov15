@@ -16,6 +16,7 @@
 <!--                </header>-->
                 <field name="close_reason_id" position="before">
                     <field name="x_ceded_reference"/>
+                    <field name="x_area_code" />
                     <field name="x_sale_order_id"/>
 <!--                    <button name="create_sales_order" string="Create a Sales Order"-->
 <!--                            type="object"-->
@@ -39,6 +40,7 @@
 <!--                    <field name="team_id" kanban_view_ref="%(sales_team.crm_team_view_kanban)s"/>-->
                     <field name="x_third_party_rental_billing" widget="radio" options="{'horizontal': true}"/>
                     <field name="x_add_hoc_increase" widget="radio" options="{'horizontal': true}"/>
+                    <field name="x_account_number" readonly="1" string="Account Number"/>
                 </field>
                 <field name="health" position="after">
                     <group>
@@ -97,11 +99,28 @@
                 <field name="name" position="replace">
 <!--                    <field name="x_machine_ids" filter_domain="[('x_machine_ids', 'ilike', self)]"/>-->
                     <field name="name" string="WildCard"
-                           filter_domain="['|','|',('x_machine_ids', 'ilike', self),
+                           filter_domain="['|','|','|',('x_machine_ids', 'ilike', self),
+                           ('name', 'ilike', self),
                            ('x_account_number', 'ilike', self),
                            ('partner_id.name', 'ilike', self)]"/>
 <!--                    <field name="x_account_number" filter_domain="[('x_account_number', 'ilike', self)]"/>-->
                 </field>
+
+            </field>
+        </record>
+
+        <record id="sale_subscription_view_list_inherit" model="ir.ui.view">
+            <field name="name">sale.subscription.list.inherit</field>
+            <field name="model">sale.subscription</field>
+            <field name="inherit_id" ref="sale_subscription.sale_subscription_view_list"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='recurring_next_date']" position="before">
+                    <field name="date_start" optional="show"/>
+                    <field name="date_start" optional="show"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="x_account_number" optional="show"/>
+                </xpath>
             </field>
         </record>
 

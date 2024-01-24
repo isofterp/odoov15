@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="generate_recurring_invoices_form" model="ir.ui.view">
+            <field name="name">generate.recurring.invoices.wizard.form</field>
+            <field name="model">generate.recurring.invoices.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <DIV>Hello</DIV>
+                    <field name="current_user"/>
+                    <DIV>This is a VERY serious operation. You <b>MUST</b> make a backup of the Database before runnning
+                        this procedure.
+                    </DIV>
+                    <DIV>If so, please type in the word "Yes" to continue (this means you have agreed that a backup has
+                        been made.
+                    </DIV>
+                    <field name="yes_to_backup" string="Answer"/>
+                    <DIV>
+                        ============================================================================================================================
+                    </DIV>
+                    <footer>
+                        <button name="generate_recurring_invoices" string="Generate Invoices" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_generate_recurring_invoices" model="ir.actions.act_window">
+            <field name="name">Generate Recurring Invoices</field>
+            <field name="res_model">generate.recurring.invoices.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_generate_recurring_invoices"
+                  parent="sale_subscription.menu_sale_subscription_config"
+                  action="action_generate_recurring_invoices"
+                  sequence="5"
+        />
+
+    </data>
+</odoo>

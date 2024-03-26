@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-10 02:49+0000\n"
-"PO-Revision-Date: 2021-05-14 18:47+0000\n"
-"Last-Translator: Yves Le Doeuff <yld@alliasys.fr>\n"
+"PO-Revision-Date: 2021-01-27 15:57+0000\n"
+"Last-Translator: Yann Papouin <y.papouin@dec-industrie.com>\n"
 "Language-Team: French (https://www.transifex.com/oca/teams/23907/fr/)\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -58,13 +58,13 @@ msgstr "Dernière mise à jour le"
 #. module: project_task_material
 #: model_terms:ir.ui.view,arch_db:project_task_material.view_project_task_form_material
 msgid "Material"
-msgstr "Matériel"
+msgstr "Matériaux"
 
 #. module: project_task_material
 #: model:ir.model.fields,field_description:project_task_material.field_project_task__material_ids
 #: model_terms:ir.ui.view,arch_db:project_task_material.view_project_task_form_material
 msgid "Material Used"
-msgstr "Matériel utilisés pour la tâche"
+msgstr "Matériaux utilisés"
 
 #. module: project_task_material
 #: model:ir.model.fields,field_description:project_task_material.field_project_task_material__product_id
@@ -77,10 +77,10 @@ msgid "Quantity"
 msgstr "Quantité"
 
 #. module: project_task_material
-#: code:addons/project_task_material/models/project.py:0
+#: code:addons/project_task_material/models/project.py:40
 #, python-format
 msgid "Quantity of material consumed must be greater than 0."
-msgstr ""
+msgstr "La quantité de matière consommée doit être supérieure à 0."
 
 #. module: project_task_material
 #: model:ir.model,name:project_task_material.model_project_task

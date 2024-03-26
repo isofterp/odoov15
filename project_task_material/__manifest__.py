@@ -9,10 +9,18 @@
     "summary": "Record products spent in a Task",
     "version": "15.0.1.0.0",
     "category": "Project Management",
-    "author": "Daniel Reis," "Tecnativa," "Odoo Community Association (OCA)",
+    "author": "Daniel Reis,"
+              "Tecnativa,"
+              "Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/project",
     "license": "AGPL-3",
     "installable": True,
-    "depends": ["project", "product"],
-    "data": ["security/ir.model.access.csv", "views/project_view.xml"],
+    "depends": [
+        "project",
+        "product",
+    ],
+    "data": [
+        "security/ir.model.access.csv",
+        "views/project_view.xml",
+    ],
 }

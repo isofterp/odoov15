@@ -10,6 +10,6 @@
     "license": "AGPL-3",
     "application": False,
     "installable": True,
-    "depends": ["stock"],
+    "depends": ["stock",'isofterp_subscription'],
     "data": ["views/stock_move_line_view.xml", "views/stock_scrap_view.xml"],
 }

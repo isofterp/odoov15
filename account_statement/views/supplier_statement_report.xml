@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="report_supplier_statement">
+			<t t-call="web.external_layout">
+				<t t-set="doc" t-value="doc.with_context({'lang':doc.lang})" />
+				<t t-set="company" t-value="res_company"/>
+				<div class="text-right" style="margin-right: 15em;">
+					<p><span t-esc="doc.name" /><br/>
+						<span t-esc="doc.street" /><br/>
+						<span t-esc="doc.street2" /><br/>
+						<span t-esc="doc.city" />
+						<span t-esc="doc.state_id.name" />
+						<span t-esc="doc.zip" /><br/>
+						<span t-esc="doc.country_id.name" />
+					</p>
+					<br/>
+				</div>
+				<div class="page">
+					<t t-set="i" t-value="0.0" />
+					<t t-set="j" t-value="0.0" />
+					<t t-set="k" t-value="0.0" />
+					<t t-foreach="doc.vendor_payment_line_ids" t-as="line">
+						<t t-set="i" t-value="i+ line.invoices_debit" />
+						<t t-set="j" t-value="j+line.payments_credit" />
+						<t t-set="k" t-value="k+line.balance" />
+					</t>
+
+					<div class="row mt32 mb32">
+
+					 	<div>
+					 	<t t-if="doc.vendor_start">
+                        <strong>Date from :</strong>
+                        <p>
+                            <span t-esc="doc.vendor_start"/>
+                            &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;
+                        </p>
+                    	</t>
+                    	</div>
+                   
+                    	<div>
+                    	<t t-if="doc.vendor_end">
+                        <strong>Date to :</strong>
+                        <p>
+                            <span t-esc="doc.vendor_end"/>
+                        </p>
+                    	</t>
+                    	</div>
+
+					
+					</div>
+					
+					<table class="table table-condensed">
+						<thead>
+							<tr class="text-center">
+								<th>Date</th>
+								<th>Invoice Number</th>
+								<th>Account</th>
+								<th>Ref</th>
+								<th>Invoices/Credit</th>
+								<th>Payments/Debit</th>
+								<th>Balance</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td></td>
+								<td><b>Initial Balance</b></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td class="text-right">
+									<b><span t-esc="doc.vendor_bal" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></b>
+								</td>
+							</tr>
+								<t t-set="grand_total" t-value="0.0" />    
+						  	<t t-set="bal" t-value="doc.vendor_bal" />
+						   	<t t-set="sub_total" t-value="0.0" />
+							<tr t-foreach="doc.vendor_payment_line_ids" t-as="line">
+								<t t-set="bal" t-value="bal +sub_total "/>
+								<td><span t-esc="line.date" /></td>
+								<td><span t-esc="line.invoice_number" /></td>
+								<td>
+									<span t-esc="line.account" />
+								</td>
+								<td><span t-esc="line.ref" /></td>
+								<td class="text-right">
+									<span t-esc="line.invoices_debit"
+										t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}" />
+								</td>
+								<td class="text-right">
+									<span t-esc="line.payments_credit"
+										t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}" />
+								</td>
+								<td class="text-right">
+									<t t-set="sub_total" t-value="line.invoices_debit-line.payments_credit" />
+									<t t-set="grand_total" t-value="sub_total + bal"/>
+									<span t-esc="sub_total + bal"
+										t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}" />
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td><b>Ending Balance</b></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td class="text-right">
+									<b><span t-esc="grand_total" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></b>
+								</td>
+							</tr>
+							<tr>
+								<td class="text-right"></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td class="text-right"><span t-esc="i" /></td>
+								<td class="text-right"><span t-esc="j" /></td>
+								<td class="text-right"></td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="col-xs-4 pull-right">
+						<table class="table table-condensed">
+							<tr class="border-black">
+								<td>
+									<strong>Total Amount OverDue :</strong>
+								</td>
+								<td class="text-right">
+									<strong>
+									<span t-field="doc.payment_amount_overdue_amt_supplier"
+										t-options='{"widget": "monetary", "display_currency": res_company.currency_id}' />
+									</strong>
+								</td>
+							</tr>
+							<tr class="border-black">
+								<td>
+									<strong>Balance Due :</strong>
+								</td>
+								<td class="text-right">
+									<strong>
+									<span t-field="doc.payment_amount_due_amt_supplier"
+										t-options='{"widget": "monetary", "display_currency": res_company.currency_id}' />
+									</strong>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</t>
+		</template>
+
+		<template id="report_supplier">
+			<t t-call="web.html_container">
+				<t t-foreach="docs" t-as="doc">
+					<t t-call="account_statement.report_supplier_statement" t-lang="doc.lang" />
+				</t>
+			</t>
+		</template>
+	</data>
+</odoo>

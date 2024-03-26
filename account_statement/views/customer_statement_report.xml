@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_customer_statement">
+            <t t-call="web.external_layout">
+                <t t-set="doc" t-value="doc.with_context({'lang':doc.lang})"/>
+                <t t-set="company" t-value="res_company"/>
+
+                <div class="text-right" style="margin-right: 15em;">
+                    <p>
+                        <span t-esc="doc.name"/>
+                        <br/>
+                        <span t-esc="doc.street"/>
+                        <br/>
+                        <span t-esc="doc.street2"/>
+                        <br/>
+                        <span t-esc="doc.city"/>
+                        <span t-esc="doc.state_id.name"/>
+                        <span t-esc="doc.zip"/>
+                        <br/>
+                        <span t-esc="doc.country_id.name"/>
+                    </p>
+
+                    <br/>
+                </div>
+                <div class="page">
+                    <h2>Customer Statement</h2>
+                    <div id="informations" class="row mt-4 mb-4">
+                        <div class="col-auto col-3 mw-100 mb-2" t-if="doc.customer_start" name="customer_start">
+                            <strong>Date From:</strong>
+                            <p class="m-0" t-field="doc.customer_start"/>
+                        </div>
+                        <div class="col-auto col-3 mw-100 mb-2" t-if="doc.customer_end" name="customer_end">
+                            <strong>Date To:</strong>
+                            <p class="m-0" t-field="doc.customer_end"/>
+                        </div>
+
+                    </div>
+
+
+                    <t t-set="i" t-value="0.0"/>
+                    <t t-set="j" t-value="0.0"/>
+                    <t t-set="k" t-value="0.0"/>
+                    <t t-foreach="doc.customer_payment_line_ids" t-as="line">
+                        <t t-set="i" t-value="i+ line.invoices_debit"/>
+                        <t t-set="j" t-value="j+line.payments_credit"/>
+                        <t t-set="k" t-value="k+line.balance"/>
+                    </t>
+                    <table class="table table-sm o_main_table">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Date</th>
+                                <th class="text-left">Invoice Number</th>
+                                <!--<th>Account</th>-->
+                                <th class="text-left">Ref</th>
+                                <th>Invoices Debit</th>
+                                <th>Payments Credit</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody class="invoice_tbody">
+                            <tr>
+                                <td/>
+                                <td>
+                                    <b>Initial Balance</b>
+                                </td>
+                                <td/>
+                                <td/>
+                                <td/>
+                                <!--<td/>-->
+                                <td class="text-right">
+                                    <b>
+                                        <span t-esc="doc.customer_bal"
+                                              t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </b>
+                                </td>
+                            </tr>
+                            <t t-set="grand_total" t-value="0.0"/>
+                            <t t-set="bal" t-value="doc.customer_bal"/>
+                            <t t-set="sub_total" t-value="0.0"/>
+                            <tr t-foreach="doc.customer_payment_line_ids" t-as="line">
+                                <t t-set="bal" t-value="bal +sub_total "/>
+                                <td>
+                                    <span class="text-nowrap" t-esc="line.date"/>
+                                </td>
+                                <td>
+                                    <span t-esc="line.invoice_number"/>
+                                </td>
+                                <!--<td>
+                                    <span t-esc="line.account" />
+                                </td>-->
+                                <td>
+                                    <span t-if="line.trans_type != 'payment'" t-esc="line.ref"/>
+                                    <span t-else="" t-esc="'\n'.join(['Payment Ref: ', str(line.ref),'\n' + str('R %.2f'% line.line_amount)])"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="line.invoices_debit"
+                                          t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="line.payments_credit"
+                                          t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                </td>
+                                <td class="text-right">
+                                    <t t-set="sub_total" t-value="line.invoices_debit-line.payments_credit"/>
+                                    <t t-set="grand_total" t-value="sub_total + bal"/>
+                                    <span t-esc="sub_total + bal"
+                                          t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td/>
+                                <td>
+                                    <b>Ending Balance</b>
+                                </td>
+                                <!--<td/>-->
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td class="text-right">
+                                    <b>
+                                        <span t-esc="grand_total"
+                                              t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-right"/>
+                                <!--<td/>-->
+                                <td/>
+                                <td/>
+                                <td class="text-right">
+                                    <span class="text-nowrap" t-esc="int(i)" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                </td>
+                                <td class="text-right">
+                                    <span class="text-nowrap" t-esc="int(j)" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                </td>
+                                <td class="text-right"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="clearfix">
+                        <div id="total" class="row">
+                            <div t-attf-class="#{'col-6' if report_type != 'html' else 'col-sm-7 col-md-6'} ml-auto">
+                                <table t-attf-class="table table-sm" style="page-break-inside: avoid;">
+                                    <tr>
+                                        <td>
+                                            <strong>Amount Over Due:</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <strong>
+                                                <span t-field="doc.payment_amount_overdue_amt"
+                                                      t-options='{"widget": "monetary", "display_currency": res_company.currency_id}'/>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black">
+                                        <td style="background-color:#FFFFFF;border-color:black" >
+                                            <strong>Balance Due :</strong>
+                                        </td>
+                                        <td class="text-right" style="background-color:#FFFFFF;border-color:black">
+                                            <strong>
+                                                <span t-field="doc.payment_amount_due_amt"
+                                                      t-options='{"widget": "monetary", "display_currency": res_company.currency_id}'/>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <br/>
+                    <table t-attf-class="table table-sm" name="days_table">
+                        <thead>
+                            <tr>
+                                <!--<th/>-->
+                                <th>0-30</th>
+                                <th>30-60</th>
+                                <th>60-90</th>
+                                <th>90+</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <!--<td/>-->
+                            <td>
+                                <span t-esc="doc.first_thirty_day" t-options='{"widget": "monetary", "display_currency": res_company.currency_id}'/>
+                            </td>
+                            <td>
+                                <span t-esc="doc.thirty_sixty_days" t-options='{"widget": "monetary", "display_currency": res_company.currency_id}'/>
+                            </td>
+                            <td>
+                                <span t-esc="doc.sixty_ninty_days" t-options='{"widget": "monetary", "display_currency": res_company.currency_id}'/>
+                            </td>
+                            <td>
+                                <span t-esc="doc.ninty_plus_days" t-options='{"widget": "monetary", "display_currency": res_company.currency_id}'/>
+                            </td>
+                            <td>
+                                <span t-esc="doc.total" t-options='{"widget": "monetary", "display_currency": res_company.currency_id}'/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+        </template>
+
+        <template id="report_customer">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="account_statement.report_customer_statement" t-lang="doc.lang"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

@@ -130,13 +130,13 @@ class Task(models.Model):
         self.mapped('analytic_line_ids').unlink()
         return super(Task, self).unlink()
 
-    # def action_assign(self):
-    #     self.mapped('stock_move_ids')._action_assign()
+    def action_assign(self):
+        self.mapped('stock_move_ids')._action_assign()
 
-    # def action_done(self):
-    #     for move in self.mapped('stock_move_ids'):
-    #         move.quantity_done = move.product_uom_qty
-    #     self.mapped('stock_move_ids')._action_done()
+    def action_done(self):
+        for move in self.mapped('stock_move_ids'):
+            move.quantity_done = move.product_uom_qty
+        self.mapped('stock_move_ids')._action_done()
 
 
 class ProjectTaskMaterial(models.Model):
@@ -227,17 +227,21 @@ class ProjectTaskMaterial(models.Model):
             self.task_id.project_id.partner_id.id or None,
             'task_material_id': [(6, 0, [self.id])],
         }
+        # amount_unit = \
+        #     self.product_id.with_context(uom=self.product_uom_id.id).price_get(
+        #         'standard_price')[self.product_id.id]
         amount_unit = \
-            self.product_id.with_context(uom=self.product_uom_id.id).price_compute(
-                'standard_price')[self.product_id.id]
+            self.product_id.standard_price
         amount = amount_unit * self.quantity or 0.0
         result = round(amount, company_id.currency_id.decimal_places) * -1
         vals = {'amount': result}
-        if 'employee_id' in self.env['account.analytic.line']._fields:
-            vals['employee_id'] = \
-                self.env['hr.employee'].search([
-                    ('user_id', '=', self.task_id.create_uid.id)
-                ], limit=1).id
+
+        # NEED TO COME BACK TO THIS - To set the userid
+        # if 'employee_id' in self.env['account.analytic.line']._fields:
+        #     vals['employee_id'] = \
+        #         self.env['hr.employee'].search([
+        #             ('user_id', '=', self.task_id.user_id.id)
+        #         ], limit=1).id
         res.update(vals)
         return res
 

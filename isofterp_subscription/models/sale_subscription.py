@@ -2,7 +2,7 @@
 from odoo import api, fields, models, _
 import logging
 from dateutil.relativedelta import relativedelta
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.parser import parse
 
 _logger = logging.getLogger(__name__)
@@ -239,11 +239,25 @@ class SaleSubscription(models.Model):
 
     def _prepare_invoice_data(self):
         self.ensure_one()
+        check_name = ''
+
         res = super(SaleSubscription, self)._prepare_invoice_data()
+        # logging.warning("==============Res is %s", res)
+        # invoice = self.env['account.move'].search([('ref','=',res.get('ref')),
+        #                                            ('date','=', '2023-12-29')])
+        # if invoice:
+        #     logging.warning("An invoice already exist", res)
+        #     print(err)
+
         if self.user_id:
             res['invoice_user_id'] = 1
         if self.name:
             res['invoice_origin'] = self.display_name
+        res['date'] = '2024-02-29'
+        res['invoice_date'] = '2024-02-29'
+        res['invoice_date_due'] = '2024-03-29'
+        check_name = self.display_name
+
         return res
 
     def _isoft_prepare_invoice_line(self, fiscal_position, date_start=False, date_stop=False):
@@ -282,7 +296,8 @@ class SaleSubscription(models.Model):
                             line.x_copies_price_3 += machine.x_increase_copies_percent * line.x_copies_price_3 / 100
                             increment_copies = 'yes'
             if line.x_end_date1:
-                if self.recurring_next_date >= line.x_end_date1 and not self.x_third_party_rental_billing:
+                if self.recurring_next_date >= line.x_end_date1 and self.x_third_party_rental_billing == 'no' \
+                        and self.x_bank_name != 'CTCFIN INTERNAL':
                     # If the end_date1 has been reached, that means the bank will stop billing so we set the billing
                     # indicator to 'yes' and this program will start creating invoices instead of the Bank (3rd party).
                     # However, if the x_third_party_rental_billing field is set to 'yes' then that means the
@@ -292,6 +307,8 @@ class SaleSubscription(models.Model):
                         [('group_type', '=', 'C'), ('group_code', '=', 10)])  # should point to Secondary Rental
                     if group_id:
                         self.x_rental_group_id = group_id[0]
+                        self.x_bank_name = group_id.name
+
             # print (line.name)
             # print (line.x_start_date1 ,line.x_start_date1_billable )
             if line.x_start_date1:
@@ -412,10 +429,10 @@ class SaleSubscription(models.Model):
                         }
 
                         lines.append(line_vals)
-                    #########self._create_history_record(line)
-                    line.x_copies_previous = line.x_copies_last
-                    line.x_email_count = 0
-                    line.quantity = 0
+                self._create_history_record(line)
+                line.x_copies_previous = line.x_copies_last
+                line.x_email_count = 0
+                line.quantity = 0
             else:
                 # print('Non copies')
                 # print(line.x_serial_number_id.id, line.x_serial_number_id.name)
@@ -599,21 +616,48 @@ class SaleSubscription(models.Model):
         return subscription
 
     # _create_history_record(self, line):
-    def _create_history_record(self):
-        if self.env.context.get('active_ids', False):
-            sale_order_id = self.browse(self.env.context.get('active_ids'))
-            for line in self.env['sale.subscription.line'].search([('analytic_account_id', '=', sale_order_id.id),
-                                                                   ('product_id.name', 'ilike', 'copies')]):
-                vals = {
-                    'name': line.analytic_account_id.partner_id.name,
-                    'contract_id': line.analytic_account_id.id,
-                    'machine_id': line.x_serial_number_id.product_id.id,
-                    'product_id': line.product_id.id,
-                    'serial_no_id': line.x_serial_number_id.id,
-                    'copies_last': line.x_copies_last,
-                    'copies_previous': line.x_copies_previous,
-                    'no_of_copies': line.x_copies_last - line.x_copies_previous,
-                }
-                print('vals', vals)
-                self.env['meter.reading.history'].create(vals)
-        return
+    def _create_history_record(self, line):
+
+        vals = {
+            'name': line.analytic_account_id.partner_id.name,
+            'contract_id': line.analytic_account_id.id,
+            'machine_id': line.x_serial_number_id.product_id.id,
+            'product_id': line.product_id.id,
+            'serial_no_id': line.x_serial_number_id.id,
+            'copies_last': line.x_copies_last,
+            'copies_previous': line.x_copies_previous,
+            'no_of_copies': line.x_copies_last - line.x_copies_previous,
+        }
+        print('vals', vals)
+        self.env['meter.reading.history'].create(vals)
+       #return
+
+    def _set_average_qty(self):
+        _logger.warning("====Setting average qty")
+        now = datetime.now()
+
+
+        contracts = self.env['sale.subscription'].search([('stage_category', '=', 'progress')])
+        if contracts:
+            for contract in contracts:
+                _logger.warning("The contracts are %s", contract.name)
+                for con_line in contract.recurring_invoice_line_ids:
+                    if con_line.product_id.categ_id.name == 'copies':
+                        total_reading = 0
+                        date_N_months_ago = now - timedelta(days=con_line.x_average_months * 30)
+                        # Find all records in meter reading history table
+                        # Find the first available record sorted by date order and calculate from that date
+                        # how many months are to be used. Alternatively just devide by the number of available readings
+
+                        readings = self.env['meter.reading.history'].search([('contract_id','=',contract.id),
+                                                                            ('product_id','=',con_line.product_id.id),
+                                                                            ('create_date','>=', str(date_N_months_ago))])
+                        if readings:
+                            for reading in readings:
+                                _logger.warning("The reading is %s", reading.contract_id)
+                                total_reading += reading.no_of_copies
+
+                            _logger.warning("Average is %s", total_reading / con_line.x_average_months)
+                            con_line.x_average_quantity = total_reading / len(readings)
+
+

@@ -5,7 +5,8 @@ _logger = logging.getLogger(__name__)
 
 class sale_subscription_line(models.Model):
     _inherit = 'sale.subscription.line'
-    #_inherit = ['mail.thread', 'mail.activity.mixin','sale.subscription.line']  need this for tracking - not working
+    #_name = "sale.subscription.line"
+    #_inherit = ['sale.subscription.line','mail.thread', 'mail.activity.mixin']  #need this for tracking - not working
 
     # @api.model
     # def name_get(self):
@@ -38,13 +39,13 @@ class sale_subscription_line(models.Model):
     #x_machine_master_id = fields.Char( string='Machine Master', ondelete='cascade')
     x_copies_show = fields.Boolean('Show copies')
     x_copies_free = fields.Integer('Free Copies')
-    x_copies_minimum = fields.Float('Minimum Charge',help='This is the minimum amount in Rands to bill')
+    x_copies_minimum = fields.Float('Minimum Charge',help='This is the minimum amount in Rands to bill',tracking=True)
     x_email_count = fields.Integer('Email Count')
-    x_copies_previous = fields.Integer('Previous Reading')
+    x_copies_previous = fields.Integer('Previous Reading',tracking=True)
     x_copies_last = fields.Integer('Last Reading', tracking=True)
-    x_start_date1 = fields.Date('Start Date', default=datetime.today())  # default=datetime.today()
+    x_start_date1 = fields.Date('Start Date', default=datetime.today(),tracking=True)  # default=datetime.today()
     x_start_date1_billable = fields.Boolean('Bill', tracking=True,default='1')
-    x_end_date1 = fields.Date('End Date')
+    x_end_date1 = fields.Date('End Date',tracking=True)
 
     #x_charges_type1_id = fields.Many2one('subscription.charges.type', 'Type 1')  # Not sure we need this ?
     #x_start_date2 = fields.Date('Start 2')
@@ -52,12 +53,12 @@ class sale_subscription_line(models.Model):
     #x_charges_type2_id = fields.Many2one('contract.charges.type', 'Type 2')
     #x_start_date2_billable = fields.Boolean('Bill 2')
 
-    x_copies_vol_1 = fields.Integer('Volume 1')
-    x_copies_price_1 = fields.Float('Charge 1', digits=(3, 4))
-    x_copies_vol_2 = fields.Integer('Volume 2')
-    x_copies_price_2 = fields.Float('Charge 2', digits=(3, 4))
-    x_copies_vol_3 = fields.Integer('Volume 3', default=99999999)
-    x_copies_price_3 = fields.Float('Charge 3', digits=(3, 4))
+    x_copies_vol_1 = fields.Integer('Volume 1',tracking=True)
+    x_copies_price_1 = fields.Float('Charge 1', digits=(3, 4),tracking=True)
+    x_copies_vol_2 = fields.Integer('Volume 2',tracking=True)
+    x_copies_price_2 = fields.Float('Charge 2', digits=(3, 4),tracking=True)
+    x_copies_vol_3 = fields.Integer('Volume 3', default=99999999,tracking=True)
+    x_copies_price_3 = fields.Float('Charge 3', digits=(3, 4),tracking=True)
     #x_average_quantity = fields.Integer('Average Qty',compute='_average_quantity',store=True)
     x_average_quantity = fields.Integer('Ave Qty', default=1)
     x_average_value = fields.Float('Ave Val', digits=(3, 4))
@@ -81,6 +82,7 @@ class sale_subscription_line(models.Model):
     """ This might need to run as a cron monthly to calculate and store values"""
     @api.depends('quantity')
     def _average_quantity(self):
+        _logger.warning("Setting the average quantity per contract line")
         self.ensure_one()
         now = datetime.now()
         date_N_months_ago = now - timedelta(days=self.x_average_months * 30)
@@ -94,7 +96,7 @@ class sale_subscription_line(models.Model):
             for record in trx:
                 #print ('found record',record.create_date)
                 tot += record.quantity
-
+            _logger.warning("Setting the average qty on contract %s", self.name)
             rec.x_average_quantity = tot / self.x_average_months
             #rec.x_average_quantity = rec.quantity
             rec.x_average_value = rec.quantity * rec.x_copies_price_1

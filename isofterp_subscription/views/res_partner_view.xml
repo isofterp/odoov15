@@ -25,12 +25,11 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <field name="user_id" position="replace"/>
-                <!--
-                <field name="type" position="before">
+                <!--<xpath expr="//div[@hasclass=('o_address_format')]" position="inside">
                     <field name="x_account_number"/>
-                    <field name="total_overdue"/>
-                    <field name="unpaid_invoices"/>
-                </field>-->
+                    &lt;!&ndash;<field name="total_overdue"/>
+                    <field name="unpaid_invoices"/>&ndash;&gt;
+                </xpath>-->
                 <field name="website" position="before">
                     <field name="x_fax"/>
                 </field>
@@ -38,6 +37,7 @@
                     <field name="credit_limit"/>
                 </field>
                 <field name="vat" position="after">
+                    <field name="x_account_number"/>
                     <field name="x_company_reg_no"/>
                     <field name="user_id" default="" required="1"/>
                 </field>
@@ -61,9 +61,10 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_tree"/>
             <field name="arch" type="xml">
-                <!--<field name="ref" position="after">
-                    <field name="x_account_number"/>
-                </field>-->
+                <field name="phone" position="before">
+                    <field name="x_account_number" optional="hide"/>
+                    <field name="create_date" optional="hide"/>
+                </field>
                 <field name="phone" position="after">
                     <field name="x_fax"/>
                 </field>
@@ -77,6 +78,14 @@
             <field name="arch" type="xml">
                 <field name="name" position="after">
                     <field name="x_account_number" filter_domain="[('x_account_number', 'ilike', self)]"/>
+                </field>
+                <field name="name" position="replace">
+                    <field name="name" string="Wild Card"
+                           filter_domain="['|','|','|','|',('name', 'ilike', self),
+                           ('x_account_number', 'ilike', self),
+                           ('street', 'ilike', self),
+                           ('street2', 'ilike', self),
+                           ('city', 'ilike', self)]"/>
                 </field>
             </field>
         </record>

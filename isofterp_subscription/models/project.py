@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from odoo import fields, models, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from datetime import datetime, timedelta
 import logging
 _logger = logging.getLogger(__name__)
@@ -11,33 +11,63 @@ class Task(models.Model):
     _description = "Task"
     _inherit = 'project.task'
 
-    # @api.onchange("partner_id")
-    # def check_due(self):
-    #     #print(err)
-    #     _logger.warning("******This line is firing")
-    #     today = datetime.now().date()
-    #     inv_ids = self.env['account.move'].search(['&', '&', '&', '&', ('partner_id', '=', self.partner_id.id), ('state', '=', 'posted'),
-    #                            ('move_type', '=', 'out_invoice'), ('invoice_date_due', '<', today),('payment_state','=', 'not_paid')])
-    #     if inv_ids:
-    #         raise Warning(
-    #             "You can not create invoice for this Customer. This customer already has one or more overdue invoices.")
-    #     """To show the due amount and warning stage"""
-        # partner = self.env['res.partner'].search([('id','=',self.partner_id.id)])
-        # #print('amt due',partner.due_amount)
-        # if self.partner_id and partner.total_due > partner.credit_limit:
-        #     # user id has been replaced with user_ids (multiple assignees)
-        #     self.user_ids = False
-        #     title = ("Warning for %s") % partner.name
-        #     message = "Has exceeded Credit Limit"
-        #     warning = {
-        #         'title': title,
-        #         'message': message,
-        #
-        #     }
-        #     return {'warning': warning}
+    @api.model_create_multi
+    def create(self, vals_list):
+        logging.warning("Vals list is %s", vals_list[0])
+        if vals_list[0].get('x_serial_number_id'):
+            logging.warning("1-----Setting flags on this record")
+            ten_days_ago = datetime.now() - timedelta(days=10)
+            logging.warning("10 days ago %s %s", ten_days_ago.strftime('%Y-%m-%d'), vals_list[0].get('x_serial_number_id'))
+            tickets = self.env['project.task'].search([('x_serial_number_id','=', vals_list[0].get('x_serial_number_id')),('create_date','>=',ten_days_ago)])
+            if len(tickets) >= 3:
+                logging.warning("2-----Setting flags on this record")
+                vals_list[0]['x_flag_tickets'] = len(tickets)
+
+            else:
+                logging.warning("You DONT have tickets")
+
+        obj = super().create(vals_list)
+        logging.warning("Object is %s", obj)
+        return obj
+        #obj.write({'x_flag_tickets': self.x_flag_tickets})
+    def _action_generate_serial_flag_wizard(self):
+        logging.warning("This view must be returned but its not")
+        view = self.env.ref('isofterp_subscription.view_flag_field_service_calls')
+        return {
+            'name': _('Flag tickets'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'project.task',
+            'views': [(view.id, 'form')],
+            'view_id': view.id,
+            'target': 'new',
+            'context': 'None',
+        }
+
+    def _jump_to_flagged_calls(self):
+
+        action = self.env["ir.actions.actions"]._for_xml_id(
+            "isofterp_subscriptions.action_flagged_incidents"
+        )
+        logging.warning("Action is %s", action)
+
+        return action
+
+    def jump_to_flagged_calls(self):
+        self.ensure_one()
+        company_id = self.company_id.id or self.env.company.id
+        action = self._jump_to_flagged_calls()
+        return action
+
+    def _get_problem_calls(self):
+        logging.warning("====SELF is %s ", self,)
+        self.x_problem_tickets = self.env['project.task'].search([('partner_id','=',9729)]).id
+
+
 
     @api.onchange('x_serial_number_id')
     def onchange_serial_umber(self):
+
         #print('onchange_serial_umber')
         self.partner_id = self.x_serial_number_id.x_subscription_id.partner_id
         self.x_serial_number_street = self.x_serial_number_id.x_subscription_id.partner_id.street
@@ -115,8 +145,8 @@ class Task(models.Model):
         self.sale_order_id = sale_order
 
     name = fields.Char(placeholder="Problem Details")
-    x_serial_number_id = fields.Many2one('stock.production.lot', 'Serial Number')
-    x_serial_number_name = fields.Char(related='x_serial_number_id.product_id.name', string='Machine Description')
+    x_serial_number_id = fields.Many2one('stock.production.lot', 'Serial Number', store=True)
+    x_serial_number_name = fields.Char(related='x_serial_number_id.product_id.name', string='Machine Description', store=True)
     x_serial_number_dlv = fields.Many2one(related='x_serial_number_id.x_dlv_id', string='Machine Address')
     x_serial_number_street = fields.Char(related='x_serial_number_id.x_dlv_id.street')
     x_serial_number_street2 = fields.Char(related='x_serial_number_id.x_dlv_id.street2')
@@ -132,6 +162,7 @@ class Task(models.Model):
     x_problem_type = fields.Many2one('fsm.problem.type', 'Problem Type')
     x_cust_rep = fields.Char('Customer Representative')
     x_project_task_template_id = fields.Many2one('project.task.template', 'Job Card Template')
+    x_flag_tickets = fields.Integer('Flagged Tickets')
 
     def _compute_line_data_for_template_change(self, line):
         return {

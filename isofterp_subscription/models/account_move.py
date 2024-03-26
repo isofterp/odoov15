@@ -1,6 +1,6 @@
 from odoo import api, fields, models, _, osv
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 #from odoo import exceptions
 from odoo.exceptions import ValidationError
@@ -34,6 +34,25 @@ class AccountMove(models.Model):
                                  states={'draft': [('readonly', False)]},
                                  check_company=True,
                                  string='Main Partner', change_default=True, ondelete='restrict')
+
+
+    def back_date_invoices(self):
+
+        dt_last = datetime(2023,12,22)
+        invoices = self.env['account.move'].search([('move_type','=','out_invoice'),
+                                                    ('date','<=', dt_last),
+                                                    ('state', '=', 'draft')])
+        cur_date = date.today()
+        past_date= cur_date - relativedelta(years=1)
+        logging.warning("Current Date and past year %s %s", cur_date, past_date)
+
+        for invoice in invoices:
+            # invoice.invoice_date = invoice.date
+            # invoice.invoice_date_due = invoice.date
+
+            logging.warning("last year - Name Date %s %s %s %s", invoice.name, invoice.invoice_date, invoice.invoice_date_due,invoice.date)
+            invoice._post()
+
 
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"

@@ -16,4 +16,5 @@ from . import account_move
 from . import approval_request
 from . import stock_picking
 from . import area_codes
-#from . import project_task_template
+from . import field_service_flagged_incidents
+from . import project_task_template

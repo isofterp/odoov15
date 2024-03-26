@@ -56,17 +56,16 @@
             <field name="arch" type="xml">
                 <field name="order_line" position="before">
                     <button name="%(sale_add_phantom_bom_action)d" type="action"
-                            string="Add Kit" states="draft,sent"/>
+                            string="Add Kit" states="draft,sent,to_approve"/>
                 </field>
                 <field name="analytic_account_id" position="replace"/>
                 <field name="payment_term_id" position="after">
                     <field name="analytic_account_id"/>
                 </field>
-                <!--
                 <field name="analytic_account_id" position="attributes">
+                    <attribute name="attrs">{'readonly': 1}</attribute>
                     <attribute name="help">Enter the Salesman who will be credited with this sale</attribute>
                 </field>
-                -->
                 <field name="partner_id" position="replace">
                     <field name="x_is_contract_quote"
                            groups="sale_subscription.group_sale_subscription_manager"

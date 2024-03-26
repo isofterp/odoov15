@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 # © 2016 Akretion (Alexis de Lattre <alexis.delattre@akretion.com>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-
-from openerp import models, fields, api, _
-from openerp.exceptions import UserError
-from openerp.tools import float_is_zero
-from random import seed
+from odoo import fields, models, api, _
 from random import random
 import logging
 

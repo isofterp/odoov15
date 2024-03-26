@@ -34,12 +34,14 @@
                     </span>
                     <br/>
                     <span>
-                        <strong>Contact:</strong><br/>
+                        <strong>Contact:</strong>
+                        <br/>
                         <field name="x_serial_number_dlv"/>
                     </span>
                     <br/>
                     <span>
-                        <strong>Address:</strong><br/>
+                        <strong>Address:</strong>
+                        <br/>
                         <field name="x_serial_number_street"/>
                         <field name="x_serial_number_street2"/>
                     </span>
@@ -65,8 +67,25 @@
             <field name="model">project.task</field>
             <field name="inherit_id" ref="project.view_task_form2"/>
             <field name="arch" type="xml">
+                <xpath expr="/form/sheet" position="before">
+                    <div
+                            class="alert alert-warning"
+                            role="alert"
+                            attrs="{'invisible': [('x_flag_tickets', '=', 0)]}"
+                    >
+                        The serial number
+                        <field
+                                name="x_serial_number_id"
+                        />
+                         has
+                        <field name="x_flag_tickets"/>
+                         proceeding tickets. Review Audit Log for details
+
+
+                    </div>
+                </xpath>
                 <field name="partner_id" position="before">
-<!--                    <field name="x_project_task_template_id"/>-->
+                    <!--                    <field name="x_project_task_template_id"/>-->
                     <field name="x_serial_number_id"
                            options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,}"/>
                     <field name="x_serial_number_name"/>
@@ -81,19 +100,19 @@
                     </div>
                     <label for="x_cust_rep" string="Customer Representative"/>
                     <div>
-                        <field name="x_cust_rep" />
+                        <field name="x_cust_rep"/>
                     </div>
                     <label for="x_serial_number_phone" string="Phone"/>
                     <div>
-                        <field name="x_serial_number_phone" />
+                        <field name="x_serial_number_phone"/>
                     </div>
                     <label for="x_serial_number_mobile" string="Mobile"/>
                     <div>
-                        <field name="x_serial_number_mobile" />
+                        <field name="x_serial_number_mobile"/>
                     </div>
                     <label for="x_serial_number_email" string="Email"/>
                     <div>
-                        <field name="x_serial_number_email" />
+                        <field name="x_serial_number_email"/>
                     </div>
                     <field name="x_rental_group"/>
                     <field name="x_problem_type"
@@ -148,6 +167,64 @@
             <field name="search_view_id" ref="isofterp_subscription.project_task_problem_type_view_list"/>
             <field name="target">main</field>
         </record>
+
+        <record id="view_task_tree2_isoft" model="ir.ui.view">
+            <field name="name">project.task.tree.isoft</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_tree2"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="x_serial_number_name"/>
+                    <field name="x_serial_number_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_task_search_form_isoft" model="ir.ui.view">
+            <field name="name">project.task.search.form.isoft</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_search_form"/>
+            <field name="arch" type="xml">
+                <search>
+                    <group expand="1" string="Group By">
+                        <filter string="Product" name="x_serial_number_name"
+                                context="{'group_by':'x_serial_number_name'}"/>
+                        <filter string="Serial" name="x_serial_number_id" context="{'group_by':'x_serial_number_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="flagged_incidents_tree" model="ir.ui.view">
+            <field name="name">field.service.flagged.incidents.tree</field>
+            <field name="model">field.service.flagged.incidents</field>
+            <field name="arch" type="xml">
+                <tree string="Incidents" delete="false" create="false" editable="bottom">
+                    <field name="partner" readonly="1" string="Customer"/>
+                    <field name="serial_number" readonly="1" string="Serial Number"/>
+                    <field name="product" readonly="1" string="Product"/>
+                    <field name="cur_incident" readonly="1" string="Lastest Incident"/>
+                    <field name="cur_date" readonly="1" string="Date"/>
+                    <field name="prev_incident" readonly="1" string="Previous Incident"/>
+                    <field name="prev_date" readonly="1" string="Previous Date"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="action_flagged_incidents" model="ir.actions.act_window">
+            <field name="name">Serial Number Audit Log</field>
+            <field name="res_model">field.service.flagged.incidents</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="flagged_incidents_tree"/>
+        </record>
+
+        <menuitem id="menu_action_flagged_incidents"
+                  parent="industry_fsm.fsm_menu_all_tasks_root"
+                  action="action_flagged_incidents"
+                  sequence="99"
+                  groups="industry_fsm.group_fsm_manager"
+        />
 
         <menuitem id="menu_project_problem_type_act"
                   name="Problem Type"

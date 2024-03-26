@@ -21,12 +21,40 @@ _logger = logging.getLogger(__name__)
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
+    def _saleorder_create_analytic_account_prepare_values(self):
+        """
+         Prepare values to create analytic account
+        :return: list of values
+        """
+        return {
+            'name': self.team_id.name,
+            'group_id': 8,
+            'company_id': self.company_id.id,
+        }
+
+    def _analytic_account_generation(self):
+        """ Generate analytic account for the so , and link it.
+            :return a mapping with the so id and its linked analytic account
+            :rtype dict
+        """
+        result = {}
+        values = self._saleorder_create_analytic_account_prepare_values()
+        analytic_account = self.env['account.analytic.account'].sudo().create(values)
+        self.write({'analytic_account_id': analytic_account.id})
+        result[self.id] = analytic_account
+        return result
+
     def _action_confirm(self):
         res = super(SaleOrder, self)._action_confirm()
         if not self.multi_address_delivery:
             for line in self.order_line:
                 line.delivery_addr_id = self.partner_shipping_id.id
+        if not self.analytic_account_id:
+            self._analytic_account_generation()
+        return res
+
     def _prepare_invoice(self):
+        _logger.warning("*********** Calling line at 57")
         res = super(SaleOrder, self)._prepare_invoice()
         for rec in self:
             if rec.x_sale_subscription_id:
@@ -334,6 +362,7 @@ class SaleOrder(models.Model):
 
                     for i in range(len(lines)):
                         if lines[i].product_id.categ_id.name in ['main product', 'component'] :
+                            new_subscription_id = subscription_obj.create(sub_header)
                             if (lines[i].product_id.categ_id.name == 'main product'):
                                 lines = [lines[i]] + lines[:i] + lines[i + 1:]
                     #logging.warning("The concatenated lines are %s", lines)
@@ -344,7 +373,7 @@ class SaleOrder(models.Model):
 
                             move_line = stock_move_obj.search([('sale_line_id', '=', lines[i].id),('state','!=','cancel')]).id
                             serial = stock_move_line_obj.search([('move_id', '=', move_line)],limit=1).lot_id
-                            new_subscription_id = subscription_obj.create(sub_header)
+
                             lines[i].subscription_id = new_subscription_id.id
                             if not serial:
                                 delivery_note = self.env['stock.picking'].search([('sale_id', '=', order.id)]).name
@@ -443,6 +472,7 @@ class SaleOrder(models.Model):
                         # Add the serial number to the description if tracked by serial number
                         if lines[i].product_id.categ_id.name in ['component']:
                             _logger.warning("===The line we are working with is %s",lines[i].name )
+                            #
                             lines[i].subscription_id = new_subscription_id.id
                             # If the component is a serialized item, set the delivery address on the lot
                             if lines[i].product_id.tracking:
@@ -503,6 +533,7 @@ class SaleOrder(models.Model):
         overridden to implement custom invoice generation (making sure to call super() to establish
         a clean extension chain).
         """
+        _logger.warning("************** Line 536")
         self.ensure_one()
         journal = self.env['account.move'].with_context(default_move_type='out_invoice')._get_default_journal()
         if not journal:

@@ -20,7 +20,8 @@ class Partner(models.Model):
 
     def _get_subscrptions(self):
         for rec in self:
-            subs = self.env['sale.subscription'].search([('partner_id','=', rec.id)])
+            subs = self.env['sale.subscription'].search([('partner_id','=', rec.id),
+                                                         ('recurring_total','>', 0)])
             rec.subs_count = len(subs)
 
     x_account_number = fields.Char('Account Number', index=True, required='Yes')
@@ -38,7 +39,7 @@ class Partner(models.Model):
             crm_team = self.env['crm.team'].search([('name','=', user.partner_id.name)])
             if crm_team:
                 #logging.warning("User is %s", user.partner_id.name)
-                logging.warning("Setting Sales person and Team for user %s to %s", user.partner_id.name, crm_team.name)
+                #logging.warning("Setting Sales person and Team for user %s to %s", user.partner_id.name, crm_team.name)
                 user.partner_id.user_id = user.id
                 user.partner_id.team_id = crm_team.id
 
@@ -48,11 +49,7 @@ class Partner(models.Model):
                                                    ('parent_id','!=', '')])
 
         for partner in partners:
-            logging.warning("Partner is %s %s %s %s",
-                            partner.name,
-                            partner.user_id.name,
-                            partner.parent_id.name,
-                            partner.parent_id.team_id.name)
+
             partner.user_id = partner.parent_id.user_id.id
             partner.team_id = partner.parent_id.team_id.id
             # crm_team = self.env['crm.team'].search([('name','=',partner.user_id.name )])
@@ -86,27 +83,10 @@ class Partner(models.Model):
 
 
     def show_subscriptions(self):
-        logging.warning("===Going to show subscriptions for this customer")
-        #res = self.env.ref('isofterp_subscription.sale_subscription_line_combined_tree')
-        #res = res.sudo().read()[0]
-        #res['domain'] = str([('x_task_id', '=', self.id)])
-        # return {
-        #     'res_model': 'sale.subscription.line',
-        #     'res_id': [],
-        #     'type': 'ir.actions.act_window',
-        #     'view_mode': 'tree',
-        #     'view_id': [[self.env.ref('isofterp_subscription.sale_subscription_line_combined_tree').id, 'form']],
-        #     'target': 'new',
-        # }
+
         try:
             sub_ids = self.env['subscription.line.combined'].search([('cust','=', self.name)])
-            if sub_ids:
-                for subs in sub_ids:
-                    logging.warning("The lines are %s %s", subs.cust, self.name)
-
-
             form_view_id = self.env.ref("isofterp_subscription.sale_subscription_line_combined_tree").id
-            logging.warning("View iD is %s",form_view_id )
             return {
                 'type': 'ir.actions.act_window',
                 'name': 'Subscriptions',

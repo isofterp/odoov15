@@ -14,19 +14,14 @@ import psycopg2.extras
 import pandas as pd
 import numpy as np
 version = 'V15'
-import xlrd
-#import xlwt
-import xlsxwriter
-
-from openpyxl import load_workbook
 #version = 'V14'
 
 if version == 'V14':
     conn = psycopg2.connect("dbname=copyType-test user=odoo14ent")
     api = erppeek.Client('http://localhost:8014', 'copyType-test', 'admin', 'admin')
 elif version == 'V15':
-    conn = psycopg2.connect("host=172.16.12.32 dbname=copytype-15-roly user=odoo15ent")
-    api = erppeek.Client('http://172.16.12.32:8015', 'copytype-15-roly', 'admin', '!$0ft')
+    conn = psycopg2.connect("host=172.16.12.32 dbname=copytype-test user=odoo15ent")
+    api = erppeek.Client('http://172.16.12.32:8015', 'copytype-test', 'admin', '!$0ft')
 
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -776,7 +771,7 @@ def _prepare_partner_record(drs_mas,user_id):
 def _compare_omnix_odoo():
     f = open("/tmp/Omnix_Data/Conversion_errors.txt", "w+")
     f.write("Comparing Invoice Totals\n")
-    csv_file = csv_path + "alldec2023.csv"
+    csv_file = csv_path + "allmay2020.csv"
     account_obj = api.model('account.move')
 
     print("start compare results")
@@ -784,10 +779,7 @@ def _compare_omnix_odoo():
     diff = 0
     missing_diff = 0
     total_omnix = 0
-    total_odoo = 0
-
     with open(csv_file) as fp:
-        f.write("Contract,Omnix Invoice,Odoo Invoice,Omnix Amount,Odoo Amount,Difference\n")
         for line in fp:  # Read one line at a time
             rntacc = []
             for col in line.split(','):  # Separate each rntacc in line
@@ -796,7 +788,7 @@ def _compare_omnix_odoo():
             if len(rntacc) == 8 and rntacc[0] != 'Drs Accno':
                 total_omnix += float(rntacc[7])
                 # print(rntacc[1])
-                id = account_obj.search([('invoice_origin', 'like', rntacc[1])])
+                id = account_obj.search([('invoice_origin', '=', rntacc[1])])
                 if not id:
                     # print (data[0])
                     f.write('Missing invoice for contract %s in Odoo  - Omnix invoice number %s amount = %s\n' % (
@@ -806,8 +798,6 @@ def _compare_omnix_odoo():
                     missing_diff += float(rntacc[7])
                     continue
                 amt = account_obj.browse([id[0]]).amount_total
-                total_odoo += amt[0]
-                odoo_invoice = account_obj.browse([id[0]]).name
 
                 difference = amt[0] - float(rntacc[7])
                 if amt[0] != float(rntacc[7]):
@@ -815,141 +805,25 @@ def _compare_omnix_odoo():
                     diff += difference
 
                     if difference < -0.01:
-                        #f.write('Contract=%s Omnix amt= %s Odoo amt= %s Omnix invoice number %s\n' % (
-                        f.write("%s,%s,%s,%s,%s,%s" % (rntacc[1], rntacc[2],odoo_invoice[0], rntacc[7].strip(' '), amt[0], str(difference) + '\n'))
-                        #print('Contract=%s Omnix amt= %s Odoo amt= %s ---> Differenc=%s\n' % (rntacc[1], rntacc[7].strip(' '), amt[0], difference))
+                        f.write('Contract=%s Omnix amt= %s Odoo amt= %s Omnix invoice number %s\n' % (
+                        rntacc[1], rntacc[7].strip(' '), amt[0], rntacc[2]))
+                        print('Contract=%s Omnix amt= %s Odoo amt= %s ---> Differenc=%s\n' % (
+                        rntacc[1], rntacc[7].strip(' '), amt[0], difference))
                     if difference > 0.01:
-                        # f.write('Contract=%s Omnix amt= %s Odoo amt= %s \n' % (rntacc[1], rntacc[7].strip(' '), amt[0]))
-                        #print('Contract=%s Omnix amt= %s Odoo amt= %s ---> Differenc=%s\n' % (rntacc[1], rntacc[2], odoo_invoice[0],rntacc[7].strip(' '), amt[0], difference + '\n'))
-                        f.write("%s,%s,%s,%s,%s,%s" % (rntacc[1], rntacc[2],odoo_invoice[0], rntacc[7].strip(' '), amt[0], str(difference) + '\n'))
-
+                        f.write('Contract=%s Omnix amt= %s Odoo amt= %s \n' % (rntacc[1], rntacc[7].strip(' '), amt[0]))
+                        print('Contract=%s Omnix amt= %s Odoo amt= %s ---> Differenc=%s\n' % (
+                        rntacc[1], rntacc[7].strip(' '), amt[0], difference))
         print('Total Invoice amt from Omnix = ', total_omnix)
-        print('Total Invoice amt from Odoo = ', total_odoo)
         print('Total Diff = %s\n Missing diff= %s\n' % (diff, missing_diff))
         f.write('Total Invoice amt from Omnix = %s\n' % (total_omnix))
 
         f.write('Total Diff = %s\n Missing diff= %s\n' % (diff, missing_diff))
         f.close()
 
-def _compare_omnix_odoo_xls():
-    workbook = xlsxwriter.Workbook('/tmp/Omnix_Data/Omnix_Compare_Invoices.xlsx')
-    worksheet1 = workbook.add_worksheet('Invoices')
-    worksheet2 = workbook.add_worksheet(('Missing Invoices'))
-
-    csv_file = csv_path + "alldec2023.csv"
-    account_obj = api.model('account.move')
-
-    sheet = workbook.add_worksheet("Orders")
-    hstyle = workbook.add_format({'bold': True, 'bg_color': '#D3D3D3', 'border': 1})
-    bstyle = workbook.add_format({'border': 1})
-    row = 2
-    col = 0
-
-    report_heading = []
-    report_heading.append('Contract Number')
-    report_heading.append('Omnix Invoice')
-    report_heading.append('Odoo Invoice')
-    report_heading.append('Omnix Amount')
-    report_heading.append('Odoo Amount')
-    report_heading.append('Difference')
-    # worksheet1.write('A1','Contract Number')
-    # worksheet1.write('B1', 'Omnix Invoice')
-    # worksheet1.write('C1', 'Odoo Invoice')
-    # worksheet1.write('D1', 'Omnix Amount')
-    # worksheet1.write('E1', 'Odoo Amount')
-    # worksheet1.write('F1', 'Difference')
-
-
-
-
-    # Write heading to file
-    for label in report_heading:
-        worksheet1.write(row, col, label, hstyle)
-        col += 1
-
-    i = 0
-    diff = 0
-    missing_diff = 0
-    total_omnix = 0
-    total_odoo = 0
-    invoice_rows = []
-
-    with open(csv_file) as fp:
-        for line in fp:  # Read one line at a time
-            rntacc = []
-
-            for col in line.split(','):  # Separate each rntacc in line
-                # print (f)
-                rntacc.append(col.strip('"').strip(" "))
-            print("Working with", rntacc[1])
-            if len(rntacc) == 8 and rntacc[0] != 'Drs Accno':
-                total_omnix += float(rntacc[7])
-                # print(rntacc[1])
-                id = account_obj.search([('invoice_origin', 'like', rntacc[1])])
-                if not id:
-                    continue
-                # if not id:
-                #     # print (data[0])
-                #     f.write('Missing invoice for contract %s in Odoo  - Omnix invoice number %s amount = %s\n' % (
-                #         rntacc[1], rntacc[2], rntacc[7]))
-                #     print('Missing invoice for contract %s in Odoo  - Omnix Inv No %s amount = %s\n' % (
-                #         rntacc[1], rntacc[2], rntacc[7]))
-                #     missing_diff += float(rntacc[7])
-                #     continue
-                amt = account_obj.browse([id[0]]).amount_total
-                total_odoo += float(amt[0])
-                odoo_invoice = account_obj.browse([id[0]]).name[0]
-
-                difference = amt[0] - float(rntacc[7])
-                if amt[0] != float(rntacc[7]):
-                    difference = round(amt[0] - float(rntacc[7]), 2)
-                    diff += difference
-
-                    invoice_rows.append([['Contract Number',rntacc[1]],
-                                         ['Omnix Invoice',rntacc[2]],
-                                         ['Odoo Invoice',odoo_invoice],
-                                         ['Omnix Amount',rntacc[7]],
-                                         ['Odoo Amount',amt[0]],
-                                         ['Difference', difference]])
-
-        row += 1
-        col = 0
-        print(invoice_rows)
-        for a,b,c,d,e,f in invoice_rows:
-            print(a,a[1])
-            worksheet1.write(row, col, str(a[1]), bstyle)
-            worksheet1.write(row, col + 1, str(b[1]), bstyle)
-            worksheet1.write(row, col + 2, str(c[1]), bstyle)
-            worksheet1.write(row, col + 3, float(d[1]), bstyle)
-            worksheet1.write(row, col + 4, float(e[1]), bstyle)
-            worksheet1.write(row, col + 5 ,float(f[1]), bstyle)
-            row += 1
-
-        print("ODOO Total Billing", total_odoo)
-        row += 1
-        col = 0
-        worksheet1.write(row, col, 'Omnix Total Billing')
-        worksheet1.write(row, col + 1, float(total_omnix))
-        worksheet1.write(row + 1, col, 'Odoo Total Billing')
-        worksheet1.write(row + 1, col + 1, float(total_odoo))
-
-        workbook.close()
-
-
-
-        # print('Total Invoice amt from Omnix = ', total_omnix)
-        # print('Total Invoice amt from Odoo = ', total_odoo)
-        # print('Total Diff = %s\n Missing diff= %s\n' % (diff, missing_diff))
-        # f.write('Total Invoice amt from Omnix = %s\n' % (total_omnix))
-        #
-        # f.write('Total Diff = %s\n Missing diff= %s\n' % (diff, missing_diff))
-        # f.close()
-
-
 def _compare_odoo_omnix():
     f = open("Conversion_errors.txt", "a+")
     f.write("Comparing Invoice Totals\n")
-    csv_file = csv_path + "alldec2023.csv"
+    csv_file = csv_path + "allmay2020.csv"
     account_obj = api.model('account.move')
 
     print("start compare results")
@@ -999,6 +873,8 @@ def _fix_bank_details():
                 print('ref=',ref)
                 rec.write({'x_bank_name': name,'x_ceded_reference': rec.x_ceded_reference[0] + ' ' + ref})
 
+
+
 def _update_cpc_charges_on_lots():
     analytic_acc_obj = api.model('account.analytic.account')
     analytic_acc_grp_obj = api.model('account.analytic.group')
@@ -1045,6 +921,7 @@ def _update_cpc_charges_on_lots():
                 # if rntacc[0] not in ['11104810','5773'] :   #'11107052', 11107099
                 #     continue
                 ###################################################
+                print('@256',rntacc)
                 subscription = subscription_obj.browse([('name', '=', rntacc[0])])
                 if not subscription:
                     print("missing Subscription %s ckeck Error File Conversion_errors.txt" % (rntacc[0]))
@@ -1052,7 +929,6 @@ def _update_cpc_charges_on_lots():
                     continue
 
                 if rntacc[2]:
-                    print('@256',rntacc)
                     SQL = "SELECT DISTINCT * FROM omnix_contracts WHERE contract_no = %s"
                     cur.execute(SQL % ("'" + rntacc[0] + "'"))
                     contracts = cur.fetchall()
@@ -1063,11 +939,10 @@ def _update_cpc_charges_on_lots():
                     product_id = product_obj.search([('default_code', '=', rntacc[1])])
 
                     # ################# Now update the lot record  ##################
-                    lot = lot_obj.search([('name', '=', rntacc[2])])
-                    #lot = lot_obj.search([('name','=', '3379PC05573')])
-                    existing_lot = lot_obj.browse([('id','=',lot)])
-                    if existing_lot:
-                        print("Working with Lot %", existing_lot)
+                    #lot = lot_obj.search([('name', '=', rntacc[2])])
+                    lot = lot_obj.search([('name','=', '3379PC05573')])
+                    if lot:
+                        print("Working with Lot %", lot)
                         vals = {}
                         if rntacc[6] == '*':
                             main = True
@@ -1105,8 +980,8 @@ def _update_cpc_charges_on_lots():
                             # print('drs account -=',omnix_mas['drs_acc'], 'Addr=',omnix_mas['consumable_addr_code'])
 
                             # now create and link this Lot (which is a machine to the subscription record
-                            print('about to update lot lot with',lot,vals)
-                            existing_lot.write(vals)
+                            print('about to update lot lot with',vals)
+                            lot_id = lot_obj.wite(lot_id,vals)
 
 
 
@@ -1179,8 +1054,8 @@ def _update_cpc_charges_on_lots():
 
 def _update_subscription_lines():
     f = open("Conversion_errors.txt", "a+")
-    f.write("Starting _update_subscription_lines\n")
-    print("Starting _update_subscription_lines\n")
+    f.write("Starting _create_subscription_lines\n")
+    print("Starting _create_subscription_lines\n")
     ## Now load a analytic invoice line for B&W and Coulor copies
     csv_file = csv_path + "rntcpc.csv"
     i = 0
@@ -1194,19 +1069,14 @@ def _update_subscription_lines():
                 #    print('found it',rntcpc[0])
                 # else:
                 #    continue
-                ##print("RNT CPC is", rntcpc[0])
-                if rntcpc[0]:
-                    print("********************** - RNTCPC",rntcpc[0])
+                if rntcpc[0] == '11109856':
                     if rntcpc[1] == 'Colour copies' or rntcpc[1] == 'Black copies':
-                        sub_rec_id = subscription_obj.search([('code', 'ilike', rntcpc[0])])
-                        print("sub rec id is ", sub_rec_id[0])
-                        sub_rec = subscription_obj.browse(sub_rec_id[0])
+                        sub_rec = subscription_obj.browse([('code', 'ilike', rntcpc[0])])
                         if not sub_rec:
                             print('missing contract %s rntcpc[2]=%s' % (rntcpc[0], rntcpc[2]))
                             exit()
-                        print("**************** - sub rec is ", sub_rec.name, sub_rec.recurring_monthly)
-                        if sub_rec:
-                            print("Working with Contract", sub_rec.name, sub_rec.x_machine_ids)
+                        if sub_rec.name == '11109856':
+                            print("Working with Contract", sub_rec.name)
                             # print (" xx this should be the subscription id", sub_rec.id[0], len(sub_rec.x_machine_ids[0]))
 
                             rec = rental_group_obj.search([('group_type', '=', 'V'), ('group_code', '=', rntcpc[14])])
@@ -1228,12 +1098,15 @@ def _update_subscription_lines():
                                         exit()
 
                                     if product_id and sub_rec:
-                                        sub_line_id = subscription_line_obj.search([('analytic_account_id','=',sub_rec.id),('product_id','=',product_id[0])])
-                                        print("SUB LINE ID", sub_line_id)
-                                        sub_line_rec = subscription_line_obj.browse([('id','=',sub_line_id[0])])
-                                        print("SUB Line Rec is %s", sub_line_rec.name[0])
-                                        if sub_line_rec:
-                                            print("Contract is and product is",sub_line_rec.analytic_account_id.name,sub_line_rec.product_id.name, sub_line_rec.x_copies_price_1  )
+                                        if sub_rec.x_machine_ids[0]:
+                                            for lots in sub_rec.x_machine_ids:
+                                                for lot in lots:
+                                                    if lot.x_main_product is True:
+                                                        s_id = lot.id
+                                        sub_line_id = subscription_line_obj.search([('analytic_account_id','=',sub_rec.id[0])])
+                                        sub_line_rec = subscription_line_obj.browse([('id','=',sub_line_id),('product_id','=',product_id[0])])
+                                        if sub_line_rec and sub_line_rec.product_id == rntcpc[1]:
+                                            print("Contract is and product is",sub_line_rec.analytic_account_id.name,sub_line_rec.product_id.name  )
                                             vals = {
                                                     'specific_price': rntcpc[6],
                                                     'price_unit': rntcpc[6],
@@ -1247,6 +1120,7 @@ def _update_subscription_lines():
                                                     'x_copies_price_2': rntcpc[7],
                                                     'x_copies_price_3': rntcpc[8],
                                                     'x_copies_minimum': rntcpc[9],
+                                                    'x_serial_number_id': s_id
                                                     }
                                         # if rntcpc[0] == '11105709':
                                         #    print(vals)
@@ -1267,12 +1141,13 @@ def _update_subscription_lines():
                                             billable = rental_group_obj.browse(grp_id[0]).billable
                                             if billable:
                                                 vals['x_start_date1_billable'] = True
-                                        print (vals)
+                                        # print (vals)
                                         sub_line_rec.write(vals)
             i += 1
-    print("finished _update_subscription_lines")
-    f.write("Finished _update_subscription_lines\n")
+    print("finished _create_subscription_lines")
+    f.write("Finished _create_subscription_lines\n")
     f.close()
+
 
 def _create_quants():
     print('creating quants')
@@ -1318,14 +1193,10 @@ print("running version ----------------------------> ",version)
 
 #_create_analytic_history()  ###### change the csv file name from modelgpXXXXXXX.csv to the latest
 
-#_compare_omnix_odoo()
+# _compare_omnix_odoo()
 
 # _compare_odoo_omnix() - Dont run this
 
 # _read_email()
 
-#_update_cpc_charges_on_lots()
-
-#_update_subscription_lines()
-_compare_omnix_odoo_xls()
-
+_update_cpc_charges_on_lots()

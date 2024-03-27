@@ -21,7 +21,7 @@ class MeterReadingImport(models.TransientModel):
 
     data_file = fields.Binary('Meter Reading File', required=True,
                               help='Select your Meter Reading csv file here - make sure it is the latest one !.')
-    input_layout = fields.Selection([('fm', "FM Audit"), ("man", "Manual")], "Choose the File Format for this input",
+    input_layout = fields.Selection([('fm', "FM Audit"), ("man", "Manual"),("avg","Average")], "Choose the File Format for this input",
                                     default='fm')
 
     def update_readings(self, black, colour):
@@ -65,6 +65,8 @@ class MeterReadingImport(models.TransientModel):
                         line.write({'x_reading_type_last': 'FM Audit'})
                     if self.input_layout == 'man':
                         line.write({'x_reading_type_last': 'Manual'})
+                    if self.input_layout == 'avg':
+                        line.write({'x_reading_type_last': 'Average'})
 
         print('Finished')
         now = datetime.now()
@@ -132,6 +134,8 @@ class MeterReadingImport(models.TransientModel):
                         line.write({'x_reading_type_last': 'FM Audit'})
                     if self.input_layout == 'man':
                         line.write({'x_reading_type_last': 'Manual'})
+                    if self.input_layout == 'avg':
+                        line.write({'x_reading_type_last': 'Average'})
             line_num += 1
 
         # Run an audit on each line that was processed to ascertain that imported readings match the contents of the file

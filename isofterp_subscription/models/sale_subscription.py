@@ -627,6 +627,7 @@ class SaleSubscription(models.Model):
             'copies_last': line.x_copies_last,
             'copies_previous': line.x_copies_previous,
             'no_of_copies': line.x_copies_last - line.x_copies_previous,
+            'reading_type': line.x_reading_type_last
         }
         print('vals', vals)
         self.env['meter.reading.history'].create(vals)

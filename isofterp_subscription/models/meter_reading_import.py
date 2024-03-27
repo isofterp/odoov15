@@ -186,7 +186,7 @@ class MeterReadingHistory(models.Model):
     copies_previous = fields.Integer('Previous Reading')
     copies_last = fields.Integer('Last Reading')
     no_of_copies = fields.Integer('Qty')
-    tier = fields.Char('Tier')
+    reading_type = fields.Char('Reading Type')
 
     def _close_window(self):
         return {'type': 'ir.actions.act_window_close'}

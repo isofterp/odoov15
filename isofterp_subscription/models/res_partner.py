@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError, UserError
 import logging
 
 
@@ -100,5 +101,27 @@ class Partner(models.Model):
         except Exception as e:
             form_view_id = False
 
+    # When creating a new partner, ensure that is no duplications
+    @api.model_create_multi
+    def create(self, vals_list):
+        logging.warning("Vals List %s", vals_list)
+        if 'x_account_number' in vals_list[0]:
+            account_number = vals_list[0].get('x_account_number')
+            logging.warning("Account number is %s", account_number)
+            dup_acc = self.search([('x_account_number','=',account_number )])
+            if dup_acc:
+                raise ValidationError(
+                    "Account Numbers must be unique per partner!")
+        partners = super(Partner, self).create(vals_list)
+        return partners
 
-
+    def write(self, vals):
+        logging.warning("Vals is %s", vals)
+        if 'x_account_number' in vals:
+            account_number = vals.get('x_account_number')
+            dup_acc = self.search([('x_account_number', '=', account_number)])
+            if dup_acc:
+                raise ValidationError(
+                    "Account Numbers must be unique per partner!")
+        result = super(Partner, self).write(vals)
+        return result

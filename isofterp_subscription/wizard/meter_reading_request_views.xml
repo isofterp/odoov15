@@ -33,7 +33,7 @@
                     <field name="copies_previous"/>
                     <field name="copies_last"/>
                     <field name="no_of_copies"/>
-                    <field name="tier"/>
+                    <field name="reading_type"/>
                 </tree>
             </field>
         </record>

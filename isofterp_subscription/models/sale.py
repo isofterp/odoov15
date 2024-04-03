@@ -380,7 +380,6 @@ class SaleOrder(models.Model):
                         logging.warning("Working with line %s", lines[i].name)
                         if lines[i].product_id.categ_id.name in ['main product']:
 
-
                             move_line = stock_move_obj.search([('sale_line_id', '=', lines[i].id),('state','!=','cancel')]).id
                             serial = stock_move_line_obj.search([('move_id', '=', move_line)],limit=1).lot_id
 

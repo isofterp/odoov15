@@ -16,6 +16,9 @@
                         <field name="bom_id" default_focus="1"/>
                         <!--<field name="qty"/>-->
                     </group>
+                    <group>
+                        <field name="unit_price_zero"/>
+                    </group>
                     <footer>
                         <button name="add" type="object"
                                 class="oe_highlight" string="Add"/>

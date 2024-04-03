@@ -31,6 +31,7 @@ class SaleAddPhantomBom(models.TransientModel):
         'sale.order', string='Quotation')
     picking_id = fields.Many2one(
         'stock.picking', string='Picking')
+    unit_price_zero = fields.Boolean("Set BOM Line Unit prices to 0?")
 
     def _prepare_sale_order_line_line_section(self, main_product,sale_order):
         logging.warning("=================DOING SECTION LINE")
@@ -71,15 +72,25 @@ class SaleAddPhantomBom(models.TransientModel):
     def _prepare_sale_order_line(self, bom_line, sale_order, kit_num):
         logging.warning("=================DOING COMPONENTS LINE %s %s %s",bom_line.id,bom_line.name, bom_line.x_kit_quantity )
         product = self.env['product.product'].search([('product_tmpl_id','=',bom_line.id )])
+        line_qty = 1
         # qty_in_product_uom = bom_line.product_uom_id._compute_quantity(
         #     bom_line.product_qty,
         #     bom_line.product_id.uom_id)
+        if bom_line.x_kit_quantity == 0:
+            line_qty = 1
+
+        if self.unit_price_zero:
+            unit_price = 0
+        else:
+            unit_price = product.list_price
+
         vals = {
             'product_id': product.id,
             #'product_uom_qty': qty_in_product_uom,
-            'product_uom_qty': bom_line.x_kit_quantity,
+            'product_uom_qty': line_qty,
             'order_id': sale_order.id,
             'x_kit_num': kit_num,
+            'price_unit': unit_price,
             }
         # on sale.order.line, company_id is a related field
         return vals

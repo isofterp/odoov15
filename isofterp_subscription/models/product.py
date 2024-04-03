@@ -12,10 +12,10 @@ class productTemplate(models.Model):
     x_machine_charge_ids  = fields.One2many('subscription.machine.charge', 'product_key','Master Charges')
     x_optional_component_ids = fields.Many2many(
         'product.template', 'product_component_rel', 'src_id', 'dest_id',
-        string='Optional Products', help="Optional Components are suggested .", check_company=True)
+        string='Optional Products', help="Optional Components are suggested .")
     x_alternate_product_ids = fields.Many2many(
         'product.template', 'product_alternate_rel', 'src_id', 'dest_id',
-        string='Alnternate Products', help="Alternate Products .", check_company=True)
+        string='Alnternate Products', help="Alternate Products .")
     x_invoice_ok = fields.Boolean(string="Cannot be Invoiced", help='If set the product will not be Invoiced')
     x_kit = fields.Boolean(string="KIT")
     x_kit_quantity = fields.Integer(string="How many quantities of an item to make up a kit")

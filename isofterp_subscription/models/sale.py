@@ -354,22 +354,32 @@ class SaleOrder(models.Model):
 
                 # This logic only caters for instances where kits have been used.
                 # Any products added to the sales order afterwards, must be added manually to a subscription.
+                # probably best to skip over any product that is not a kit - Not sure
                 grouped_lines = groupby(order.order_line, key=lambda m: m.x_kit_num)
                 #logging.warning("group are %s", grouped_lines)
                 for group, lines in grouped_lines:
                     category = 'main product'
-                    #logging.warning("1. group lines are %s %s", group, lines)
+                    #logging.warning("1. group lines are [%s] %s", group, lines)
+
 
                     for i in range(len(lines)):
+                        if lines[i].display_type == 'line_section':
+                            continue
+                        logging.warning("The current line is [%s] [%s]", lines[i].product_id.name,
+                                                lines[i].product_id.categ_id.name)
                         if lines[i].product_id.categ_id.name in ['main product', 'component'] :
-                            new_subscription_id = subscription_obj.create(sub_header)
+
                             if (lines[i].product_id.categ_id.name == 'main product'):
+                                logging.warning("===Creating contract %s %s", lines[i].product_id.name,
+                                                lines[i].product_id.categ_id.name)
                                 lines = [lines[i]] + lines[:i] + lines[i + 1:]
-                    #logging.warning("The concatenated lines are %s", lines)
+                                new_subscription_id = subscription_obj.create(sub_header)
+                                logging.warning("The new_subscription_id is %s", new_subscription_id)
 
                     for i in range(len(lines)):
+                        logging.warning("Working with line %s", lines[i].name)
                         if lines[i].product_id.categ_id.name in ['main product']:
-                            logging.warning("Working with line %s",lines[i].name )
+
 
                             move_line = stock_move_obj.search([('sale_line_id', '=', lines[i].id),('state','!=','cancel')]).id
                             serial = stock_move_line_obj.search([('move_id', '=', move_line)],limit=1).lot_id
@@ -471,7 +481,7 @@ class SaleOrder(models.Model):
                         # Set the correct delivery address for the companent if tracked by serial number
                         # Add the serial number to the description if tracked by serial number
                         if lines[i].product_id.categ_id.name in ['component']:
-                            _logger.warning("===The line we are working with is %s",lines[i].name )
+                            _logger.warning("===COMPONENTS - The line we are working with is %s",lines[i].name )
                             #
                             lines[i].subscription_id = new_subscription_id.id
                             # If the component is a serialized item, set the delivery address on the lot

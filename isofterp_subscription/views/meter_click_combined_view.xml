@@ -42,7 +42,7 @@
                   parent="sale_subscription.menu_sale_subscription"
                   action="action_meter_click_combined"
                   sequence="99"
-                  groups="sale_subscription.group_sale_subscription_manager"
+                  groups="sale_subscription.group_sale_subscription_manager,access_meter_reading_extra_group"
         />
 
 

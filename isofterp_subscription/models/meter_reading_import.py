@@ -90,6 +90,7 @@ class MeterReadingImport(models.TransientModel):
         line_obj = self.env['sale.subscription.line']
         serial_no = ''
         line_num = 0
+        message = ''
         # Read xls file
         wb = openpyxl.load_workbook(
 
@@ -136,6 +137,8 @@ class MeterReadingImport(models.TransientModel):
                         line.write({'x_reading_type_last': 'Manual'})
                     if self.input_layout == 'avg':
                         line.write({'x_reading_type_last': 'Average'})
+                    line.analytic_account_id.sudo().message_post(body=message)
+
             line_num += 1
 
         # Run an audit on each line that was processed to ascertain that imported readings match the contents of the file

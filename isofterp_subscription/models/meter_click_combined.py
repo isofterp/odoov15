@@ -1,6 +1,7 @@
 
 from odoo import fields, models, tools
-
+from datetime import datetime
+import logging
 
 class meter_click_combined(models.Model):
     _name = "meter.click.combined"
@@ -17,6 +18,7 @@ class meter_click_combined(models.Model):
     product = fields.Char('Product', readonly=True)
     price = fields.Float('AvePrice', readonly=True)
     billamt = fields.Float('MinBilling', readonly=True)
+    copytype = fields.Char('Copytype', readonly=True)
 
     def _select(self):
         select_str = """
@@ -24,6 +26,7 @@ class meter_click_combined(models.Model):
                     sub.code as code,
                     partner.name as partner,
                     users.login as salesperson,
+                    l.name as copytype,
                     l.x_copies_last as last_reading,
                     l.x_copies_previous as previous_reading,
                     l.x_copies_last - l.x_copies_previous as to_bill,
@@ -66,6 +69,7 @@ class meter_click_combined(models.Model):
                     partner.x_account_number,
                     partner.email,
                     prod.name ,
+                    l.name,
                     l.x_copies_last,
                     l.x_copies_last ,
                     l.x_copies_previous,
@@ -87,6 +91,51 @@ class meter_click_combined(models.Model):
             FROM ( %s )
             %s %s
             )""" % (self._table, self._select(), self._from(), self._where(),self._group_by()))
+
+    def action_set_average_reading(self):
+        logging.warning("======== SETTING AVERAGE QTY")
+        if self.env.context.get('active_ids', False):
+            for rec in self.env.context.get('active_ids', False):
+                logging.warning("======== ACTIVE IDS %s",rec)
+                total_readings = 0
+                avg_reading = 0
+                now = datetime.now()
+                dt_string = now.strftime("%d/%m/%Y %H:%M")
+                sub_line = self.env['sale.subscription.line'].search([('id', '=',rec )])
+                if sub_line:
+                    logging.warning("Line is %s %s", sub_line.name, sub_line.quantity)
+                    # For this line get the last reading
+                    # get all the readings todate from history
+                    # Get the average reading over the period and set that as the new reading
+                    # Update the Audit report
+                    history_recs = self.env['meter.reading.history'].search([('name','=',sub_line.x_partner_id.name),
+                                                    ('product_id','=',sub_line.product_id.id),
+                                                    ('contract_id','=',sub_line.analytic_account_id.id)])
+                    if history_recs:
+                        for hrec in history_recs:
+                            logging.warning("The records are %s %s %s %s %s %s",
+                                            hrec.create_date, hrec.name, hrec.product_id.name,
+                                            hrec.contract_id.name, hrec.serial_no_id.name,
+                                            hrec.no_of_copies)
+                            total_readings += hrec.no_of_copies
+                    if total_readings > 0:
+                        avg_reading = round(total_readings / len(history_recs))
+                        logging.warning("Average reading is %s", avg_reading)
+
+                        #Create meter reading error report
+                        new_reading = sub_line.x_copies_previous + avg_reading
+                        message = dt_string + ' Average Reading Calculated ' + 'Serial No: ' + sub_line.x_serial_number_id.name + ' ' + sub_line.name + \
+                                  ' Copies Previous = ' + str(sub_line.x_copies_last) + ' Average: ' + str(avg_reading) + ' New Reading: ' + str(new_reading)
+                        self.env['meter.reading.error'].create({
+                            'name': message
+                        })
+                        sub_line.write({
+                            'x_copies_last': new_reading,
+                            'x_reading_type_last': 'Average'
+                        })
+
+                        # Write a note onto the chatter of the contract
+                        sub_line.analytic_account_id.sudo().message_post(body=message)
 
 
 

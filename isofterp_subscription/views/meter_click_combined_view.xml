@@ -10,14 +10,24 @@
                     <field name="code" readonly="1" string="Contract"/>
                     <field name="product" readonly="1" string="Model"/>
                     <field name="serial" readonly="1" string="Serial Number"/>
-
                     <field name="salesperson" string="Owner"/>
+                    <field name="copytype" string="Copies"/>
                     <field name="previous_reading" readonly="1" string="Previous"/>
                     <field name="last_reading" readonly="1" string="Current Reading"/>
                     <field name="to_bill" readonly="1" string="Copies to Bill"/>
                     <field name="price" readonly="1" string="CPC"/>
                     <field name="billamt" readonly="1" string="Min Billing"/>
                 </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.server" id="action_set_average_reading">
+            <field name="name">Set Average Reading</field>
+            <field name="model_id" ref="model_meter_click_combined"/>
+            <field name="binding_model_id" ref="model_meter_click_combined"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.action_set_average_reading()
             </field>
         </record>
 

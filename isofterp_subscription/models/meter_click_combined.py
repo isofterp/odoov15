@@ -110,7 +110,8 @@ class meter_click_combined(models.Model):
                     # Update the Audit report
                     history_recs = self.env['meter.reading.history'].search([('name','=',sub_line.x_partner_id.name),
                                                     ('product_id','=',sub_line.product_id.id),
-                                                    ('contract_id','=',sub_line.analytic_account_id.id)])
+                                                    ('contract_id','=',sub_line.analytic_account_id.id),],
+                                                                            limit=6)
                     if history_recs:
                         for hrec in history_recs:
                             logging.warning("The records are %s %s %s %s %s %s",

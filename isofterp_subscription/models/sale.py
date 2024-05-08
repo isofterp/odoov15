@@ -570,7 +570,7 @@ class SaleOrder(models.Model):
             'journal_id': journal.id,  # company comes from the journal
             'invoice_origin': self.name,
             'invoice_payment_term_id': self.payment_term_id.id,
-            'payment_reference': self.reference,
+            'payment_reference': self.partner_id.x_account_number,
             'transaction_ids': [(6, 0, self.transaction_ids.ids)],
             'invoice_line_ids': [],
             'company_id': self.company_id.id,

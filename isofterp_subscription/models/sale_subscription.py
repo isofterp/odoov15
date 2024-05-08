@@ -256,6 +256,7 @@ class SaleSubscription(models.Model):
         res['date'] = '2024-02-29'
         res['invoice_date'] = '2024-02-29'
         res['invoice_date_due'] = '2024-03-29'
+        res['payment_reference'] = self.partner_id.x_account_number
         check_name = self.display_name
 
         return res

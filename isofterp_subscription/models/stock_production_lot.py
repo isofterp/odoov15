@@ -22,7 +22,7 @@ class ProductionLot(models.Model):
     x_main_product = fields.Boolean('Main Product')
     x_cost_price = fields.Float('Cost Price')
     x_list_price = fields.Float('List Price')
-    x_subscription_id = fields.Many2one('sale.subscription','Subscription')
+    x_subscription_id = fields.Many2one('sale.subscription','Subscription', )
     x_dlv_id = fields.Many2one('res.partner', 'Delivery Address')
     x_increase_rental_date = fields.Date('Increase Rental Date')
     x_increase_rental_percent = fields.Float(string='Increase Rental %')

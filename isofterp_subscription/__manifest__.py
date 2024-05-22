@@ -37,6 +37,7 @@
         'wizard/meter_reading_request_views.xml',
         'wizard/sale_add_phantom_bom_view.xml',
         'wizard/generate_recurring_invoices.xml',
+        'wizard/sale_subscription_close_reason_wizard_views.xml',
         'security/ir.model.access.csv',
         'security/subscription_security.xml',
         'report/sale_report_templates.xml',

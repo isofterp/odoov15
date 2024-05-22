@@ -401,12 +401,20 @@ class SaleOrder(models.Model):
                                                 (lines[i].product_id.name, lines[i].product_id.categ_id.name,
                                                  lines[i].product_id.tracking))
 
-                            # Now create an Analytic Account based on the Serial Number of the Main Product
-                            res = {'name': serial.name,
-                                   'group_id': 3,
-                                   'partner_id': order.partner_id.id,
-                                   }
-                            analytic_obj.create(res)
+
+                            analytic_exist = analytic_obj.search([('name','=', serial.name)])
+                            if analytic_exist:
+                                # Update the partner on the existing record
+                                analytic_exist.write({
+                                    'partner_id': order.partner_id.id,
+                                })
+                            else:
+                                # Now create an Analytic Account based on the Serial Number of the Main Product
+                                res = {'name': serial.name,
+                                       'group_id': 3,
+                                       'partner_id': order.partner_id.id,
+                                       }
+                                analytic_obj.create(res)
                             lot = stock_production_lot_obj.search([('id', '=', serial.id), ])
                             lot.x_subscription_id = new_subscription_id.id
                             dlv_address = order.partner_id.address_get(['delivery'])

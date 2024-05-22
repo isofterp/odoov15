@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View Subscriptions Close Reason wizard -->
+    <record id="sale_subscription_close_reason_view_form_isoft" model="ir.ui.view">
+        <field name="name">sale.subscription.close.reason.form.isoft</field>
+        <field name="inherit_id" ref="sale_subscription.sale_subscription_close_reason_view_form"/>
+        <field name="model">sale.subscription.close.reason.wizard</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='close_reason_id']" position="after">
+                <field name="x_is_donate"/>
+            </xpath>
+
+        </field>
+    </record>
+
+<!--    &lt;!&ndash; Action Subscriptions Close Reason &ndash;&gt;-->
+<!--    <record id="sale_subscription_close_reason_wizard_action" model="ir.actions.act_window">-->
+<!--        <field name="name">Close Reason</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="res_model">sale.subscription.close.reason.wizard</field>-->
+<!--        <field name="view_mode">form</field>-->
+<!--        <field name="view_id" ref="sale_subscription_close_reason_view_form"/>-->
+<!--        <field name="target">new</field>-->
+<!--    </record>-->
+
+</odoo>

@@ -51,6 +51,13 @@ class SaleSubscriptionCloseReasonWizard(models.TransientModel):
         logging.warning('Unset Values on lot')
         main_machine.x_subscription_id = None
         main_machine.x_dlv_id = None
+        main_machine.x_increase_rental_date = None
+        main_machine.x_increase_service_date = None
+        main_machine.x_increase_copies_date = None
+        main_machine.x_increase_rental_percent = None
+        main_machine.x_increase_service_percent = None
+        main_machine.x_increase_copies_percent = None
+
         logging.warning('Unset Values on lot -  Done')
 
     def unlink_machine_on_contract(self, subscription):

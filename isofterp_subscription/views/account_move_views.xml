@@ -129,5 +129,11 @@
         <menuitem id="view_bank_statement_tree" name="View Bank Statements" parent="account.menu_finance_receivables"
                   groups="account.group_account_invoice"
                   action="action_bank_statement_tree_bank" sequence="20"/>
+
+        <!-- Analytic Account View under Customers Menu -->
+        <menuitem id="view_analytic_account_isoft" name="Analytic Accounts" parent="account.menu_finance_receivables"
+                  groups="account.group_account_invoice"
+                  action="analytic.action_analytic_account_form" sequence="20"/>
+
     </data>
 </odoo>

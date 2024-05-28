@@ -19,6 +19,7 @@ class productTemplate(models.Model):
     x_invoice_ok = fields.Boolean(string="Cannot be Invoiced", help='If set the product will not be Invoiced')
     x_kit = fields.Boolean(string="KIT")
     x_kit_quantity = fields.Integer(string="How many quantities of an item to make up a kit")
+    x_printer_type = fields.Selection([('black','Black'),('colour', 'Colour')], string='Printer Type')
 
 class Task(models.Model):
     _inherit = "project.task"

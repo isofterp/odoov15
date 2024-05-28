@@ -32,6 +32,7 @@
                 <xpath expr="//field[@name='default_code']" position="after">
                     <field name="x_kit"/>
                     <field name="x_kit_quantity"/>
+                    <field name="x_printer_type"/>
                 </xpath>
                 <xpath expr="//page[@name='general_information']" position="after">
                     <page name="charges" string="Charges" attrs="{'invisible': [('tracking', '=', 'none')]}">

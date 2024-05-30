@@ -23,6 +23,7 @@ class MeterReadingImport(models.TransientModel):
                               help='Select your Meter Reading csv file here - make sure it is the latest one !.')
     input_layout = fields.Selection([('fm', "FM Audit"), ("man", "Manual"),("avg","Average"),("his","History")], "Choose the File Format for this input",
                                     default='fm')
+    x_import_type = fields.Selection([('serial', 'Serial Number'), ('contract', 'Contract Number')], string='Import Type', required=True, default='serial')
 
     def update_readings(self, black, colour):
         print(black, colour)
@@ -91,6 +92,7 @@ class MeterReadingImport(models.TransientModel):
         serial_no = ''
         line_num = 0
         message = ''
+        contact_no = ''
 
         # Read xls file
         wb = openpyxl.load_workbook(
@@ -303,7 +305,17 @@ class MeterReadingImport(models.TransientModel):
 
                 if row[0] == '':
                     continue
-                serial_no = row[0]
+                if self.x_import_type == 'serial:':
+                    serial_no = row[0]
+                    line_ids = line_obj.search([('x_serial_number_id', '=', serial_no)])
+                else:
+                    contact_no = row[0]
+                    contract = self.env['sale.subscription'].search([('name', '=', contact_no)])
+                    # if contract:
+                    #     for machine in contract.x_machine_ids:
+                    #         if machine.name == row[2] and machine.x_main_product:
+
+
                 colour = row[1]
                 black = row[2]
                 # if isinstance(serial_no, int):

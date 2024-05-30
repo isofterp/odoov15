@@ -18,3 +18,4 @@ from . import stock_picking
 from . import area_codes
 from . import field_service_flagged_incidents
 from . import project_task_template
+from . import account_bank_statement

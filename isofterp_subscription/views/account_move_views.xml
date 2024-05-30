@@ -105,7 +105,7 @@
             <field name="res_model">account.bank.statement.import</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
-<!--            <field name="context">{'journal_id': 7}</field>-->
+            <field name="context">{'journal_id': 7}</field>
             <field name="view_id" ref="account_bank_statement_import.account_bank_statement_import_view"/>
         </record>
 

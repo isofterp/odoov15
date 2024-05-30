@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_bank_statement_form_isoft" model="ir.ui.view">
+            <field name="name">account.bank.statement.form.isoft</field>
+            <field name="model">account.bank.statement</field>
+            <field name="inherit_id" ref="account.view_bank_statement_form"/>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='date']" position="after">
+                    <field name="total_entry_encoding"/>
+                </xpath>
+                <xpath expr="//field[@name='balance_start']" position="replace">
+                    <field name="balance_start" class="oe_inline" attrs="{'readonly': [('state', '=', 'confirm')]}"
+                    groups="account.group_account_manager"/>
+                </xpath>
+                <xpath expr="//field[@name='balance_end_real']" position="replace">
+                    <field name="balance_end_real" class="oe_inline" attrs="{'readonly': [('state', '=', 'confirm')]}"
+                    groups="account.group_account_manager"/>
+                </xpath>
+                <xpath expr="//field[@name='balance_end']" position="replace">
+                    <field name="balance_end" nolabel="1" class="oe_subtotal_footer_separator" groups="account.group_account_manager"/>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

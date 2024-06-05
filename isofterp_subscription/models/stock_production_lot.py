@@ -66,6 +66,19 @@ class ProductionLot(models.Model):
                     lot_count += 1
         logging.warning("Lot count available is %s missing for lots %s", lot_count, lot_no_an)
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        self._check_create()
+        logging.warning("Create - Stock Production Lot vals is %s", vals_list)
+
+        lot = super(ProductionLot, self.with_context(mail_create_nosubscribe=True)).create(vals_list)
+        if len(vals_list) != 0:
+            product_id = vals_list[0].get('product_id')
+            product_category = self.env['product.product'].search([('id','=',vals_list[0].get('product_id'))]).product_tmpl_id.categ_id.name
+            if product_category == 'main product':
+                lot.write({'x_main_product': True})
+        return lot
+
 class StockMove(models.Model):
     _inherit = 'stock.move'
 

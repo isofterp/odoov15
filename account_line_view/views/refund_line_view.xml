@@ -29,6 +29,7 @@
                     <field name="price_unit"/>
                     <field name="tax_ids" optional="hide"/>
                     <field name="price_subtotal"/>
+                    <field name="price_total" optional="hide"/>
                     <field name="discount" optional="hide"/>
                 </tree>
             </field>

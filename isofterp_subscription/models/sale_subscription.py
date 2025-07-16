@@ -241,6 +241,7 @@ class SaleSubscription(models.Model):
         self.ensure_one()
         check_name = ''
 
+
         res = super(SaleSubscription, self)._prepare_invoice_data()
         # logging.warning("==============Res is %s", res)
         # invoice = self.env['account.move'].search([('ref','=',res.get('ref')),
@@ -249,13 +250,17 @@ class SaleSubscription(models.Model):
         #     logging.warning("An invoice already exist", res)
         #     print(err)
 
+        if self.display_name == '11100579':
+            logging.warning("Contract Origan is %s", self.display_name)
+            print(err)
+
         if self.user_id:
             res['invoice_user_id'] = 1
         if self.name:
             res['invoice_origin'] = self.display_name
-        res['date'] = '2024-02-29'
-        res['invoice_date'] = '2024-02-29'
-        res['invoice_date_due'] = '2024-03-29'
+        # res['date'] = '2024-02-29'
+        # res['invoice_date'] = '2024-02-29'
+        # res['invoice_date_due'] = '2024-03-29'
         res['payment_reference'] = self.partner_id.x_account_number
         check_name = self.display_name
 

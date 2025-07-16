@@ -102,16 +102,19 @@ class Partner(models.Model):
             form_view_id = False
 
     # When creating a new partner, ensure that is no duplications
+    # When duplucating a user, add condition to not take into account account number duplication
     @api.model_create_multi
     def create(self, vals_list):
         logging.warning("Vals List %s", vals_list)
-        if 'x_account_number' in vals_list[0]:
-            account_number = vals_list[0].get('x_account_number')
-            logging.warning("Account number is %s", account_number)
-            dup_acc = self.search([('x_account_number','=',account_number )])
-            if dup_acc:
-                raise ValidationError(
-                    "Account Numbers must be unique per partner!")
+        if 'active_model' not in self.env.context:
+            if 'x_account_number' in vals_list[0]:
+                account_number = vals_list[0].get('x_account_number')
+                logging.warning("Account number is %s", account_number)
+                dup_acc = self.search([('x_account_number','=',account_number )])
+                if dup_acc:
+                    raise ValidationError(
+                        "Account Numbers must be unique per partner!")
+
         partners = super(Partner, self).create(vals_list)
         return partners
 

@@ -30,7 +30,17 @@ class SiteTank(models.Model):
         return
 
     def write(self, vals):
-        print('in tank write', vals)
+        # If one of these fields then user is just amending static Tank data so no need to create reading Trx
+        if vals.get('name') or vals.get('min') or  vals.get('max'):
+            return super(SiteTank, self).write(vals)
+
+        #print('in tank write', vals)
+        if vals.get('date_last_reading'):
+            date_last_reading = vals['date_last_reading']
+            #print("date_last_reading=",date_last_reading)
+        else:
+            date_last_reading = datetime.today()
+
         if vals.get('last_actual_reading'):
             last_reading = vals['last_actual_reading']
         else:
@@ -52,24 +62,23 @@ class SiteTank(models.Model):
             'line_id': self.line_id.id,
             'site_id': self.site_id.id,
             'tank_id': self.id,
-            'date_last_reading': vals['date_last_reading'],
+            'date_last_reading': date_last_reading,
             'theoretical_usage': self.tank_balance - last_reading,
             'actual_reading': last_reading,
             'usage': usage,
             'narrative': last_note
         }
+        # print('about to create trx reading',vals['tank_balance'],vals['last_actual_reading'])
+        self.env['tank.reading'].create(transaction_vals)
         if vals.get('last_actual_reading'):
-            # print('about to create trx reading',vals['tank_balance'],vals['last_actual_reading'])
-            self.env['tank.reading'].create(transaction_vals)
             vals['tank_balance'] = vals['last_actual_reading']
-        # vals['last_actual_reading'] = 0
         vals['date_last_capture'] = datetime.today()
         return super(SiteTank, self).write(vals)
 
     name = fields.Char("Tank Name")
     branch_id = fields.Many2one(related='site_id.branch_id', string="Branch")
-    line_id = fields.Many2one('site.line', string='Lines')
-    site_id = fields.Many2one('site.site', string='Site')
+    line_id = fields.Many2one('site.line', string='Lines', required=True)
+    site_id = fields.Many2one('site.site', string='Site', required=True)
     tank_reading_ids = fields.One2many('tank.reading', 'tank_id', string='Lines')
     min = fields.Float('Min')
     usage_min = fields.Float('Usage Min')
@@ -94,7 +103,7 @@ class SiteTankReading(models.Model):
 
     def action_create_usage_report(self):
         df = pd.DataFrame()
-        print(self.env.context)
+        #print(self.env.context)
         i = 0
         high_date = low_date = ''
         for rec in self.browse(self.env.context.get('active_ids')):
@@ -132,8 +141,8 @@ class SiteTankReading(models.Model):
                         'qty': rec.usage
                     }, ignore_index=True)
             i += 1
-        print("*****Finished creating DF*********")
-        print(df)
+        #print("*****Finished creating DF*********")
+        #print(df)
         """ work out the number of days between highest and lowest dates"""
         high_date_obj = datetime.strptime(high_date,"%Y-%m-%d")
         low_date_obj = datetime.strptime(low_date, "%Y-%m-%d")
@@ -150,7 +159,7 @@ class SiteTankReading(models.Model):
         df.sort_index(inplace=True)
         print(df)
         my_dict = df.to_dict('records')
-        print(my_dict)
+        #print(my_dict)
 
         return
 

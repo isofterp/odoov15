@@ -26,6 +26,10 @@
             <field name="name">Product View Restrict</field>
         </record>
 
+        <!--<record id="access_field_service_amend_group" model="res.groups">
+            <field name="name">Allow Field Service Changes</field>
+        </record>-->
+
         <!-- Added a new Subscription User who can only see subscriptions where they are the Salesperson-->
         <!--<record id="group_sale_subscription_user" model="res.groups">
             <field name="name">User</field>

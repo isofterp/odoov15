@@ -13,4 +13,12 @@ class HrEmployee(models.Model):
 
     site_id = fields.Many2one('site.site', string='Site')
 
+class HrEmployeePublic(models.Model):
+    _inherit = ["hr.employee.public"]
+
+    site_id = fields.Many2one('site.site', string='Site')
+
+
+
+
   

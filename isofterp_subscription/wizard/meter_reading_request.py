@@ -17,7 +17,8 @@ class MeterReadingRequestWizard(models.TransientModel):
         logging.warning("----- Cron Meter reading running")
         line_ids = self.env['sale.subscription.line'].search(['|', ('name', '=', 'Black copies'),
                                                               ('name', '=', 'Colour copies'),
-                                                              ('quantity', '=', 0)])
+                                                              ('quantity', '=', 0),
+                                                              ('x_serial_number_id', '!=','' )])
         email_subject = 'Meter Reading Inputs Required for ' + self.env.user.company_id.name
         mail = self.env['mail.mail']
         res_user_obj = self.env['res.users']
@@ -78,7 +79,7 @@ class MeterReadingRequestWizard(models.TransientModel):
             email_body += "<a href =" + base_url + "/my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
             email_body += "</div>"
 
-            email_to = 'edgar@isoft.co.za'
+            email_to = 'gameedah@copytype.co.za'
             mail_values = {
                 'email_from': email_from,
                 'email_to': email_to,

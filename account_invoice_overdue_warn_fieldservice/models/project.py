@@ -101,7 +101,7 @@ class Task(models.Model):
     def is_to_approve(self):
         self.ensure_one()
         #
-        return self.overdue_invoice_amount > 0
+        return self.overdue_invoice_amount > 0 and self.project_id.name != 'Machine Assembly'
 
     def create(self, vals):
         obj = super().create(vals)

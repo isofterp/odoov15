@@ -47,7 +47,6 @@
                     <group string='Import Meter Readings' col="4">
                         <field name="input_layout" widget="radio"/>
                         <field name="data_file" filename="filename"/>
-                        <field name="x_import_type"/>
                     </group>
                     <footer>
                         <button name="read_xls_import" string="_Import" type="object" class="oe_highlight"/>

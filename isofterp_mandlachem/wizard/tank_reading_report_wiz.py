@@ -7,6 +7,7 @@ from bokeh.plotting import figure, show
 from bokeh.io import export_svgs
 import svglib.svglib as svglib
 from reportlab.graphics import renderPDF
+import logging
 
 class WizTankReading(models.TransientModel):
     _name = "tank.reading.wizard"
@@ -24,7 +25,7 @@ class WizTankReading(models.TransientModel):
         recipient_df = self._build_recipients(df)
         """ Now we have a DF (recipient_df)  with user_id and rec ids"""
         """ So create another df with for each email address"""
-        self._build_email_data(recipient_df,df)
+        self._build_email_data(recipient_df, df)
 
     def get_report_data(self):
         df = pd.DataFrame()
@@ -34,62 +35,67 @@ class WizTankReading(models.TransientModel):
         key = site = line = tank = date = qty = []
         delta = self.end_date - self.start_date
         no_days = delta.days + 1  # used to work out daily average
-        date_domain = [('date', '>=', self.start_date), ('date', '<=', self.end_date)]
+        #date_domain = [('date', '>=', self.start_date), ('date', '<=', self.end_date)]
+        date_domain = [('date_last_reading', '>=', self.start_date), ('date_last_reading', '<=', self.end_date)]
+
         final_site_ids = self.site_ids.mapped("id")
         site_domain = []
         if self.site_ids:
             site_domain += [('id', 'in', final_site_ids)]
         i = 0
         for current_site in site_obj.search(site_domain):
-            for rec in tank_reading_obj.search(
-                    [('site_id', '=', current_site.id)] + date_domain):  # ('site_id','=',current_site)
-                if i == 0:
-                    """ Create first record"""
-                    df = pd.DataFrame({
-                        'key': [rec.site_id.name + rec.tank_id.name],
-                        'date': [rec.date.strftime("%Y-%m-%d")],
-                        'site': [rec.site_id.name],
-                        'site_id': [rec.site_id.id],
-                        'line': [rec.line_id.name],
-                        'line_id': [rec.line_id.id],
-                        'tank': [rec.tank_id.name],
-                        'tank_id': [rec.tank_id.id],
-                        'tank_bal': [0],
-                        'qty': [rec.usage]
-                    }, index=['key'])
-                else:
-                    index = df.index[(df['key'] == rec.site_id.name + rec.tank_id.name)].tolist()
-                    if index:
-                        """ we have found a record match so update the qty"""
-                        df.at[index, 'qty'] = df['qty'] + rec.usage
+            recs = tank_reading_obj.search([('site_id', '=', current_site.id)] + date_domain)
+            if recs:
+                for rec in recs:
+                    if i == 0:
+                        """ Create first record"""
+                        df = pd.DataFrame({
+                            'key': [rec.site_id.name + rec.tank_id.name],
+                            'date': [rec.date.strftime("%Y-%m-%d")],
+                            'site': [rec.site_id.name],
+                            'site_id': [rec.site_id.id],
+                            'line': [rec.line_id.name],
+                            'line_id': [rec.line_id.id],
+                            'tank': [rec.tank_id.name],
+                            'tank_id': [rec.tank_id.id],
+                            'tank_bal': [0],
+                            'qty': [rec.usage]
+                        }, index=['key'])
                     else:
-                        """ we have NOT found a record so create a new one"""
-                        df = df.append({
-                            'key': rec.site_id.name + rec.tank_id.name,
-                            'date': rec.date.strftime("%Y-%m-%d"),
-                            'site': rec.site_id.name,
-                            'site_id': rec.site_id.id,
-                            'line': rec.line_id.name,
-                            'line_id': rec.line_id.id,
-                            'tank': rec.tank_id.name,
-                            'tank_id': rec.tank_id.id,
-                            'tank_bal': 0,
-                            'qty': rec.usage
-                        }, ignore_index=True)
-                i += 1
+
+                        if not rec.site_id.name or not rec.tank_id.name:
+                            continue
+                        index = df.index[(df['key'] == rec.site_id.name + rec.tank_id.name)].tolist()
+                        if index:
+                            """ we have found a record match so update the qty"""
+                            df.at[index, 'qty'] = df['qty'] + rec.usage
+                        else:
+                            """ we have NOT found a record so create a new one"""
+                            #logging.warning("Site name %s and tank name %s", rec.site_id.name, rec.tank_id.name)
+
+                            df = df.append({
+                                'key': rec.site_id.name + rec.tank_id.name,
+                                'date': rec.date.strftime("%Y-%m-%d"),
+                                'site': rec.site_id.name,
+                                'site_id': rec.site_id.id,
+                                'line': rec.line_id.name,
+                                'line_id': rec.line_id.id,
+                                'tank': rec.tank_id.name,
+                                'tank_id': rec.tank_id.id,
+                                'tank_bal': 0,
+                                'qty': rec.usage
+                            }, ignore_index=True)
+
+                    i += 1
 
             """ Finished with a Site so call email function """
-            # print("** finised site ",rec.site_id.name)
             report_data = df.to_dict(orient='records')
             """  send this Site's data and send it using email_dict"""
-            # print('People to email =',email_dict)
-            # print(report_data)
             """ reset i and clear the dataframe and email dictionary for next branch """
             # i = 0
             # email_dict = []
             # df.drop(columns=[i for i in df.columns])
 
-        # print("*****Finished creating DF*********", )
         if df.empty:  # no data found
             return
         # Set the daily average
@@ -100,14 +106,16 @@ class WizTankReading(models.TransientModel):
             tank = tank_obj.search([('site_id', '=', row["site_id"]),('name', '=', row["tank"])])
             if tank:
                 df.at[index,'tank_bal'] = tank.tank_balance
-        #print(df)
         return df
 
-    def _build_recipients(self,df):
+    def _build_recipients(self, df):
+        # if not df:
+        #     return
         line_obj = self.env['site.line']
         column_names = ["user_name",  "user_id", "site_id", "df_index"]
         recipient_df = pd.DataFrame(columns=column_names)
         """ Create a DF with user name,user id and rec id of df"""
+
         for index, row in df.iterrows():
             #line = line_obj.search([('name', '=', row["line"])])
             line = line_obj.search([('name', '=', row["line"]), ('site_id', '=', row["site_id"])])
@@ -115,7 +123,6 @@ class WizTankReading(models.TransientModel):
                 recipient_df = recipient_df.append({
                     'user_name': x.user_id.name,
                     'user_id': x.user_id.partner_id.email,
-                    'df_index': index,
                     'site_id': line.site_id.id,
                     'df_index': index,
                 }, ignore_index=True)
@@ -123,15 +130,15 @@ class WizTankReading(models.TransientModel):
                 recipient_df = recipient_df.append({
                     'user_name': x.name,
                     'user_id': x.email,
-                    'df_index': index,
                     'site_id': line.site_id.id,
                     'df_index': index,
                 }, ignore_index=True)
         recipient_df.sort_values(by=['user_id', 'df_index'], inplace=True)
-        print("resipients df= ",recipient_df)
         return recipient_df
 
-    def _build_email_data(self,recipient_df,df):
+    def _build_email_data(self, recipient_df, df):
+        # if not recipient_df:
+        #     return
         column_names = ["key", "date", "site", "site_id", "line", "line_id", "tank","tank_id", "tank_bal", "qty"]
         email_data_lines_df = pd.DataFrame(columns=column_names)
         previous_user = 'first'
@@ -162,13 +169,11 @@ class WizTankReading(models.TransientModel):
                         row['df_index']]  # add the new record to fresh DF
                 else:
                     email_data_lines_df.loc[len(email_data_lines_df)] = df.loc[row['df_index']]  # copy the row out the original df to the email df
-                #print('@152',email_data_lines_df)
-        self._send_report(previous_user,email_data_lines_df)  # Send after reaching the last record in the for loop
+        self._send_report(previous_user, email_data_lines_df)  # Send after reaching the last record in the for loop
 
-    def _send_report(self,user_id,email_data_lines_df):
+    def _send_report(self, user_id, email_data_lines_df):
         report_data = email_data_lines_df.to_dict(orient='records')
-        print("This will be sent to ", user_id)
-        print(report_data)
+        #logging.warning("Email data @186 %s", report_data)
         email_body = ''
         email_to = ''
 
@@ -213,8 +218,6 @@ class WizTankReading(models.TransientModel):
             chart_link = base_url + '/' + report_function + '?'
             url_link = "<a href=" + chart_link + report_params + " '</a>Click to view Chart"
             #email_body += "<a href = copytype-billing.isofterp.co.za/my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
-            print(url_link)
-            #print(err)
             # email_body += "<div style = 'text-align: center; margin: 16px 0px 16px 0px;' >"
             # email_body += "<a href = copytype-billing.isofterp.co.za/my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
             # email_body += "</div>"
@@ -237,5 +240,5 @@ class WizTankReading(models.TransientModel):
             'body_html': email_body,
             'state': 'outgoing',
         }
-        self.env['mail.mail'].create(mail_values)
+        self.env['mail.mail'].sudo().create(mail_values)
 

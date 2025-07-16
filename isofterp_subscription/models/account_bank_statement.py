@@ -21,6 +21,7 @@ class AccountBankStatement(models.Model):
     @api.depends('line_ids', 'balance_start', 'line_ids.amount', 'balance_end_real')
     def _end_balance(self):
         for statement in self:
+            _logger.warning("Running this code")
             statement.total_entry_encoding = sum([line.amount for line in statement.line_ids])
             statement.balance_end = statement.balance_start + statement.total_entry_encoding
             statement.difference = statement.balance_end_real - statement.balance_end

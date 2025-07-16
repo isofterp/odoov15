@@ -77,14 +77,14 @@
                         <field
                                 name="x_serial_number_id"
                         />
-                         has
+                        has
                         <field name="x_flag_tickets"/>
-                         proceeding tickets. Review Audit Log for details
+                        proceeding tickets. Review Audit Log for details
 
 
                     </div>
                 </xpath>
-                <field name="partner_id" position="before">
+                <field name="partner_id" position="after">
                     <!--                    <field name="x_project_task_template_id"/>-->
                     <field name="x_serial_number_id"
                            options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,}"/>
@@ -123,6 +123,11 @@
                     -->
                 </field>
                 <xpath expr="//field[@name='partner_id']" position="replace"/>
+                <xpath expr="//field[@name='user_ids']" position="after">
+                    <field name="partner_id"/>
+                    <field name="partner_email"/>
+                    <field name="partner_phone"/>
+                </xpath>
                 <!--<xpath expr="//field[@name='partner_email']" position="replace"/>-->
                 <xpath expr="//field[@name='partner_phone']" position="replace"/>
                 <xpath expr="//page[@name='extra_info']" position="after">
@@ -176,6 +181,9 @@
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="x_serial_number_name"/>
                     <field name="x_serial_number_id"/>
+                </xpath>
+                <xpath expr="//field[@name='kanban_state']" position="replace">
+                        <field name="kanban_state" readonly="0"/>
                 </xpath>
             </field>
         </record>

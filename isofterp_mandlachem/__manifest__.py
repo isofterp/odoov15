@@ -14,7 +14,7 @@
     'category': 'Sales/Sales',
     'version': '1.0',
 
-    'depends': ['base', 'sale', 'account',],
+    'depends': ['base', 'sale', 'account', 'mrp', 'stock'],
   
 
     'data': [
@@ -23,6 +23,7 @@
 
         'views/site_views.xml',
         'views/tank_views.xml',
+        'views/mrp_production_views.xml',
         #'views/res_users_view.xml',
         'wizard/tank_reading_report_view_wiz.xml',
         # this is the latest

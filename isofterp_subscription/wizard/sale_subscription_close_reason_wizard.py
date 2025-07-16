@@ -11,14 +11,15 @@ class SaleSubscriptionCloseReasonWizard(models.TransientModel):
     x_is_donate = fields.Boolean(string="Is machine donated")
 
     def lookup_stock_move(self,main_machine,subscription ):
-        logging.warning('Looking up stock moves')
+        logging.warning('Looking up stock moves %s %s', main_machine, main_machine.name, subscription)
         stock_move = self.env['stock.move'].search([('product_id', '=', main_machine.product_id.id),
-                                                    ('partner_id', '=', subscription.partner_id.id),
+                                                    # ('partner_id', '=', subscription.partner_id.id),
+                                                    ('partner_id', '=', main_machine.x_dlv_id.id),
                                                     ('picking_type_id.code', '=', 'incoming'),
-                                                    ('move_line_ids.lot_name', '=', main_machine.name)])
+                                                    ('move_line_ids.lot_name', '=', main_machine.name),])
         return stock_move
     def create_inverse_analytic_line(self,main_machine):
-        #logging.warning('Create inverse analytic line')
+        logging.warning('Create inverse analytic line %s', main_machine.name)
         analytic_acc = self.env['account.analytic.account'].search([('name', '=', main_machine.name)])
         if analytic_acc:
             analytic_acc_lines = self.env['account.analytic.line'].search([('account_id', '=', analytic_acc.id)])
@@ -42,10 +43,12 @@ class SaleSubscriptionCloseReasonWizard(models.TransientModel):
                         logging.warning("New line created")
                     else:
                         logging.warning("Failed to create new anal line")
-            else:
-                raise UserError(_("COULD NOT FIND ANALYTIC LINES"))
+            # else:
+            #     raise UserError(_("COULD NOT FIND ANALYTIC LINES"))
+
         else:
             raise UserError(_("COULD NOT FIND ANALYTIC ACCOUNT"))
+        return analytic_acc
 
     def unset_values_on_lot(self, main_machine):
         logging.warning('Unset Values on lot')
@@ -102,7 +105,7 @@ class SaleSubscriptionCloseReasonWizard(models.TransientModel):
             stock_move.picking_id.sudo().message_post(body=message)
 
         # Now search for an analytic account for the serial number
-        self.create_inverse_analytic_line(main_machine)
+        analytic_acc = self.create_inverse_analytic_line(main_machine)
         self.unset_values_on_lot(main_machine)
         self.unlink_machine_on_contract(subscription)
 
@@ -114,7 +117,8 @@ class SaleSubscriptionCloseReasonWizard(models.TransientModel):
             main_machine.sudo().message_post(body=message)
 
         subscription.sudo().message_post(body=message)
-        subscription.analytic_account_id.sudo().message_post(body=message)
-
+        logging.warning("Contract and Analytic account id is %s",subscription.analytic_account_id.id )
+        ###subscription.analytic_account_id.sudo().message_post(body=message)
+        analytic_acc.sudo().message_post(body=message)
         subscription.close_reason_id = self.close_reason_id
         subscription.set_close()

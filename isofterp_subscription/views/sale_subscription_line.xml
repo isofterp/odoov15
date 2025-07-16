@@ -39,7 +39,7 @@
                     <group col="4">
                         <field name="x_serial_number_id"  options="{ 'no_create': True}" domain="[('id','in',context.get('default_machines'))]"/>
                         <field name="x_product_id" />
-                        <field name="product_id"   string="Charge" domain="[('categ_id.name','in',['charge','copies','rental','service'])]" />
+                        <field name="product_id"   string="Charge" domain="[('categ_id.name','in',['charge','copies','rental','service', 'finance deal'])]" />
                         <field name="name"/>
                         <field name="x_copies_show"  />
                     </group>
@@ -87,6 +87,7 @@
                     <field name="serial"/>
                     <field name="product"/>
                     <field name="main" optional="hide"/>
+                    <field name="refurb" optional="hide"/>
                     <field name="type"/>
                     <field name="start_date"/>
                     <field name="end_date"/>
@@ -114,6 +115,7 @@
                 <field name="contract"/>
                 <field name="cust"/>
                 <field name="serial"/>
+                <field name="refurb"/>
                 <filter name="Billable" string="Billable" domain="[('bill','=',True)]"/>
                 <separator/>
                 <group expand="1" string="Group By">
@@ -124,6 +126,7 @@
                     <filter string="Area Code" name="area_code" context="{'group_by':'area_code'}"/>
                     <filter string="Product" name="product" context="{'group_by':'product'}"/>
                     <filter string="Serial" name="serial" context="{'group_by':'serial'}"/>
+                    <filter string="Refurb" name="refurb" context="{'group_by':'refurb'}"/>
 
                 </group>
             </search>

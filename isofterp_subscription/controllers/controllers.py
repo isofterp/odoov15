@@ -54,7 +54,7 @@ class ContractsPortal(CustomerPortal):
                     err_message_1 += "Please contact CopyType 021 559 1605"
                     values.update({"err_message_1": err_message_1})
 
-            if kwargs['colour']:
+            if 'colour' in kwargs and kwargs['colour']:
                 line = http.request.env['sale.subscription.line'].sudo().search([('x_serial_number_id.name','=',kwargs['serial']),('product_id.name', '=', 'Colour copies')])
                 if line:
                     #print(line)

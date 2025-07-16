@@ -23,10 +23,11 @@
                     <div
                             class="alert alert-warning"
                             role="alert"
-                            attrs="{'invisible': [('overdue_invoice_count', '=', 0)]}"
+                            attrs="{'invisible': ['|', ('overdue_invoice_count', '=', 0),('project_id','in', [8])]}"
                     >
-                        The invoicing partner
-                        <field
+                        The Debtors account has been disabled. Contact Finance Department
+                        <field name="overdue_invoice_count" invisible="True"/>
+                        <!--<field
                                 name="commercial_partner_invoicing_id"
                         />
                         has
@@ -37,7 +38,7 @@
                                 name="jump_to_overdue_invoices"
                                 class="oe_link"
                         />for a total oustanding amount of
-                        <field name="overdue_invoice_amount"/>
+                        <field name="overdue_invoice_amount"/>-->
                         <span
                                 class="alert alert-warning"
                                 role="alert"

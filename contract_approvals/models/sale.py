@@ -89,7 +89,43 @@ class SaleOrder(models.Model):
 
             approve_request = self.env['approval.request'].create(vals_list)
             approve_request.action_confirm()
+        else:
+            obj.state = 'to_approve'
+            obj.x_sale_approve = True
 
+            # Notify Approvers
+            msg = _(
+                """<strong>Quotation Status -> :  {state} - Total Non Contract Cost Value exceeds Limit - Approval Required</strong>
+                """.format(
+                    state='To Approve',
+                )
+            )
+            obj.message_post(body=msg)
+            logging.warning("=======Checking if the cost price exceeds R5K")
+            so_line_total = 0
+            for line in obj.order_line:
+                logging.warning("=======Again Checking if the cost price exceeds R5K")
+                if line.product_id.type == "product":
+                    so_line_total += line.product_id.standard_price * line.product_uom_qty
+
+            logging.warning("Total price unit is %s", so_line_total)
+
+            if so_line_total > 5000 and not obj.x_is_contract_quote:
+                approval_category = self.env['approval.category'].search([('name', '=', 'Non Contracts over R5K')])
+                approval_reason = 'Total Non Contract Cost Value exceeds Limit - Approval Required'
+                logging.warning("=======114 Getting here")
+                logging.warning("Approval Category is %s", approval_category.name)
+                # Send an inbox message to approvers
+                vals_list = {
+                    'name': obj.name,
+                    'request_owner_id': obj.user_id.id,
+                    'category_id': approval_category.id,
+                    'reason': approval_reason,
+                    'partner_id': obj.partner_id.id,
+                    'x_sales_order_id': obj.id,
+                }
+                approve_request = self.env['approval.request'].create(vals_list)
+                approve_request.action_confirm()
         return obj
 
 

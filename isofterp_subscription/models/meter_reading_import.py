@@ -23,8 +23,6 @@ class MeterReadingImport(models.TransientModel):
                               help='Select your Meter Reading csv file here - make sure it is the latest one !.')
     input_layout = fields.Selection([('fm', "FM Audit"), ("man", "Manual"),("avg","Average"),("his","History")], "Choose the File Format for this input",
                                     default='fm')
-    x_import_type = fields.Selection([('serial', 'Serial Number'), ('contract', 'Contract Number')], string='Import Type', required=True, default='serial')
-
     def update_readings(self, black, colour):
         print(black, colour)
         return
@@ -93,6 +91,8 @@ class MeterReadingImport(models.TransientModel):
         line_num = 0
         message = ''
         contact_no = ''
+
+        logging.warning("Data file is %s", self.data_file)
 
         # Read xls file
         wb = openpyxl.load_workbook(
@@ -296,25 +296,18 @@ class MeterReadingImport(models.TransientModel):
                     message = dt_string + ' Error: ' + ' Contract: ' + str(row[0]) + ' Not found in Odoo'
                     error_obj.create({'name': message})
 
-
-        else:
+        if self.input_layout == 'fm':
+            logging.warning("FM Audit import")
+            logging.warning("FM AUDIT IMPORT %s", ws)
             for row in ws.iter_rows(min_row=2, max_row=None, min_col=None,
 
                                     max_col=None, values_only=True):
-                # logging.warning("Record %s %s %s", type(row[0]),type(row[1]),type(row[2]))
+                logging.warning("Record %s %s %s", type(row[0]),type(row[1]),type(row[2]))
 
                 if row[0] == '':
                     continue
-                if self.x_import_type == 'serial:':
-                    serial_no = row[0]
-                    line_ids = line_obj.search([('x_serial_number_id', '=', serial_no)])
-                else:
-                    contact_no = row[0]
-                    contract = self.env['sale.subscription'].search([('name', '=', contact_no)])
-                    # if contract:
-                    #     for machine in contract.x_machine_ids:
-                    #         if machine.name == row[2] and machine.x_main_product:
 
+                serial_no = row[0]
 
                 colour = row[1]
                 black = row[2]

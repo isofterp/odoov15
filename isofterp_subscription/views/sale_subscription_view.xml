@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+
         <record id="sale_subscription_form_inherit" model="ir.ui.view">
             <field name="name">sale.subscription.form.inherit</field>
             <field name="model">sale.subscription</field>
@@ -51,14 +52,21 @@
                     <field name="x_rental_group_id"/> <!--domain="[('group_type','=','V')]"-->
                     <field name="x_bank_name"/>
                 </field>
-                <xpath expr="//page[@id='other_info']" position="before">
+                <xpath expr="//page[@id='lines']" position="after">
                     <page string="Equipment on this Contract">
                         <field name="id" invisible="1"/>
                         <field name="x_machine_ids" domain="[('product_qty','=', 1)]">
+                            <tree>
+                                <field name="x_main_product"/>
+                                <field name="name"/>
+                                <field name="product_id"/>
+                                <field name="x_refurb"/>
+                            </tree>
                         </field>
                     </page>
                 </xpath>
 
+                <xpath expr="//page[@id='logs']" position="replace"/>
                 <field name="recurring_invoice_line_ids" position="replace">
                     <field name="recurring_invoice_line_ids"
                            context="{'default_analytic_account_id':id, 'default_machines': x_machine_ids}">

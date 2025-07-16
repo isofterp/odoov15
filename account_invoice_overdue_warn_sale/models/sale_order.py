@@ -95,6 +95,19 @@ class SaleOrder(models.Model):
             logging.warning("Category is %s", approval_category)
             approval_reason = 'Customer: ' + obj.partner_id.name + " has outstanding invoices older than 30 days amounting to " + str(
                 obj.overdue_invoice_amount)
+
+            # logging.warning("=======Checking if the cost price exceeds R5K")
+            # print(err)
+            # so_line_total = 0
+            # for line in obj.order_line:
+            #     logging.warning("=======Again Checking if the cost price exceeds R5K")
+            #     if line.product_id.type == "product":
+            #         so_line_total += line.price_unit
+            #
+            # if so_line_total > 5000 and not obj.x_is_contract_quote:
+            #     approval_category = self.env['approval.category'].search([('name', '=', 'Non Contracts over R5K')])
+            #     approval_reason = 'Total Non Contract Sales Value exceeds value - Approval Required'
+
             vals_list = {
                 'name': obj.name,
                 'request_owner_id': obj.user_id.id,

@@ -31,6 +31,8 @@ class ProductionLot(models.Model):
     x_increase_copies_date = fields.Date('Increase Copy Date')
     x_increase_copies_percent = fields.Float(string='Increase Copy %')
     x_service_type_id = fields.Many2one('subscription.rental.group','Service Type',  domain="[('group_type','=', 'V')]")
+    x_refurb = fields.Boolean('Refurbished?')
+
     # delv_addr_ids = fields.Many2many(
     #     comodel_name="res.partner", compute="_compute_delv_addr_ids", store=True
     # )

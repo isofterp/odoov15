@@ -85,6 +85,19 @@
             </field>
         </record>
 
+        <record id="tank_view_tree_search" model="ir.ui.view">
+            <field name="name">tank.tree.search</field>
+            <field name="model">site.tank</field>
+            <field name="arch" type="xml">
+                <search string="Tanks">
+                    <field name="name" string="Wild Card"
+                           filter_domain="['|','|','|','|',('name', 'ilike', self),
+                                       ('site_id', 'ilike', self)]"
+                    />
+                </search>
+            </field>
+        </record>
+
         <record id="tank_reading_view_form" model="ir.ui.view">
             <field name="name">tank_reading_form</field>
             <field name="model">tank.reading</field>

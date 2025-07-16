@@ -10,6 +10,7 @@
                 <field name="x_dlv_id"/>
                 <field name="x_main_product"/>
                 <field name="x_service_type_id"/>
+                <field name="x_refurb"/>
             </field>
             <xpath expr="//page[@name='description']" position="after">
                 <page string="Increase Dates and % " name="rates">
@@ -35,6 +36,7 @@
                 <tree string="Lots/Serial Numbers" multi_edit="1">
                     <field name="name"/>
                     <field name="x_main_product"/>
+                    <field name="x_refurb" optional="show"/>
                     <field name="product_id" readonly="1"/>
                     <field name="x_service_type_id" optional="show"/>
                     <field name="x_subscription_id" optional="show"/>
@@ -74,17 +76,28 @@
                 <field name="x_partner_dlv_mobile"/>
             </xpath>
 
-            <xpath expr="//sheet/notebook/page[@name='operations']/field[@name='move_ids_without_package']/tree/field[@name='product_uom']" position="after">
+            <!--<xpath expr="//sheet/notebook/page[@name='operations']/field[@name='move_ids_without_package']/tree/field[@name='product_uom']" position="after">
                 <field name="x_copies_black" optional="hide"
                 attrs="{'column_invisible': ['&amp;', ('parent.picking_type_code', '!=', 'incoming'),
                 ('parent.picking_type_id','=',1)]}"/>
                 <field name="x_copies_color" optional="hide"
                 attrs="{'column_invisible': ['&amp;', ('parent.picking_type_code', '!=', 'incoming'),
                 ('parent.picking_type_id','=',1)]}"/>
+            </xpath>-->
+
+
+        </field>
+    </record>
+
+    <record id="view_picking_tree_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.tree</field>
+        <field name="model">stock.picking</field>
+        <field eval="12" name="priority"/>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="default_order">create_date desc</attribute>
             </xpath>
-
-
-
         </field>
     </record>
 

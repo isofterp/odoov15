@@ -25,6 +25,7 @@ class subscription_line_combined(models.Model):
     esc_price = fields.Float('New price', readonly=True)
     bank = fields.Char('Bank', readonly=True)
     area_code = fields.Char('Area Code', readonly=True)
+    refurb = fields.Boolean('Refurb', readonly=True)
 
     def _select(self):
         select_str = """
@@ -36,6 +37,7 @@ class subscription_line_combined(models.Model):
                     lot.name as serial,
                     prod.name as product,
                     lot.x_main_product as main,
+                    lot.x_refurb as refurb,
                     l.name as type,
                     l.x_start_date1_billable as bill,
                     l.x_copies_last as reading,
@@ -92,6 +94,7 @@ class subscription_line_combined(models.Model):
                     lot.x_increase_service_date ,
                     lot.x_increase_rental_percent ,
                     lot.x_increase_service_percent ,
+                    lot.x_refurb ,
                     sub.x_bank_name,
                     area_code 
                     

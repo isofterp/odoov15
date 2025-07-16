@@ -16,7 +16,9 @@ class ApprovalRequest(models.Model):
     x_sales_order_id = fields.Many2one('sale.order', 'Sales Order')
 
     def action_approve(self, approver=None):
+        logging.warning("=======Approval running for Cheryl")
         super(ApprovalRequest, self).action_approve()
+        #print(err)
         if self.x_project_id:
             self.x_project_id.action_approve()
         if self.x_sales_order_id:

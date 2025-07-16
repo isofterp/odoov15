@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Odoo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
+    <link href=https://apps.odoocdn.com/web/content/7247337-184ae0e/1/web.assets_frontend.css" rel="stylesheet">
+
+</head>
+<!-- odoo description page css -->
+
+<body>
+<section class="oe_container">
+    <div class="mt64 mb64 pt32">
+        <h2 style="color: #0c1b2f;font-family: 'Lato', 'Open Sans', 'Helvetica', Sans;text-align: center;margin: 25px auto;text-transform: capitalize;"
+            class="oe_slogan mt0">
+            <b>Multi Invoice Payment For Customer and Vendor</b>
+        </h2>
+        <p class="oe_mt32"
+           style="font-size: 20px; font-weight: 500;line-height: 150% !important; font-family: 'Lato', 'Open Sans', 'Helvetica', Sans !important; text-align:center;">
+            This plugin will save your time by doing payment of multiple invoices together in the payment screen and will also help you to do payment of multiple bills together in the payment screen.
+            This will do the same work for a refund(of the bill) and credit note(of invoice).
+        </p>
+    </div>
+</section>
+
+<section>
+    <div class="text-center">
+        <div class="mt-5 mb-4">
+            <a class="btn-hover color-8"
+               style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;width: 200px;font-family: 'Lato', 'Open Sans', 'Helvetica', Sans;font-size: 19px;font-weight: 600;color: #fff;cursor: pointer;margin: 20px;height: 55px;text-align: center;border: none;background-size: 300% 100%;border-radius: 50px;moz-transition: all 0.4s ease-in-out;-o-transition: all 0.4s ease-in-out;-webkit-transition: all 0.4s ease-in-out;transition: all 0.4s ease-in-out;background-color: #485563;box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75);padding: 19px 66px;"
+               href="mailto:suresh.hiyal@ldtech.in?subject=Reconcile invoices from payment - v14" target="_blank">REQUEST A DEMO</a>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div id="loempia_tabs" class=""
+         style="padding:64px 0px;margin: 50px 0px;background-color:#f6f7f9;border-radius: 10px;">
+        <ul role="tablist" class="nav nav-tabs justify-content-center" data-tabs="tabs" style="
+         border: none;
+         background: unset;
+         background-color: #f6f7f9;
+         ">
+            <li class="nav-item"
+                style="border-top-right-radius: 6px;border-top-left-radius: 6px;background-color: #2979bf8c;margin-right: 1px;padding-bottom: 2px;">
+                <a href="#features" data-toggle="tab" aria-expanded="true" class="nav-link active"
+                   style="font-family: Roboto;text-transform: uppercase;font-weight: 600;font-size: 15px;letter-spacing: 1px;padding: 10px 20px;border-top-left-radius: 5px;border-top-right-radius: 5px;color:#000000;">Features
+                </a>
+            </li>
+            <li class="nav-item"
+                style="border-top-right-radius: 6px;border-top-left-radius: 6px;background-color: #2979bf8c;margin-right: 1px;padding-bottom: 2px;">
+                <a href="#screenshots" data-toggle="tab" aria-expanded="true" class="nav-link"
+                   style="font-family: Roboto;text-transform: uppercase;font-weight: 600;font-size: 15px;letter-spacing: 1px;padding: 10px 20px;border-top-left-radius: 5px;border-top-right-radius: 5px;color:#000000;">Screenshots
+                </a>
+            </li>
+            <li class="nav-item"
+                style="border-top-right-radius: 6px;border-top-left-radius: 6px;background-color: #2979bf8c;margin-right: 1px;padding-bottom: 2px;">
+                <a href="#faqs" data-toggle="tab" aria-expanded="true" class="nav-link"
+                   style="font-family: Roboto;text-transform: uppercase;font-weight: 600;font-size: 15px;letter-spacing: 1px;padding: 10px 20px;border-top-left-radius: 5px;border-top-right-radius: 5px;color:#000000;">FAQs
+                </a>
+            </li>
+        </ul>
+        <div id="tabs_content" class="tab-content bg-white"
+             style="background: #fff;border-radius: 10px;padding: 2%;margin: 0% 2%;padding-top:4%;">
+            <!-- Features Tabs -->
+            <div class="tab-pane active" id="features">
+                <div class="container">
+                    <section id="other-legal-references">
+                        <ul style="margin-bottom:8px !important;font-size: 20px;line-height: 200% !important; font-weight: 500; font-family: 'Lato', 'Open Sans', 'Helvetica', Sans;">
+                            <li>
+                                This module will help to do Multiple invoice payments together for Customers and vendors.
+
+                            </li>
+                            <li>
+                                In the Payment screen, once you select a partner and enter the amount, clicking on 'Reconcile Invoice' will load related invoices that are not already paid.
+                            </li>
+                            <li>
+                                Now, click on the 'Confirm' button, it will make payment based on odoo standards and do the auto reconcile entry in accounting. so this is so easy to use and more flexible to avoid the manual process.
+                            </li>
+                            <li>
+                                This functionality also does the same work for a refund(of the bill) and credit note(of invoice).
+                            </li>
+                        </ul>
+                    </section>
+                </div>
+            </div>
+
+            <!-- ScreenShots Tabs -->
+            <div class="tab-pane" id="screenshots">
+                <section class="oe_container">
+                    <div class="tab__content">
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                            Create invoice and add product.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/1.png">
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                             Create another invoice for same customer and add product.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/2.png"/>
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                             Here, see the view of created invoices as per show in the screen.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/3.png"/>
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                            Now, create payment for a that customer and enter amount, click on 'Reconcile Invoice' button.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/4.png"/>
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                            Load all the related invoices of that customer which are not already paid and then
+                            click on 'Confirm' button.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/6.png">
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                            See , Those invoices are become paid as per the shown in screen.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/7.png">
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                            Here, create Vendor bills and add product.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/8.png">
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                            Create payment for that vendor and enter amount, click on 'Reconcile Invoice' button.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/9.png">
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                            Load all the related vendor bills of that vendor and select those bills which you want to pay and click on confirm button.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/10.png">
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                            Now, vendor bills become paid which bills are selected in payment screen.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/11.png">
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                            Create Refund .
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/12.png">
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                            Now create payment for that vendor as show in picture and click on 'Reconcile Invoice' button.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/13.png">
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                            Load the all the related refund of that vendor and click on 'Confirm' button.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/14.png">
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                            Check that those selected refund bills became paid as per shown in picture.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/15.png">
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                            Now create credit note for invoices.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/16.png">
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                            Create payment and enter amount as per shown in picture.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/17.png">
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                           Select those credit note which you want to pay and click on 'Confirm' button.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/18.png">
+                            </div>
+                        </section>
+                        <h2 class="oe_slogan" style="color:#875A7B;">
+                            See, All the credit note became paid as per show below.
+                        </h2>
+                        <section class="section">
+                            <div class="oe_mt32">
+                                <img class="img img-responsive" src="img/19.png">
+                            </div>
+                        </section>
+                    </div>
+                </section>
+            </div>
+
+            <!-- FAQs Section -->
+            <div class="tab-pane" id="faqs">
+                <section class="oe_container">
+                    <div class="s_faq mt32 mb32" style="background-color: transparent !important;">
+                        <div class="tab__content">
+                            <div class="panel-group" id="accordion">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" style="color:#A5187E" data-parent="#accordion"
+                                               href="#collapse2">
+                                                Whom to contact for Customizations?</a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse2" class="panel-collapse collapse">
+                                        <div class="panel-body">You can drop mail at <a href="mailto:suresh.hiyal@ldtech.com">suresh.hiyal@ldtech.com</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" style="color:#A5187E" data-parent="#accordion"
+                                               href="#collapse3">
+                                                Do you provide any support?</a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse3" class="panel-collapse collapse">
+                                        <div class="panel-body">Yes, We provide 90 days free support for bugs.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" style="color:#A5187E" data-parent="#accordion"
+                                               href="#collapse4">
+                                                Does your app support Enterprise Version?</a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse4" class="panel-collapse collapse">
+                                        <div class="panel-body">Yes.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div style="
+    border: 0;
+    height: 4px;
+    border-top: #ddd 1px solid;
+    border-bottom: #ddd 1px solid;
+    text-align: center;
+    position: relative;
+    clear: both;"><i class="fa fa-star fa-2x" style="
+    color: #bbb;
+    text-align: center;
+    display: inline-block;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    width: 50px;
+    font-size: 20px;
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    margin: 0 auto 0 -25px;
+    z-index:999"></i></div>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <center>
+                <a href="http://teqstars.com" target="_blank">
+                    <img class="oe_picture" src="img/ld.png" style="height:70px;"/>
+                </a>
+            </center>
+        </div>
+    </div>
+    <div class="oe_mt16 oe_mb16">
+        <div class="separator"
+             style="display: block;width: 60px;height: 5px;margin: 1px auto 15px;background-color: #2c7af8;position: relative; border: 1px solid #2c7af8;"></div>
+    </div>
+    <div class="oe_slogan">
+        <div class="text-center">
+            <div class="mt-5 mb-4">
+                <a class="btn-hover color-5"
+                   style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;width: 200px;font-size: 19px;font-weight: 600;color: #fff;cursor: pointer;margin: 20px;height: 55px;text-align: center;border: none;background-size: 300% 100%;border-radius: 50px;moz-transition: all 0.4s ease-in-out;-o-transition: all 0.4s ease-in-out;-webkit-transition: all 0.4s ease-in-out;transition: all 0.4s ease-in-out;background-image: linear-gradient(to right, #2c7af8, #2c7af8, #2c7af8, #2bb673);box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75);padding: 19px 66px;background-color: #2c7af8"
+                   href="mailto:suresh.hiyal@ldtech.in" target="_blank"><i class="fa fa-envelope"></i> Want Demo or Need
+                    Support? </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<link href="https://apps.odoocdn.com/web/content/7247337-184ae0e/1/web.assets_frontend.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+</body>
+</html>

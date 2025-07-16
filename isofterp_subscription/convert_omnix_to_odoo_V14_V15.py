@@ -25,8 +25,8 @@ if version == 'V14':
     conn = psycopg2.connect("dbname=copyType-test user=odoo14ent")
     api = erppeek.Client('http://localhost:8014', 'copyType-test', 'admin', 'admin')
 elif version == 'V15':
-    conn = psycopg2.connect("host=172.16.12.32 dbname=copytype-15-roly user=odoo15ent")
-    api = erppeek.Client('http://172.16.12.32:8015', 'copytype-15-roly', 'admin', '!$0ft')
+    conn = psycopg2.connect("host=172.16.12.32 dbname=copytype-test user=odoo15ent")
+    api = erppeek.Client('http://172.16.12.32:8015', 'copytype-test', 'admin', '!$0ft')
 
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -149,7 +149,7 @@ def _create_cust_and_contracts():
         partner = res_partner_obj.search([('x_account_number', '=', drs_acc.upper())])
         print('@134',partner)
         if partner:
-            # print('found partner == ', partner[0])
+            print('found partner == ', partner)
             partner_id = partner[0]
         else:
             drs_mas = drsmas.loc[(drsmas['drs_acc'].str.upper() == drs_acc.upper())]
@@ -206,7 +206,7 @@ def _create_cust_and_contracts():
                 'date_start': date_start,
                 'template_id': 1,  # Monthly Suscription Template
                 # 'stage_id': 2,              # Set to 'In Progess go live'
-                'recurring_next_date': '2023-09-28',  # ============== Remember to change this on 'go live' run
+                'recurring_next_date': '2024-06-30',  # ============== Remember to change this on 'go live' run
                 'x_bank_name': contract['bank_name'] ,
                 'x_ceded_reference': contract['bank_reference'] + '/' + contract['bank_branch'],
                 'x_rental_group_id': x_ceded_rental_id,
@@ -414,7 +414,7 @@ def _create_lots():
                                            'phone': drsdlv['tel'],
                                            'mobile': drsdlv['tel'],
                                            'x_fax': drsdlv['fax'],
-                                           'x_account_number': drsdlv['drsdlv_code'],
+                                           #'x_account_number': drsdlv['drs_acc'],
                                            'email': omnix_mas['email']
                                            }
                                     dlv_id = res_partner_obj.search(
@@ -766,7 +766,8 @@ def _prepare_partner_record(drs_mas,user_id):
            'x_fax': str(drs_mas['fax'].values[0]),
            'mobile': str(drs_mas['cell'].values[0]),
            'email': email,
-           'vat': drs_mas["vat_no"].values[0]
+           'vat': drs_mas["vat_no"].values[0],
+           'ref': drs_mas['drs_acc'].values[0].upper(),
            }
     # if drs_mas['tax_exempt'].value[0] == 'Yes':
     #     res['property_account_position_id'] = 1
@@ -1291,6 +1292,8 @@ def _create_quants():
         else:
             print('quant already exists for lot ', rec.name)
 
+#Function to check if lots (main machines) on contracts have an assoicated anayltic account
+def _check_machine_analytic_account():
 
 
 
@@ -1306,7 +1309,7 @@ print("running version ----------------------------> ",version)
 """"""
 ####_create_reps_users() - Dont run this part!!!!!!!!!!!!!
 
-# _create_cust_and_contracts() ###### 'recurring_next_date': '2020-01-31',  # ============== Remember to change this on 'go live' run
+_create_cust_and_contracts() ###### 'recurring_next_date': '2020-01-31',  # ============== Remember to change this on 'go live' run
 
 # _create_lots()
 
@@ -1318,6 +1321,8 @@ print("running version ----------------------------> ",version)
 
 #_create_analytic_history()  ###### change the csv file name from modelgpXXXXXXX.csv to the latest
 
+#_check_machine_analytic_account()
+
 #_compare_omnix_odoo()
 
 # _compare_odoo_omnix() - Dont run this
@@ -1327,5 +1332,5 @@ print("running version ----------------------------> ",version)
 #_update_cpc_charges_on_lots()
 
 #_update_subscription_lines()
-_compare_omnix_odoo_xls()
+#_compare_omnix_odoo_xls()
 

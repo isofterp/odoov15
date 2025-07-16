@@ -32,6 +32,8 @@
         'views/approval_request_views.xml',
         'views/area_codes_views.xml',
         'views/account_bank_statement_views.xml',
+        'views/account_report.xml',
+        'views/report_invoice.xml',
         #'views/project_task_template_views.xml',
         'data/data.xml',
         'wizard/add_hoc_increase_views.xml',
@@ -42,6 +44,7 @@
         'security/ir.model.access.csv',
         'security/subscription_security.xml',
         'report/sale_report_templates.xml',
+        'report/report_payment_remittance_templates.xml',
         'report.xml',
 
     ],

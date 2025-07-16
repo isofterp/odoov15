@@ -218,6 +218,7 @@ class SaleOrder(models.Model):
                                              ('10', '10%'),
                                              ('15', '15%'), ],
                                             string="Escalation %", default='0')
+    #x_finance_escalation1 = fields.Float(string="Escalation %")
     x_finance_profit = fields.Float("Profit")
     x_rental_factor = fields.Many2one("subscription.rental.factor", 'Rental Factor')
     x_is_contract_quote = fields.Boolean('Subscription Quote',
@@ -264,42 +265,52 @@ class SaleOrder(models.Model):
 
     @api.onchange('x_lot_id')
     def onchange_x_lot_id(self, context=None):
-        if not self.x_lot_id:
-            return
-        if self.order_line:
-            for rec in self.order_line:
-                rec.unlink()
-                return
-        self.env.context = dict(self.env.context)
-        self.env.context.update({'default_dlv_ids': self.x_lot_id.x_dlv_id.id})
-        ana_id = self.env['account.analytic.account'].search([('name', '=', self.x_lot_id.name)]).id
-        if not ana_id:
-            title = 'WARNING -------> ' + self.x_lot_id.product_id.name
-            warning = {
-                'title': title,
-                'message': "There is no Analytic Account setup  for this Machine - Please do so\n if yoy want to track this product",
-            }
-            return {'warning': warning}
-        self.analytic_account_id = ana_id
-        # self.x_service_type = self.x_lot_id.x_service_type_id.name
 
-        # print ('in onchange lot_id',self.env.context)
-        self.x_sale_subscription_id = self.x_lot_id.x_subscription_id.id,
-        self.partner_id = self.x_sale_subscription_id.partner_id
-        self.partner_shipping_id = self.x_lot_id.x_dlv_id.id
-        if not self.partner_shipping_id:
-            self.partner_shipping_id = self.partner_id
-        warning = {}
-        title = 'WARNING -------> ' + self.x_lot_id.product_id.name
-        message = False
-        message = self.x_lot_id.x_service_type_id.name
-        if message:
-            warning = {
-                'title': title,
-                'message': message,
-            }
-            return {'warning': warning}
-        return
+        if self.x_lot_id:
+            logging.warning("Lot Location is %s", self.x_lot_id)
+            if self.x_lot_id:
+                if self.x_lot_id.location_ids.usage == 'supplier' or self.x_lot_id.location_ids.usage == 'inventory' or self.x_lot_id.location_ids.usage == 'internal':
+                    title = 'WARNING -------> ' + self.x_lot_id.product_id.name
+                    raise UserError(_("You cannot raise a Sales Order as the Serial Number Location seems invalid\n\n"
+                                      "Serial Number: %s \n"
+                                      "Machine: %s \n"
+                                      "Current Location: %s \n") %
+                                    (self.x_lot_id.name, self.x_lot_id.product_id.name, self.x_lot_id.location_ids.name))
+
+            if self.order_line:
+                for rec in self.order_line:
+                    rec.unlink()
+                    return
+            self.env.context = dict(self.env.context)
+            self.env.context.update({'default_dlv_ids': self.x_lot_id.x_dlv_id.id})
+            ana_id = self.env['account.analytic.account'].search([('name', '=', self.x_lot_id.name)]).id
+            if not ana_id:
+                title = 'WARNING -------> ' + self.x_lot_id.product_id.name
+                warning = {
+                    'title': title,
+                    'message': "There is no Analytic Account setup  for this Machine - Please do so\n if you want to track this product",
+                }
+                return {'warning': warning}
+            self.analytic_account_id = ana_id
+            # self.x_service_type = self.x_lot_id.x_service_type_id.name
+
+            # print ('in onchange lot_id',self.env.context)
+            self.x_sale_subscription_id = self.x_lot_id.x_subscription_id.id,
+            self.partner_id = self.x_sale_subscription_id.partner_id
+            self.partner_shipping_id = self.x_lot_id.x_dlv_id.id
+            if not self.partner_shipping_id:
+                self.partner_shipping_id = self.partner_id
+            warning = {}
+            title = 'WARNING -------> ' + self.x_lot_id.product_id.name
+            message = False
+            message = self.x_lot_id.x_service_type_id.name
+            if message:
+                warning = {
+                    'title': title,
+                    'message': message,
+                }
+                return {'warning': warning}
+            return
 
     """This is called from the 'Done' button on the form once finance deal has been entered"""
 

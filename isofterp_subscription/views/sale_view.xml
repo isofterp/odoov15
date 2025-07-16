@@ -71,7 +71,10 @@
                            groups="sale_subscription.group_sale_subscription_manager"
                     />
                     <field name="origin" attrs="{'invisible': [('x_is_contract_quote', '=', False)]}"/>
-                    <field name="x_lot_id" attrs="{'invisible': [('x_is_contract_quote', '=', True)]}"/>
+                    <field name="x_lot_id"
+                           attrs="{'invisible': [('x_is_contract_quote', '=', True)]}"
+                           options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'
+                           />
                     <field name="x_product_name"/>
                     <field name="partner_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'
                            domain="[('is_company', '=', True)]"/>

@@ -11,17 +11,19 @@
                 <xpath expr="//field[@name='date']" position="after">
                     <field name="total_entry_encoding"/>
                 </xpath>
+                <!--
                 <xpath expr="//field[@name='balance_start']" position="replace">
-                    <field name="balance_start" class="oe_inline" attrs="{'readonly': [('state', '=', 'confirm')]}"
-                    groups="account.group_account_manager"/>
+                    <field name="balance_start" class="oe_inline" attrs="{'readonly': [('state', '=', 'confirm')]}"/>
+
                 </xpath>
                 <xpath expr="//field[@name='balance_end_real']" position="replace">
-                    <field name="balance_end_real" class="oe_inline" attrs="{'readonly': [('state', '=', 'confirm')]}"
-                    groups="account.group_account_manager"/>
+                    <field name="balance_end_real" class="oe_inline" />
+
                 </xpath>
                 <xpath expr="//field[@name='balance_end']" position="replace">
-                    <field name="balance_end" nolabel="1" class="oe_subtotal_footer_separator" groups="account.group_account_manager"/>
+                    <field name="balance_end" nolabel="1" class="oe_subtotal_footer_separator" />
                 </xpath>
+                -->
 
             </field>
         </record>
@@ -37,11 +39,11 @@
                 </xpath>
                 <xpath expr="//field[@name='balance_start']" position="replace">
                     <field name="balance_start" class="oe_inline"
-                    groups="account.group_account_manager"/>
+                    />
                 </xpath>
                 <xpath expr="//field[@name='balance_end_real']" position="replace">
                     <field name="balance_end_real" class="oe_inline"
-                    groups="account.group_account_manager"/>
+                    />
                 </xpath>
             </field>
         </record>

@@ -11,12 +11,14 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="/form/sheet" position="before">
+                <field name="overdue_invoice_count" invisible="True"/>
                 <div
                         class="alert alert-warning"
                         role="alert"
                         attrs="{'invisible': [('overdue_invoice_count', '=', 0)]}"
                 >
-                    The invoicing partner
+                    The Debtors account has been disabled. Contact Finance Department
+                    <!--The invoicing partner
                     <field
                             name="commercial_partner_invoicing_id"
                     />
@@ -28,7 +30,7 @@
                             name="jump_to_overdue_invoices"
                             class="oe_link"
                     />for a total residual of
-                    <field name="overdue_invoice_amount"/>
+                    <field name="overdue_invoice_amount"/>-->
                     <span
                             class="alert alert-warning"
                             role="alert"

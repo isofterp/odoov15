@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherited base Res Users Form View -->
+    <record id="mrp_bom_form_view_inherit" model="ir.ui.view">
+        <field name="name">mrp.bom.form.inherit</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='components']/field/tree/field[@name='product_id']" position="after">
+                <field name="x_mrp_rm_perc"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="mrp_production_form_view_inherit" model="ir.ui.view">
+        <field name="name">mrp.production.form.inherit</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='components']/field/tree/field[@name='product_id']" position="after">
+                <field name="x_mrp_rm_perc"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2020-2022 Sodexis
+     License OPL-1 (See LICENSE file for full copyright and licensing details). -->
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">Finance Configuration</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='invoicing_settings']"
+                position="inside">
+                <div class="col-xs-12 col-md-6 o_setting_box">
+                    <div class="o_setting_left_pane" />
+                    <div class="o_setting_right_pane">
+                    <span class="o_form_label">Finance Charge Configuration</span>
+                        <div class="text-muted">
+                            Product, PaymentTerm and Finance Percentage used for Finance Charge.
+                        </div>
+                        <label for="product_id" string="Finance Charge Product" />
+                        <div class="text-muted">
+                            <field name="product_id" />
+                        </div>
+                        <label for="finance_percent" string="Monthly Finance Charge Percentage" />
+                        <div class="text-muted">
+                            <field name="finance_percent" />
+                        </div>
+                        <label for="payment_term_id" string="Finance Charge Payment Terms" />
+                        <div class="text-muted">
+                            <field name="payment_term_id" />
+                        </div>
+                        <label for="finance_threshold" string="Finance Threshold" />
+                        <div class="text-muted">
+                            <field name="finance_threshold" />
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

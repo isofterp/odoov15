@@ -1,0 +1,95 @@
+<section class="container">
+    <div class="row">
+        <div class="col-md-offset-1 col-md-8 mb64 mt64">
+            <div>
+                <h1 class="display-5 font-weight-bold">Account Invoice Finance Charge</h1>
+                <h2 class="font-weight-bold">Description</h2>
+                This module generates a finance charge invoice from customer contacts or posted invoices.
+            </div>
+            <br />
+            <div>
+                <h2 class="font-weight-bold">Configuration</h2>
+                <ol>
+                    <li>In Accounting settings, navigate to "Finance Charge Configuration"</li>
+                    <li>Set the Finance Charge Product (service item to use on the invoice line)</li>
+                    <li>Set the Monthly Finance Charge Percentage (The percentage of overdue invoices that you will
+                        charge
+                        as a finance charge, on a monthly basis)</li>
+                    <li>Set the Finance Charge Payment Terms (The default terms that will be used on the invoice)</li>
+                    <li>Set Finance Threshold (Minimum for a finance charge amount to meet before an invoice is created)
+                    </li>
+
+                </ol>
+            </div>
+            <br />
+            <div>
+                <h2 class="font-weight-bold">Functionality</h2>
+                To use this module, you need to:
+
+                Set the "Finance Charges" boolean on the contact (Sales & Purchase tab). This defines that a contact
+                will be considered for finance charges
+
+                <ol>
+                    <li> Note this is selected by default for new contacts</li>
+                </ol>
+                <div class="oe_mb32 oe_demo oe_picture oe_screenshot">
+                    <img src="1.png">
+                </div>
+            </div>
+            <br />
+            <div>
+                Finance Charges can be generated in multiple ways
+                <ol>
+                    <li>From a contact:</li>
+                    Click the action dropdown, "Create Finance Charges"
+                </ol>
+                <div class="oe_mb32 oe_demo oe_picture oe_screenshot">
+                    <img class="img-fluid" src="2.png">
+                </div>
+            </div>
+            <div class="oe_mt32 oe_mb32 text-justify">
+                <ol>
+                    <li value="2">From an invoice<br/>
+                        Click the action dropdown, "Create Finance Charges"</li>
+                    <li>For all contacts at once<br/>
+                        Accounting > Customers > "Create Finance Charges"</li>
+                    <li>For a specific list of contacts<br/>
+                        In list view of contacts, select the checkbox for all the contacts you want, then use <br/> 
+                        the action dropdown, "Create Finance Charges"</li>
+                    <li>For a specific list of invoices<br/>
+                        In list view of invoices, select the checkbox for all the invoices you want, then use <br/>
+                        the action dropdown, "Create Finance Charges"</li>
+                </ol>
+            </div>
+
+
+            <div class="oe_mb32 oe_demo oe_picture oe_screenshot">
+                <img src="3.png">
+            </div>
+            Once selecting "Create Finance Charges", you are given a window to select a date
+            <ol>
+                <li value="6">"Due Date Prior To", ex. 09/01 to run charges for August</li>
+                <li>Any invoices with a due date prior to the date you select, will be considered for<br/>
+                     finance charges</li>
+            </ol>
+            <div class="oe_mb32 oe_demo oe_picture oe_screenshot">
+                <img src="4.png">
+
+            </div>
+            If finance charges are calculated, a new draft invoice will be created for each customer
+            <div class="oe_mb32 oe_demo oe_picture oe_screenshot">
+                <img src="5.png">
+            </div>
+
+            <br />
+            <div>
+                <h2 class="font-weight-bold">Credits</h2>
+                <h4 class="font-weight-bold">Contributors</h4>
+                <li>Sodexis &lt;<a href="mailto:apps@sodexis.com">apps@sodexis.com</a>&gt;</li><br/>
+                This module is maintained by Sodexis.<br />
+            </div>
+
+        </div>
+    </div>
+
+</section>

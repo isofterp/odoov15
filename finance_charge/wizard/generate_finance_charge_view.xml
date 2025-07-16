@@ -1,0 +1,55 @@
+<?xml version ="1.0" encoding="utf-8"?>
+<!-- Copyright 2020-2022 Sodexis
+     License OPL-1 (See LICENSE file for full copyright and licensing details). -->
+
+<odoo>
+
+    <record id="generate_finance_charge_wizard" model="ir.ui.view">
+        <field name="name">Generate Finance Charges</field>
+        <field name="model">finance.charge</field>
+        <field name="arch" type="xml">
+            <form string="Generate Finance Charge" style="width:70%;">
+                <label for="due_date_prior_to" string='Due Date Prior To'/>
+                <field name="due_date_prior_to"/>
+                <br/>
+                <br/>
+                <p >
+                    Are you sure you want to Generate Finance Charges?
+                </p>
+                <footer>
+                    <button string="Generate Finance Charge" class="btn btn-primary" name="process_create_finance_charge_invoices" type="object"/>
+                    or
+                    <button string="Cancel" class="btn-secondary"
+                        special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="act_inv_generate_finance_charge" model="ir.actions.act_window">
+        <field name="name">Create Finance Charges</field>
+        <field name="res_model">finance.charge</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="generate_finance_charge_wizard"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_account_move"/>
+        <field name="binding_view_types">form,list</field>
+    </record>
+
+    <record id="act_generate_finance_charge" model="ir.actions.act_window">
+        <field name="name">Generate Finance Charges</field>
+        <field name="res_model">finance.charge</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="generate_finance_charge_wizard"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_res_partner"/>
+        <field name="binding_view_types">form,list</field>
+    </record>
+
+     <menuitem
+        action="act_inv_generate_finance_charge"
+        id="menu_generate_finance_charge_all_customers"
+        parent="account.menu_finance_receivables" sequence="150"
+    />
+
+</odoo>

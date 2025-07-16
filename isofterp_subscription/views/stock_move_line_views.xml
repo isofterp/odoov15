@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="stock_move_line_view_search_isoft" model="ir.ui.view">
+        <field name="name">stock.move.line.search</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.stock_move_line_view_search"/>
+        <field name="arch" type="xml">
+            <field name="picking_id" position="before">
+                    <field name="lot_id" string="Wild Card"
+                           filter_domain="['|','|','|','|','|','|',
+                           ('lot_name', 'ilike', self),
+                           ('picking_id', 'ilike', self),
+                           ('reference', 'ilike', self),
+                           ('product_id', 'ilike', self),
+                           ('location_id', 'ilike', self),
+                           ('location_dest_id', 'ilike', self),
+                           ('lot_id', 'ilike', self),]"/>
+                </field>
+
+        </field>
+    </record>
+
+
+
+</odoo>

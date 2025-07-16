@@ -34,6 +34,7 @@
         'views/account_bank_statement_views.xml',
         'views/account_report.xml',
         'views/report_invoice.xml',
+        'views/stock_move_line_views.xml',
         #'views/project_task_template_views.xml',
         'data/data.xml',
         'wizard/add_hoc_increase_views.xml',

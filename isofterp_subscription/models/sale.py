@@ -7,7 +7,6 @@ from odoo.exceptions import ValidationError, UserError
 from odoo.tools.misc import groupby
 from odoo.tools import float_compare, float_round, float_is_zero
 
-
 import pandas as pd
 import tempfile
 import xlsxwriter
@@ -127,7 +126,7 @@ class SaleOrder(models.Model):
                         model[i] = line.name
 
                         for charge in line.product_id.x_machine_charge_ids:
-                            #print('charge name=', charge.name)
+                            # print('charge name=', charge.name)
                             if charge.name == 'Black copies':
                                 black_vol1[i] = charge.copies_vol_1
                                 black_charge[i] = charge.copies_price_1
@@ -218,7 +217,7 @@ class SaleOrder(models.Model):
                                              ('10', '10%'),
                                              ('15', '15%'), ],
                                             string="Escalation %", default='0')
-    #x_finance_escalation1 = fields.Float(string="Escalation %")
+    # x_finance_escalation1 = fields.Float(string="Escalation %")
     x_finance_profit = fields.Float("Profit")
     x_rental_factor = fields.Many2one("subscription.rental.factor", 'Rental Factor')
     x_is_contract_quote = fields.Boolean('Subscription Quote',
@@ -236,7 +235,6 @@ class SaleOrder(models.Model):
     x_copies_black = fields.Char(string='Meter Reading (B&W)')
     x_copies_color = fields.Char(string='Meter Reading (Color)')
     x_account_number = fields.Char(related='partner_id.x_account_number', string='Account Number')
-
 
     # @api.constrains('x_finance_rental', 'x_finance_factor', 'x_finance_settlement', 'x_finance_cost')
     # def _check_values(self):
@@ -275,7 +273,8 @@ class SaleOrder(models.Model):
                                       "Serial Number: %s \n"
                                       "Machine: %s \n"
                                       "Current Location: %s \n") %
-                                    (self.x_lot_id.name, self.x_lot_id.product_id.name, self.x_lot_id.location_ids.name))
+                                    (
+                                    self.x_lot_id.name, self.x_lot_id.product_id.name, self.x_lot_id.location_ids.name))
 
             if self.order_line:
                 for rec in self.order_line:
@@ -349,7 +348,8 @@ class SaleOrder(models.Model):
                 if order.state == 'draft':
                     raise ValidationError(
                         "You can't Create a subscription while the Quote is in Draft mode !\n You must first Confirm Sale")
-                create_contract = order_line_obj.search([('product_id.categ_id.name', 'in', ['main product', 'component']),('order_id', '=', order.id)])
+                create_contract = order_line_obj.search(
+                    [('product_id.categ_id.name', 'in', ['main product', 'component']), ('order_id', '=', order.id)])
                 if not create_contract:
                     raise ValidationError(
                         " There is no Machine or Component on this Order, so no Contract will be created")
@@ -367,18 +367,17 @@ class SaleOrder(models.Model):
                 # Any products added to the sales order afterwards, must be added manually to a subscription.
                 # probably best to skip over any product that is not a kit - Not sure
                 grouped_lines = groupby(order.order_line, key=lambda m: m.x_kit_num)
-                #logging.warning("group are %s", grouped_lines)
+                # logging.warning("group are %s", grouped_lines)
                 for group, lines in grouped_lines:
                     category = 'main product'
-                    #logging.warning("1. group lines are [%s] %s", group, lines)
-
+                    # logging.warning("1. group lines are [%s] %s", group, lines)
 
                     for i in range(len(lines)):
                         if lines[i].display_type == 'line_section':
                             continue
                         logging.warning("The current line is [%s] [%s]", lines[i].product_id.name,
-                                                lines[i].product_id.categ_id.name)
-                        if lines[i].product_id.categ_id.name in ['main product', 'component'] :
+                                        lines[i].product_id.categ_id.name)
+                        if lines[i].product_id.categ_id.name in ['main product', 'component']:
 
                             if (lines[i].product_id.categ_id.name == 'main product'):
                                 logging.warning("===Creating contract %s %s", lines[i].product_id.name,
@@ -391,8 +390,10 @@ class SaleOrder(models.Model):
                         logging.warning("Working with line %s", lines[i].name)
                         if lines[i].product_id.categ_id.name in ['main product']:
 
-                            move_line = stock_move_obj.search([('origin','=',lines[i].order_id.name),('sale_line_id', '=', lines[i].id),('state','!=','cancel')]).id
-                            serial = stock_move_line_obj.search([('move_id', '=', move_line)],limit=1).lot_id
+                            move_line = stock_move_obj.search(
+                                [('origin', '=', lines[i].order_id.name), ('sale_line_id', '=', lines[i].id),
+                                 ('state', '!=', 'cancel')]).id
+                            serial = stock_move_line_obj.search([('move_id', '=', move_line)], limit=1).lot_id
 
                             lines[i].subscription_id = new_subscription_id.id
                             if not serial:
@@ -412,8 +413,7 @@ class SaleOrder(models.Model):
                                                 (lines[i].product_id.name, lines[i].product_id.categ_id.name,
                                                  lines[i].product_id.tracking))
 
-
-                            analytic_exist = analytic_obj.search([('name','=', serial.name)])
+                            analytic_exist = analytic_obj.search([('name', '=', serial.name)])
                             if analytic_exist:
                                 # Update the partner on the existing record
                                 analytic_exist.write({
@@ -499,14 +499,15 @@ class SaleOrder(models.Model):
                         # Set the correct delivery address for the companent if tracked by serial number
                         # Add the serial number to the description if tracked by serial number
                         if lines[i].product_id.categ_id.name in ['component']:
-                            _logger.warning("===COMPONENTS - The line we are working with is %s",lines[i].name )
+                            _logger.warning("===COMPONENTS - The line we are working with is %s", lines[i].name)
                             #
                             lines[i].subscription_id = new_subscription_id.id
                             # If the component is a serialized item, set the delivery address on the lot
                             if lines[i].product_id.tracking:
                                 _logger.warning("===2. The line we are working with is %s", lines[i].name)
-                                move_line = stock_move_obj.search([('sale_line_id', '=', lines[i].id),('state','!=','cancel')]).id
-                                serial = stock_move_line_obj.search([('move_id', '=', move_line)],limit=1).lot_id
+                                move_line = stock_move_obj.search(
+                                    [('sale_line_id', '=', lines[i].id), ('state', '!=', 'cancel')]).id
+                                serial = stock_move_line_obj.search([('move_id', '=', move_line)], limit=1).lot_id
                                 lot = stock_production_lot_obj.search([('id', '=', serial.id)])
                                 lot.x_dlv_id = lines[i].delivery_addr_id
 
@@ -517,14 +518,13 @@ class SaleOrder(models.Model):
                                 name = lines[i].name
                             res = {
                                 'product_id': lines[i].product_id.id,
-                                'uom_id' : lines[i].product_uom.id,
+                                'uom_id': lines[i].product_uom.id,
                                 'quantity': lines[i].product_uom_qty,
                                 'name': name,
                                 'price_unit': lines[i].price_unit,
                                 'analytic_account_id': new_subscription_id.id,
                                 'x_start_date1_billable': False,
                                 'x_billing_frequency': 0,
-
 
                             }
                             subscription_line_obj.create(res)
@@ -540,12 +540,11 @@ class SaleOrder(models.Model):
         for order in self:
             if order.x_lot_id:
                 _logger.warning("===========1. Setting the analytic account")
-                analytic = self.env['account.analytic.account'].search([('name','=',order.x_lot_id.name)]).id
+                analytic = self.env['account.analytic.account'].search([('name', '=', order.x_lot_id.name)]).id
                 order.analytic_account_id = analytic
-                _logger.warning("===========1. Setting the analytic account %s",order.analytic_account_id )
+                _logger.warning("===========1. Setting the analytic account %s", order.analytic_account_id)
 
             if not order.analytic_account_id:
-
                 default_analytic_account = order.env['account.analytic.default'].sudo().account_get(
                     partner_id=order.partner_id.id,
                     user_id=order.env.uid,
@@ -553,7 +552,7 @@ class SaleOrder(models.Model):
                     company_id=order.company_id.id,
                 )
                 order.analytic_account_id = default_analytic_account.analytic_id
-                _logger.warning("===========2. Setting the analytic account %s",order.analytic_account_id)
+                _logger.warning("===========2. Setting the analytic account %s", order.analytic_account_id)
 
     def _prepare_invoice(self):
         """
@@ -596,6 +595,7 @@ class SaleOrder(models.Model):
             'x_main_partner': self.partner_id.id,
         }
         return invoice_vals
+
     def _get_invoiceable_lines(self, final=False):
         """Return the invoiceable lines for order `self`."""
         down_payment_line_ids = []
@@ -611,7 +611,8 @@ class SaleOrder(models.Model):
                 # Only invoice the section if one of its lines is invoiceable
                 pending_section = line
                 continue
-            if line.display_type != 'line_note' and float_is_zero(line.qty_to_invoice, precision_digits=precision) and line.product_id.x_invoice_ok == True:
+            if line.display_type != 'line_note' and float_is_zero(line.qty_to_invoice,
+                                                                  precision_digits=precision) and line.product_id.x_invoice_ok == True:
                 logging.warning("Tracking you")
                 continue
             if line.qty_to_invoice > 0 or (line.qty_to_invoice < 0 and final) or line.display_type == 'line_note':
@@ -626,6 +627,7 @@ class SaleOrder(models.Model):
                 invoiceable_line_ids.append(line.id)
 
         return self.env['sale.order.line'].browse(invoiceable_line_ids + down_payment_line_ids)
+
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
@@ -676,7 +678,10 @@ class SaleOrderLine(models.Model):
         sale_line_name_parts = self.name.split('\n')
         title = sale_line_name_parts[0] or self.product_id.name
         description = '<br/>'.join(sale_line_name_parts[1:])
-        _logger.warning("testing if this code is run without a product")
+
+        # Set the assignee to the user who is part of the access_run_up_assignees_group
+        group = self.env.ref('isofterp_subscription.access_run_up_assignees_group')
+        logging.warning("The group is %s", group.users)
         return {
             'name': title if project.sale_line_id else '%s: %s' % (self.order_id.name or '', title),
             'planned_hours': planned_hours,
@@ -687,7 +692,7 @@ class SaleOrderLine(models.Model):
             'sale_line_id': self.id,
             'sale_order_id': self.order_id.id,
             'company_id': project.company_id.id,
-            'user_ids': False,  # force non assigned task, as created as sudo()
+            'user_ids': group.users or False,  # force non assigned task, as created as sudo()
             'x_serial_number_id': self.order_id.x_lot_id.id or False,
 
         }

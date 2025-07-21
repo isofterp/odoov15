@@ -67,6 +67,8 @@
             <field name="model">project.task</field>
             <field name="inherit_id" ref="project.view_task_form2"/>
             <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_fsm_validate'][hasclass('btn-primary')]" position="replace"/>
+                <xpath expr="//button[@name='action_fsm_validate'][hasclass('btn-secondary')]" position="replace"/>
                 <xpath expr="/form/sheet" position="before">
                     <div
                             class="alert alert-warning"
@@ -77,14 +79,14 @@
                         <field
                                 name="x_serial_number_id"
                         />
-                        has
+                         has
                         <field name="x_flag_tickets"/>
-                        proceeding tickets. Review Audit Log for details
+                         proceeding tickets. Review Audit Log for details
 
 
                     </div>
                 </xpath>
-                <field name="partner_id" position="after">
+                <field name="partner_id" position="before">
                     <!--                    <field name="x_project_task_template_id"/>-->
                     <field name="x_serial_number_id"
                            options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,}"/>

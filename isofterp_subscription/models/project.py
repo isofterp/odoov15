@@ -74,7 +74,7 @@ class Task(models.Model):
                         self.env.user.has_group('isofterp_subscription.access_field_service_amend_group') or
                         self.env.user._is_admin()):
                     raise AccessError(
-                        "You cannot amend a task in a Done state - Contact Project administrators for assistance.")
+                        "You cannot amend a task in a Done state - Contact Project administrators for assistance!")
 
         return super(Task, self).write(vals)
     def _action_generate_serial_flag_wizard(self):
@@ -123,7 +123,7 @@ class Task(models.Model):
         #             'message': message,
         #         }
         #         return {'warning': warning}
-        self.partner_id = self.x_serial_number_id.x_subscription_id.partner_id
+        #self.partner_id = self.x_serial_number_id.x_subscription_id.partner_id
         self.x_serial_number_street = self.x_serial_number_id.x_subscription_id.partner_id.street
         #self.x_serial_number_street2 = self.x_serial_number_id.x_subscription_id.partner_id.street2
         if self.x_serial_number_id.x_dlv_id.street and  self.x_serial_number_id.x_dlv_id.street2 and self.x_serial_number_id.x_dlv_id.city:

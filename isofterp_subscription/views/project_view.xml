@@ -62,6 +62,19 @@
 
         </record>
 
+        <record model="ir.ui.view" id="project_task_create_timesheet_view_form_isoft">
+            <field name="name">project.task.create.timesheet.wizard.form.isoft</field>
+            <field name="model">project.task.create.timesheet</field>
+            <field name="inherit_id" ref="hr_timesheet.project_task_create_timesheet_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='time_spent']" position="replace">
+                    <field name="time_spent" attrs="{'readonly': True}" force_save="1"/>
+                </xpath>
+
+            </field>
+
+        </record>
+
         <record id="view_task_form2_inherit" model="ir.ui.view">
             <field name="name">project.task.form.inherit</field>
             <field name="model">project.task</field>

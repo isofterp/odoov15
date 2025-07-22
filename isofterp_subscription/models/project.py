@@ -123,7 +123,8 @@ class Task(models.Model):
         #             'message': message,
         #         }
         #         return {'warning': warning}
-        #self.partner_id = self.x_serial_number_id.x_subscription_id.partner_id
+        if not self.partner_id:
+            self.partner_id = self.x_serial_number_id.x_subscription_id.partner_id  # Field has to be populated
         self.x_serial_number_street = self.x_serial_number_id.x_subscription_id.partner_id.street
         #self.x_serial_number_street2 = self.x_serial_number_id.x_subscription_id.partner_id.street2
         if self.x_serial_number_id.x_dlv_id.street and  self.x_serial_number_id.x_dlv_id.street2 and self.x_serial_number_id.x_dlv_id.city:

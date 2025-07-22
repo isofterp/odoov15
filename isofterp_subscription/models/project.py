@@ -14,14 +14,14 @@ class Task(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        logging.warning("Vals list is %s", vals_list[0])
+        #logging.warning("Vals list is %s", vals_list[0])
         if vals_list[0].get('x_serial_number_id'):
             logging.warning("1-----Setting flags on this record")
             ten_days_ago = datetime.now() - timedelta(days=10)
-            logging.warning("10 days ago %s %s", ten_days_ago.strftime('%Y-%m-%d'), vals_list[0].get('x_serial_number_id'))
+            #logging.warning("10 days ago %s %s", ten_days_ago.strftime('%Y-%m-%d'), vals_list[0].get('x_serial_number_id'))
             tickets = self.env['project.task'].search([('x_serial_number_id','=', vals_list[0].get('x_serial_number_id')),('create_date','>=',ten_days_ago)])
             if len(tickets) >= 3:
-                logging.warning("2-----Setting flags on this record")
+                #logging.warning("2-----Setting flags on this record")
                 vals_list[0]['x_flag_tickets'] = len(tickets)
 
             else:
@@ -30,19 +30,19 @@ class Task(models.Model):
 
         analytic_acc = self.env['account.analytic.account'].search([('name','=', project_id.name)])
         if analytic_acc:
-            logging.warning("========Analytic is %s", analytic_acc)
+            #logging.warning("========Analytic is %s", analytic_acc)
             vals_list[0]['analytic_account_id'] = analytic_acc.id
         else:
             logging.warning("No analytic account found")
 
         obj = super().create(vals_list)
-        logging.warning("Object is %s", obj)
+        #logging.warning("Object is %s", obj)
         return obj
         #obj.write({'x_flag_tickets': self.x_flag_tickets})
 
     def write(self, vals):
         #The write fires twice with the stage_id in the 2nd write
-        _logger.warning("--------vals is %s", vals)
+        #_logger.warning("--------vals is %s", vals)
 
 
         for task in self:
@@ -67,7 +67,7 @@ class Task(models.Model):
                             "You can only change the state of your own tasks. Project managers and administrators can change the state of any task.")
             # Lookup the stage_id
             stage_id = self.env['project.task.type'].search([('id', '=', task._origin.stage_id.id)])
-            _logger.warning("stage is %s", stage_id.name)
+            #_logger.warning("stage is %s", stage_id.name)
             if stage_id.name == 'Done':
                 logging.warning("Checking if the user can amend the record")
                 if not (self.env.user.has_group('project.group_project_manager') or
@@ -202,7 +202,7 @@ class Task(models.Model):
 
     @api.model
     def default_get(self, fields_list):
-        logging.warning("Runnign this!!!!!!! %s", self._context)
+        #logging.warning("Runnign this!!!!!!! %s", self._context)
         result = super(Task, self).default_get(fields_list)
         is_fsm_mode = self._context.get('fsm_mode')
         if 'project_id' in fields_list and not result.get('project_id') and is_fsm_mode:
@@ -271,6 +271,28 @@ class Task(models.Model):
 
         if not self.user_timer_id.timer_start and self.display_timesheet_timer:
             super(Task, self).action_timer_start()
+
+    @api.model
+    def delete_tasks(self, rec):
+        stripped_name = rec.name
+        logging.warning("************The record is %s",stripped_name.rstrip())
+        chk_name = rec.sale_order_id.name + ": PRODUCT RUN UP"
+        logging.warning("Check name %s", len(chk_name))
+        if stripped_name.rstrip() == chk_name:
+            sale_line = self.env['sale.order.line'].search([('id','=', rec.sale_line_id.id)])
+            sale_line.write(
+                {'task_id':''}
+            )
+            # rec.sale_line_id.write(
+            #     {'task_id',''}
+            # )
+            logging.warning("******Going to delete this record %s", rec.name)
+            #rec.sale_order_id = ''
+            #rec.sale_line_id = ''
+            rec.active = False
+
+            #rec.unlink()
+
 
     name = fields.Char(placeholder="Problem Details")
     x_serial_number_id = fields.Many2one('stock.production.lot', 'Serial Number', store=True)

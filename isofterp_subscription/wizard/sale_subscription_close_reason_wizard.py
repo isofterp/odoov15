@@ -71,6 +71,18 @@ class SaleSubscriptionCloseReasonWizard(models.TransientModel):
             subscription.sudo().message_post(body=message)
         subscription.x_machine_ids = None
 
+    def find_lot_location(self, main_machine):
+        # Get quants for this lot
+        quant_records = self.env['stock.quant'].search([
+            ('lot_id', '=', main_machine.id),
+            ('product_id', '=', main_machine.product_id.id),
+            ('quantity','>',0)])
+        logging.warning("Quant Records are %s", quant_records)
+
+        # Get unique locations
+        locations = quant_records.mapped('location_id')
+        return locations
+
     def set_close(self):
 
         # Before calling super do the following
@@ -99,10 +111,17 @@ class SaleSubscriptionCloseReasonWizard(models.TransientModel):
 
         # Search stock move or stock picking records for this machine.
         if not self.x_is_donate:
-            stock_move = self.lookup_stock_move(main_machine,subscription)
-            if not stock_move:
-                raise UserError(_("NO INCOMING STOCK MOVE RECORD FOUND - UNABLE TO CLOSE CONTRACT"))
-            stock_move.picking_id.sudo().message_post(body=message)
+            # Check location of main product. It should be in any of the internal warehouses
+            current_location = self.find_lot_location(main_machine)
+            if not current_location and not current_location.usage == 'internal':
+                logging.warning("Could not find location")
+                raise UserError(_("MAIN MACHINE IS NOT IN ANY OF THE INTERNAL LOCATIONS - UNABLE TO CLOSE CONTRACT"))
+
+            #raise UserError(_("STOPPING"))
+            # stock_move = self.lookup_stock_move(main_machine,subscription)
+            # if not stock_move:
+            #     raise UserError(_("NO INCOMING STOCK MOVE RECORD FOUND - UNABLE TO CLOSE CONTRACT"))
+            # stock_move.picking_id.sudo().message_post(body=message)
 
         # Now search for an analytic account for the serial number
         analytic_acc = self.create_inverse_analytic_line(main_machine)

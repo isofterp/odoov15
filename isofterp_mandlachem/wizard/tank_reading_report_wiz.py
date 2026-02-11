@@ -2,11 +2,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from datetime import datetime
 import pandas as pd
-from bokeh.plotting import figure, show
 
-from bokeh.io import export_svgs
-import svglib.svglib as svglib
-from reportlab.graphics import renderPDF
 import logging
 
 class WizTankReading(models.TransientModel):
@@ -71,7 +67,7 @@ class WizTankReading(models.TransientModel):
                             df.at[index, 'qty'] = df['qty'] + rec.usage
                         else:
                             """ we have NOT found a record so create a new one"""
-                            #logging.warning("Site name %s and tank name %s", rec.site_id.name, rec.tank_id.name)
+                            logging.warning("Site name %s and tank name %s", rec.site_id.name, rec.tank_id.name)
 
                             df = df.append({
                                 'key': rec.site_id.name + rec.tank_id.name,
@@ -89,13 +85,17 @@ class WizTankReading(models.TransientModel):
                     i += 1
 
             """ Finished with a Site so call email function """
+            # print("** finised site ",rec.site_id.name)
             report_data = df.to_dict(orient='records')
             """  send this Site's data and send it using email_dict"""
+            #logging.warning('People to email = %s',email_dict)
+            # print(report_data)
             """ reset i and clear the dataframe and email dictionary for next branch """
             # i = 0
             # email_dict = []
             # df.drop(columns=[i for i in df.columns])
 
+        # print("*****Finished creating DF*********", )
         if df.empty:  # no data found
             return
         # Set the daily average
@@ -106,6 +106,8 @@ class WizTankReading(models.TransientModel):
             tank = tank_obj.search([('site_id', '=', row["site_id"]),('name', '=', row["tank"])])
             if tank:
                 df.at[index,'tank_bal'] = tank.tank_balance
+        #print(df)
+        logging.warning("The DF contains %s", df)
         return df
 
     def _build_recipients(self, df):
@@ -120,6 +122,7 @@ class WizTankReading(models.TransientModel):
             #line = line_obj.search([('name', '=', row["line"])])
             line = line_obj.search([('name', '=', row["line"]), ('site_id', '=', row["site_id"])])
             for x in line.employee_ids:
+                logging.warning("---The employee is %s", x.user_id.name)
                 recipient_df = recipient_df.append({
                     'user_name': x.user_id.name,
                     'user_id': x.user_id.partner_id.email,
@@ -134,6 +137,7 @@ class WizTankReading(models.TransientModel):
                     'df_index': index,
                 }, ignore_index=True)
         recipient_df.sort_values(by=['user_id', 'df_index'], inplace=True)
+        logging.warning("recipients df= %s",  recipient_df)
         return recipient_df
 
     def _build_email_data(self, recipient_df, df):
@@ -169,11 +173,14 @@ class WizTankReading(models.TransientModel):
                         row['df_index']]  # add the new record to fresh DF
                 else:
                     email_data_lines_df.loc[len(email_data_lines_df)] = df.loc[row['df_index']]  # copy the row out the original df to the email df
+                #print('@152',email_data_lines_df)
         self._send_report(previous_user, email_data_lines_df)  # Send after reaching the last record in the for loop
 
     def _send_report(self, user_id, email_data_lines_df):
         report_data = email_data_lines_df.to_dict(orient='records')
-        #logging.warning("Email data @186 %s", report_data)
+        logging.warning("This will be sent to %s", user_id )
+        print(report_data)
+        logging.warning("Email data @186 %s", report_data)
         email_body = ''
         email_to = ''
 
@@ -218,6 +225,8 @@ class WizTankReading(models.TransientModel):
             chart_link = base_url + '/' + report_function + '?'
             url_link = "<a href=" + chart_link + report_params + " '</a>Click to view Chart"
             #email_body += "<a href = copytype-billing.isofterp.co.za/my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
+            #print(url_link)
+            #print(err)
             # email_body += "<div style = 'text-align: center; margin: 16px 0px 16px 0px;' >"
             # email_body += "<a href = copytype-billing.isofterp.co.za/my/contracts/?id=" + line.analytic_account_id.code + " </a>Click to capture readings"
             # email_body += "</div>"
